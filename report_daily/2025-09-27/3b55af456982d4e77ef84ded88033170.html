@@ -89,8 +89,8 @@
                 </div>
             </div>
             <div id="sleep-details" class="details-container">
-                <div class="chart-wrapper"><h3>Sleep Consistency</h3><p class="chart-subtitle">Score based on deviation from recent average.</p><canvas id="sleep-consistency-chart"></canvas></div>
-                <div class="chart-wrapper"><h3>Sleep Duration</h3><p class="chart-subtitle">Score based on total time slept.</p><canvas id="sleep-duration-chart"></canvas></div>
+                <div class="chart-wrapper"><h3>Sleep & Wake Times</h3><p class="chart-subtitle">Sleep times (top) and wake times (bottom) for each day.</p><canvas id="sleep-consistency-chart"></canvas></div>
+                <div class="chart-wrapper"><h3>Sleep Duration</h3><p class="chart-subtitle">Total hours slept each day.</p><canvas id="sleep-duration-chart"></canvas></div>
             </div>
         </div>
 
@@ -124,49 +124,14 @@
         "averageScore": 0.42215325177882956,
         "daily": [
             {
-                "label": "Sep 26",
-                "consistencyScore": 0.97324402416601,
-                "durationScore": 0.93,
-                "consistencyColor": "#9acc9c",
-                "durationColor": "#43a047",
-                "sleepTime": "23:51",
-                "wakeTime": "07:05"
-            },
-            {
-                "label": "Sep 25",
-                "consistencyScore": 0.9725873391121618,
-                "durationScore": 0.93,
-                "consistencyColor": "#97ca9a",
-                "durationColor": "#43a047",
-                "sleepTime": "23:50",
-                "wakeTime": "08:01"
-            },
-            {
-                "label": "Sep 24",
-                "consistencyScore": 0.9640504334121355,
-                "durationScore": 0.93,
-                "consistencyColor": "#77ba7a",
-                "durationColor": "#43a047",
-                "sleepTime": "22:38",
-                "wakeTime": "06:21"
-            },
-            {
-                "label": "Sep 23",
-                "consistencyScore": 1.094749683143219,
-                "durationScore": 0.93,
-                "consistencyColor": "#e53935",
-                "durationColor": "#43a047",
-                "sleepTime": "23:37",
-                "wakeTime": "09:01"
-            },
-            {
-                "label": "Sep 22",
+                "label": "Sep 20",
                 "consistencyScore": 1.28,
                 "durationScore": 0.93,
                 "consistencyColor": "#e53935",
                 "durationColor": "#43a047",
-                "sleepTime": "23:19",
-                "wakeTime": "06:52"
+                "sleepTime": "02:28",
+                "wakeTime": "09:58",
+                "hasData": true
             },
             {
                 "label": "Sep 21",
@@ -175,16 +140,58 @@
                 "consistencyColor": "#e53935",
                 "durationColor": "#43a047",
                 "sleepTime": "23:23",
-                "wakeTime": "06:57"
+                "wakeTime": "06:57",
+                "hasData": true
             },
             {
-                "label": "Sep 20",
+                "label": "Sep 22",
                 "consistencyScore": 1.28,
                 "durationScore": 0.93,
                 "consistencyColor": "#e53935",
                 "durationColor": "#43a047",
-                "sleepTime": "02:28",
-                "wakeTime": "09:58"
+                "sleepTime": "23:19",
+                "wakeTime": "06:52",
+                "hasData": true
+            },
+            {
+                "label": "Sep 23",
+                "consistencyScore": 1.094749683143219,
+                "durationScore": 0.93,
+                "consistencyColor": "#e53935",
+                "durationColor": "#43a047",
+                "sleepTime": "23:37",
+                "wakeTime": "09:01",
+                "hasData": true
+            },
+            {
+                "label": "Sep 24",
+                "consistencyScore": 0.9640504334121355,
+                "durationScore": 0.93,
+                "consistencyColor": "#77ba7a",
+                "durationColor": "#43a047",
+                "sleepTime": "22:38",
+                "wakeTime": "06:21",
+                "hasData": true
+            },
+            {
+                "label": "Sep 25",
+                "consistencyScore": 0.9725873391121618,
+                "durationScore": 0.93,
+                "consistencyColor": "#97ca9a",
+                "durationColor": "#43a047",
+                "sleepTime": "23:50",
+                "wakeTime": "08:01",
+                "hasData": true
+            },
+            {
+                "label": "Sep 26",
+                "consistencyScore": 0.97324402416601,
+                "durationScore": 0.93,
+                "consistencyColor": "#9acc9c",
+                "durationColor": "#43a047",
+                "sleepTime": "23:51",
+                "wakeTime": "07:05",
+                "hasData": true
             }
         ],
         "colorStops": [
@@ -407,15 +414,106 @@
                 const defaultDatalabels = { anchor: 'center', align: 'center', font: { weight: 'bold', size: 14 }, color: (c) => getContrastColor(sleepData.daily[c.dataIndex].consistencyColor), formatter: (v,c) => parseFloat(c.chart.options.plugins.datalabels.scores[c.dataIndex]).toFixed(2) };
                 const isTimeBased = sleepData.daily.length > 0 && sleepData.daily[0].sleepTime;
 
-                const consistencyData = isTimeBased ? sleepData.daily.map(d => [timeToDecimal(d.sleepTime), timeToDecimal(d.wakeTime)]) : sleepData.daily.map(d => d.consistencyScore);
+                // Handle missing days - filter out days without data for consistency chart
+                const validDays = sleepData.daily.filter(d => d.hasData);
+                const consistencyData = isTimeBased ? validDays.map(d => [timeToDecimal(d.sleepTime), timeToDecimal(d.wakeTime)]) : validDays.map(d => d.consistencyScore);
                 const consistencyTooltip = isTimeBased ? c => `Slept from ${decimalToTime(c.raw[0])} to ${decimalToTime(c.raw[1])}` : c => `Score: ${parseFloat(c.raw).toFixed(2)}`;
                 const consistencyYScale = isTimeBased ? { min: 20, max: 34, ticks: { stepSize: 1, color: '#aaa', callback: v => decimalToTime(v) }} : {min: minScore, max: maxScore, ticks: { color: '#aaa', callback: v => v.toFixed(2)}};
 
-                const durationData = isTimeBased ? sleepData.daily.map(d => timeToDecimal(d.wakeTime) - timeToDecimal(d.sleepTime)) : sleepData.daily.map(d => d.durationScore);
+                const durationData = isTimeBased ? validDays.map(d => timeToDecimal(d.wakeTime) - timeToDecimal(d.sleepTime)) : validDays.map(d => d.durationScore);
                 const durationYScale = isTimeBased ? { beginAtZero: true, title: { display: true, text: 'Hours', color: '#aaa' }, ticks: { color: '#aaa' }} : {min: minScore, max: maxScore, title: { display: true, text: 'Score', color: '#aaa' }, ticks: { color: '#aaa', callback: v => v.toFixed(2)}};
 
-                new Chart('sleep-consistency-chart', { type: 'bar', data: { datasets: [{ data: consistencyData, backgroundColor: sleepData.daily.map(d => hexToRgba(d.consistencyColor, 0.6)), borderColor: sleepData.daily.map(d => d.consistencyColor), borderWidth: 1.5, borderSkipped: false }] }, options: { scales: { y: consistencyYScale, x: { labels: sleepData.daily.map(d => d.label), ticks: { color: '#aaa' }} }, plugins: { legend: { display: false }, tooltip: { callbacks: { label: consistencyTooltip }}, datalabels: { ...defaultDatalabels, scores: sleepData.daily.map(d => d.consistencyScore) }}}});
-                new Chart('sleep-duration-chart', { type: 'bar', data: { datasets: [{ data: durationData, backgroundColor: sleepData.daily.map(d => hexToRgba(d.durationColor, 0.6)), borderColor: sleepData.daily.map(d => d.durationColor), borderWidth: 1.5 }] }, options: { scales: { y: durationYScale, x: { labels: sleepData.daily.map(d => d.label), ticks: { color: '#aaa' }} }, plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => `${isTimeBased ? 'Hours' : 'Score'}: ${parseFloat(c.raw).toFixed(2)}` }}, datalabels: { ...defaultDatalabels, scores: sleepData.daily.map(d => d.durationScore) }}}});
+                // Create sleep time chart (sleep times at top)
+                const sleepTimeData = validDays.map(d => timeToDecimal(d.sleepTime));
+                const wakeTimeData = validDays.map(d => timeToDecimal(d.wakeTime));
+                
+                new Chart('sleep-consistency-chart', { 
+                    type: 'bar', 
+                    data: { 
+                        labels: validDays.map(d => d.label),
+                        datasets: [
+                            {
+                                label: 'Sleep Time',
+                                data: sleepTimeData,
+                                backgroundColor: validDays.map(d => hexToRgba(d.consistencyColor, 0.6)),
+                                borderColor: validDays.map(d => d.consistencyColor),
+                                borderWidth: 1.5,
+                                borderSkipped: false
+                            },
+                            {
+                                label: 'Wake Time', 
+                                data: wakeTimeData,
+                                backgroundColor: validDays.map(d => hexToRgba(d.durationColor, 0.6)),
+                                borderColor: validDays.map(d => d.durationColor),
+                                borderWidth: 1.5,
+                                borderSkipped: false
+                            }
+                        ]
+                    }, 
+                    options: { 
+                        scales: { 
+                            y: { 
+                                min: 20, 
+                                max: 34, 
+                                ticks: { 
+                                    stepSize: 1, 
+                                    color: '#aaa', 
+                                    callback: v => decimalToTime(v) 
+                                }
+                            }, 
+                            x: { 
+                                labels: validDays.map(d => d.label), 
+                                ticks: { color: '#aaa' }
+                            } 
+                        }, 
+                        plugins: { 
+                            legend: { display: true, position: 'top' }, 
+                            tooltip: { 
+                                callbacks: { 
+                                    label: c => `${c.dataset.label}: ${decimalToTime(c.raw)}` 
+                                }
+                            }, 
+                            datalabels: { 
+                                display: false // Hide data labels for cleaner look
+                            }
+                        }
+                    }
+                });
+
+                // Duration chart (sleep duration)
+                new Chart('sleep-duration-chart', { 
+                    type: 'bar', 
+                    data: { 
+                        labels: validDays.map(d => d.label),
+                        datasets: [{ 
+                            data: durationData, 
+                            backgroundColor: validDays.map(d => hexToRgba(d.durationColor, 0.6)), 
+                            borderColor: validDays.map(d => d.durationColor), 
+                            borderWidth: 1.5 
+                        }] 
+                    }, 
+                    options: { 
+                        scales: { 
+                            y: durationYScale, 
+                            x: { 
+                                labels: validDays.map(d => d.label), 
+                                ticks: { color: '#aaa' }
+                            } 
+                        }, 
+                        plugins: { 
+                            legend: { display: false }, 
+                            tooltip: { 
+                                callbacks: { 
+                                    label: c => `${isTimeBased ? 'Hours' : 'Score'}: ${parseFloat(c.raw).toFixed(2)}` 
+                                }
+                            }, 
+                            datalabels: { 
+                                ...defaultDatalabels, 
+                                scores: validDays.map(d => d.durationScore) 
+                            }
+                        }
+                    }
+                });
             }
 
             function createVo2MaxChart(vo2Data) {
