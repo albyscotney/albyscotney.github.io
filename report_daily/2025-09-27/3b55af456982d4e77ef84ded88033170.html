@@ -426,10 +426,10 @@
                 // Create sleep time chart (sleep times at top)
                 const sleepTimeData = validDays.map(d => timeToDecimal(d.sleepTime));
                 const wakeTimeData = validDays.map(d => timeToDecimal(d.wakeTime));
-                
-                new Chart('sleep-consistency-chart', { 
-                    type: 'bar', 
-                    data: { 
+
+                new Chart('sleep-consistency-chart', {
+                    type: 'bar',
+                    data: {
                         labels: validDays.map(d => d.label),
                         datasets: [
                             {
@@ -441,7 +441,7 @@
                                 borderSkipped: false
                             },
                             {
-                                label: 'Wake Time', 
+                                label: 'Wake Time',
                                 data: wakeTimeData,
                                 backgroundColor: validDays.map(d => hexToRgba(d.durationColor, 0.6)),
                                 borderColor: validDays.map(d => d.durationColor),
@@ -449,31 +449,31 @@
                                 borderSkipped: false
                             }
                         ]
-                    }, 
-                    options: { 
-                        scales: { 
-                            y: { 
-                                min: 20, 
-                                max: 34, 
-                                ticks: { 
-                                    stepSize: 1, 
-                                    color: '#aaa', 
-                                    callback: v => decimalToTime(v) 
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                min: 20,
+                                max: 34,
+                                ticks: {
+                                    stepSize: 1,
+                                    color: '#aaa',
+                                    callback: v => decimalToTime(v)
                                 }
-                            }, 
-                            x: { 
-                                labels: validDays.map(d => d.label), 
+                            },
+                            x: {
+                                labels: validDays.map(d => d.label),
                                 ticks: { color: '#aaa' }
-                            } 
-                        }, 
-                        plugins: { 
-                            legend: { display: true, position: 'top' }, 
-                            tooltip: { 
-                                callbacks: { 
-                                    label: c => `${c.dataset.label}: ${decimalToTime(c.raw)}` 
+                            }
+                        },
+                        plugins: {
+                            legend: { display: true, position: 'top' },
+                            tooltip: {
+                                callbacks: {
+                                    label: c => `${c.dataset.label}: ${decimalToTime(c.raw)}`
                                 }
-                            }, 
-                            datalabels: { 
+                            },
+                            datalabels: {
                                 display: false // Hide data labels for cleaner look
                             }
                         }
@@ -481,35 +481,35 @@
                 });
 
                 // Duration chart (sleep duration)
-                new Chart('sleep-duration-chart', { 
-                    type: 'bar', 
-                    data: { 
+                new Chart('sleep-duration-chart', {
+                    type: 'bar',
+                    data: {
                         labels: validDays.map(d => d.label),
-                        datasets: [{ 
-                            data: durationData, 
-                            backgroundColor: validDays.map(d => hexToRgba(d.durationColor, 0.6)), 
-                            borderColor: validDays.map(d => d.durationColor), 
-                            borderWidth: 1.5 
-                        }] 
-                    }, 
-                    options: { 
-                        scales: { 
-                            y: durationYScale, 
-                            x: { 
-                                labels: validDays.map(d => d.label), 
+                        datasets: [{
+                            data: durationData,
+                            backgroundColor: validDays.map(d => hexToRgba(d.durationColor, 0.6)),
+                            borderColor: validDays.map(d => d.durationColor),
+                            borderWidth: 1.5
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: durationYScale,
+                            x: {
+                                labels: validDays.map(d => d.label),
                                 ticks: { color: '#aaa' }
-                            } 
-                        }, 
-                        plugins: { 
-                            legend: { display: false }, 
-                            tooltip: { 
-                                callbacks: { 
-                                    label: c => `${isTimeBased ? 'Hours' : 'Score'}: ${parseFloat(c.raw).toFixed(2)}` 
+                            }
+                        },
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                callbacks: {
+                                    label: c => `${isTimeBased ? 'Hours' : 'Score'}: ${parseFloat(c.raw).toFixed(2)}`
                                 }
-                            }, 
-                            datalabels: { 
-                                ...defaultDatalabels, 
-                                scores: validDays.map(d => d.durationScore) 
+                            },
+                            datalabels: {
+                                ...defaultDatalabels,
+                                scores: validDays.map(d => d.durationScore)
                             }
                         }
                     }
