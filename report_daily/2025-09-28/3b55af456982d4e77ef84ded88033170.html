@@ -555,15 +555,15 @@
                     const sleepTime = timeToDecimal(d.sleepTime);
                     const wakeTime = timeToDecimal(d.wakeTime);
                     const timeInBed = d.timeInBed || d.sleepDuration || 0; // Use actual time in bed
-                    
+
                     // Calculate the actual end time (sleep time + time in bed)
                     let endTime = sleepTime + timeInBed;
-                    
+
                     // Handle day rollover (if sleep goes past midnight)
                     if (endTime >= 24) {
                         endTime = endTime - 24;
                     }
-                    
+
                     return {
                         sleepTime: sleepTime,
                         wakeTime: wakeTime,
@@ -587,7 +587,7 @@
                                 const score = d.consistencyScore || 1.0;
                                 if (score <= 0.9) return '#4caf50'; // Green for good consistency
                                 if (score >= 1.5) return '#f44336'; // Red for poor consistency
-                                
+
                                 // Gradient between green and red for middle values
                                 const ratio = (score - 0.9) / (1.5 - 0.9);
                                 const r = Math.round(76 + (244 - 76) * ratio);
@@ -599,7 +599,7 @@
                                 const score = d.consistencyScore || 1.0;
                                 if (score <= 0.9) return '#2e7d32';
                                 if (score >= 1.5) return '#c62828';
-                                
+
                                 const ratio = (score - 0.9) / (1.5 - 0.9);
                                 const r = Math.round(46 + (198 - 46) * ratio);
                                 const g = Math.round(125 + (40 - 125) * ratio);

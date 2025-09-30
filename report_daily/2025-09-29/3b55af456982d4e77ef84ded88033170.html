@@ -182,104 +182,126 @@
                 </div>
             </div>
         </div>
+
+        <div class="metric-wrapper">
+            <div id="rhr-summary" class="summary-item">
+                <h2>Resting Heart Rate Score ❤️</h2>
+                <div class="score-scale-container">
+                    <div class="scale-wrapper">
+                        <div class="score-scale-bar"></div>
+                        <div id="rhr-last-pointer" class="scale-pointer pointer-last"><div class="pointer-label">Last</div></div>
+                        <div id="rhr-avg-pointer" class="scale-pointer pointer-avg"><div class="pointer-label">Avg</div></div>
+                    </div>
+                </div>
+            </div>
+            <div id="rhr-details" class="details-container">
+                <div class="chart-wrapper">
+                    <h3>Resting Heart Rate Trends</h3>
+                    <p class="chart-subtitle">Daily resting heart rate in BPM over time. Color indicates health risk based on hazard ratios.</p>
+                    <div style="height: 300px; position: relative;">
+                        <canvas id="rhr-chart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
         // --- DATA PLACEHOLDER (To be replaced by Python) ---
         const chartData = {
     "sleep": {
-        "latestScore": 6.000000000000001,
-        "averageScore": 3.0000000000000004,
+        "latestScore": -0.5000000000000004,
+        "averageScore": -0.2575332694888799,
         "daily": [
             {
+                "label": "Sep 22",
+                "consistencyScore": 1.28,
+                "durationScore": 0.93,
+                "consistencyColor": "#e53935",
+                "durationColor": "#43a047",
+                "sleepTime": "23:19",
+                "wakeTime": "06:52",
+                "sleepDuration": 7.55,
+                "timeInBed": 7.733333333333333,
+                "awakeCount": 0,
+                "hasData": true
+            },
+            {
                 "label": "Sep 23",
-                "consistencyScore": 1.0,
-                "durationScore": 1.2,
-                "consistencyColor": "#ffffff",
-                "durationColor": "#e53935",
-                "sleepTime": "22:30",
-                "wakeTime": "07:15",
-                "sleepDuration": 7.5,
-                "timeInBed": 8.0,
+                "consistencyScore": 1.094749683143219,
+                "durationScore": 0.93,
+                "consistencyColor": "#e53935",
+                "durationColor": "#43a047",
+                "sleepTime": "23:37",
+                "wakeTime": "09:01",
+                "sleepDuration": 9.4,
+                "timeInBed": 10.15,
                 "awakeCount": 2,
                 "hasData": true
             },
             {
                 "label": "Sep 24",
-                "consistencyScore": 1.1,
-                "durationScore": 1.25,
-                "consistencyColor": "#e53935",
-                "durationColor": "#e53935",
-                "sleepTime": "22:31",
-                "wakeTime": "07:16",
-                "sleepDuration": 7.6,
-                "timeInBed": 8.1,
-                "awakeCount": 3,
+                "consistencyScore": 0.9640504334121355,
+                "durationScore": 0.93,
+                "consistencyColor": "#77ba7a",
+                "durationColor": "#43a047",
+                "sleepTime": "22:38",
+                "wakeTime": "06:21",
+                "sleepDuration": 7.716666666666667,
+                "timeInBed": 8.183333333333334,
+                "awakeCount": 2,
                 "hasData": true
             },
             {
                 "label": "Sep 25",
-                "consistencyScore": 1.2,
-                "durationScore": 1.3,
-                "consistencyColor": "#e53935",
-                "durationColor": "#e53935",
-                "sleepTime": "22:32",
-                "wakeTime": "07:17",
-                "sleepDuration": 7.7,
-                "timeInBed": 8.2,
-                "awakeCount": 4,
+                "consistencyScore": 0.9725873391121618,
+                "durationScore": 0.93,
+                "consistencyColor": "#97ca9a",
+                "durationColor": "#43a047",
+                "sleepTime": "23:50",
+                "wakeTime": "08:01",
+                "sleepDuration": 8.183333333333334,
+                "timeInBed": 8.75,
+                "awakeCount": 1,
                 "hasData": true
             },
             {
                 "label": "Sep 26",
-                "consistencyScore": 1.3,
-                "durationScore": 1.35,
-                "consistencyColor": "#e53935",
-                "durationColor": "#e53935",
-                "sleepTime": "22:33",
-                "wakeTime": "07:18",
-                "sleepDuration": 7.8,
-                "timeInBed": 8.3,
-                "awakeCount": 5,
+                "consistencyScore": 0.97324402416601,
+                "durationScore": 0.93,
+                "consistencyColor": "#9acc9c",
+                "durationColor": "#43a047",
+                "sleepTime": "23:51",
+                "wakeTime": "07:05",
+                "sleepDuration": 7.233333333333333,
+                "timeInBed": 7.566666666666666,
+                "awakeCount": 1,
                 "hasData": true
             },
             {
                 "label": "Sep 27",
-                "consistencyScore": 1.4,
-                "durationScore": 1.4,
-                "consistencyColor": "#e53935",
-                "durationColor": "#e53935",
-                "sleepTime": "22:34",
-                "wakeTime": "07:19",
-                "sleepDuration": 7.9,
-                "timeInBed": 8.4,
-                "awakeCount": 6,
+                "consistencyScore": 0.9693039138429208,
+                "durationScore": 0.9852631578947368,
+                "consistencyColor": "#8bc48e",
+                "durationColor": "#c7e3c8",
+                "sleepTime": "00:45",
+                "wakeTime": "07:39",
+                "sleepDuration": 6.9,
+                "timeInBed": 7.2,
+                "awakeCount": 1,
                 "hasData": true
             },
             {
                 "label": "Sep 28",
-                "consistencyScore": 1.5,
-                "durationScore": 1.45,
-                "consistencyColor": "#e53935",
-                "durationColor": "#e53935",
-                "sleepTime": "22:35",
-                "wakeTime": "07:20",
-                "sleepDuration": 8.0,
-                "timeInBed": 8.5,
-                "awakeCount": 7,
-                "hasData": true
-            },
-            {
-                "label": "Sep 29",
-                "consistencyScore": 1.6,
-                "durationScore": 1.5,
-                "consistencyColor": "#e53935",
-                "durationColor": "#e53935",
-                "sleepTime": "22:36",
-                "wakeTime": "07:21",
-                "sleepDuration": 8.1,
-                "timeInBed": 8.6,
-                "awakeCount": 8,
+                "consistencyScore": 0.95,
+                "durationScore": 1.0,
+                "consistencyColor": "#43a047",
+                "durationColor": "#ffffff",
+                "sleepTime": "00:00",
+                "wakeTime": "06:38",
+                "sleepDuration": 6.633333333333334,
+                "timeInBed": 6.800000000000001,
+                "awakeCount": 1,
                 "hasData": true
             }
         ],
@@ -307,57 +329,57 @@
         ]
     },
     "vo2": {
-        "latestScore": 0.0,
-        "averageScore": 3.0000000000000004,
+        "latestScore": -4.6,
+        "averageScore": -4.6,
         "daily": [
             {
                 "date": "Sep 29",
-                "vo2": 48.0
+                "vo2": 53.9
             },
             {
                 "date": "Sep 28",
-                "vo2": 47.5
+                "vo2": 53.8
             },
             {
                 "date": "Sep 27",
-                "vo2": 47.0
+                "vo2": 53.8
             },
             {
                 "date": "Sep 26",
-                "vo2": 46.5
+                "vo2": 53.8
             },
             {
                 "date": "Sep 25",
-                "vo2": 46.0
+                "vo2": 53.8
             },
             {
                 "date": "Sep 24",
-                "vo2": 45.5
+                "vo2": 53.7
             },
             {
                 "date": "Sep 23",
-                "vo2": 45.0
+                "vo2": 53.7
             }
         ],
         "zones": [
             {
-                "value": 35.0,
+                "value": 36.05,
                 "color": "#e53935"
             },
             {
-                "value": 36.93,
+                "value": 38.85,
                 "color": "#e53935"
             },
             {
-                "value": 42.18,
+                "value": 44.8,
                 "color": "#ffffff"
             },
             {
-                "value": 48.83,
+                "value": 51.28,
                 "color": "#43a047"
             },
             {
-                "value": 52.5,
+                "value": 54.95,
                 "color": "#43a047"
             }
         ],
@@ -385,63 +407,63 @@
         ]
     },
     "steps": {
-        "latestScore": 6.000000000000001,
-        "averageScore": 3.0000000000000004,
+        "latestScore": 0.0,
+        "averageScore": 0.0,
         "daily": [
             {
                 "label": "Sep 23",
-                "dailySteps": 8000,
-                "rollingAvgSteps": 7500,
+                "dailySteps": 13505,
+                "rollingAvgSteps": 13501,
                 "hazardRatio": 1.0,
                 "hrColor": "#ffffff",
                 "hasData": true
             },
             {
                 "label": "Sep 24",
-                "dailySteps": 8500,
-                "rollingAvgSteps": 7800,
-                "hazardRatio": 1.1,
-                "hrColor": "#e53935",
+                "dailySteps": 6792,
+                "rollingAvgSteps": 12422,
+                "hazardRatio": 1.0,
+                "hrColor": "#ffffff",
                 "hasData": true
             },
             {
                 "label": "Sep 25",
-                "dailySteps": 9000,
-                "rollingAvgSteps": 8100,
-                "hazardRatio": 1.2,
-                "hrColor": "#e53935",
+                "dailySteps": 25764,
+                "rollingAvgSteps": 15698,
+                "hazardRatio": 1.0,
+                "hrColor": "#ffffff",
                 "hasData": true
             },
             {
                 "label": "Sep 26",
-                "dailySteps": 9500,
-                "rollingAvgSteps": 8400,
-                "hazardRatio": 1.3,
-                "hrColor": "#e53935",
+                "dailySteps": 7577,
+                "rollingAvgSteps": 15990,
+                "hazardRatio": 1.0,
+                "hrColor": "#ffffff",
                 "hasData": true
             },
             {
                 "label": "Sep 27",
-                "dailySteps": 10000,
-                "rollingAvgSteps": 8700,
-                "hazardRatio": 1.4,
-                "hrColor": "#e53935",
+                "dailySteps": 17768,
+                "rollingAvgSteps": 13898,
+                "hazardRatio": 1.0,
+                "hrColor": "#ffffff",
                 "hasData": true
             },
             {
                 "label": "Sep 28",
-                "dailySteps": 10500,
-                "rollingAvgSteps": 9000,
-                "hazardRatio": 1.5,
-                "hrColor": "#e53935",
+                "dailySteps": 3774,
+                "rollingAvgSteps": 13572,
+                "hazardRatio": 1.0,
+                "hrColor": "#ffffff",
                 "hasData": true
             },
             {
                 "label": "Sep 29",
-                "dailySteps": 11000,
-                "rollingAvgSteps": 9300,
-                "hazardRatio": 1.6,
-                "hrColor": "#e53935",
+                "dailySteps": 13840,
+                "rollingAvgSteps": 12717,
+                "hazardRatio": 1.0,
+                "hrColor": "#ffffff",
                 "hasData": true
             }
         ],
@@ -469,63 +491,63 @@
         ]
     },
     "strength": {
-        "latestScore": 6.000000000000001,
-        "averageScore": 3.0000000000000004,
+        "latestScore": -0.27396107700892847,
+        "averageScore": -0.20397449754641417,
         "daily": [
             {
                 "label": "Sep 23",
-                "dailyDuration": 30.0,
-                "weeklySum": 200.0,
-                "hrScore": 1.0,
-                "hrColor": "#ffffff",
+                "dailyDuration": 35.68393147786458,
+                "weeklySum": 73.26343180338542,
+                "hrScore": 0.9917593463231646,
+                "hrColor": "#e0efe0",
                 "hasData": true
             },
             {
                 "label": "Sep 24",
-                "dailyDuration": 35.0,
-                "weeklySum": 220.0,
-                "hrScore": 1.1,
-                "hrColor": "#e53935",
+                "dailyDuration": 36.597835286458334,
+                "weeklySum": 109.86126708984375,
+                "hrScore": 0.9847883300781249,
+                "hrColor": "#c5e2c7",
                 "hasData": true
             },
             {
                 "label": "Sep 25",
-                "dailyDuration": 40.0,
-                "weeklySum": 240.0,
-                "hrScore": 1.2,
-                "hrColor": "#e53935",
+                "dailyDuration": 0.0,
+                "weeklySum": 109.86126708984375,
+                "hrScore": 0.9847883300781249,
+                "hrColor": "#c5e2c7",
                 "hasData": true
             },
             {
                 "label": "Sep 26",
-                "dailyDuration": 45.0,
-                "weeklySum": 260.0,
-                "hrScore": 1.3,
-                "hrColor": "#e53935",
+                "dailyDuration": 54.40231526692708,
+                "weeklySum": 164.26358235677083,
+                "hrScore": 0.974425984312996,
+                "hrColor": "#9ecea0",
                 "hasData": true
             },
             {
                 "label": "Sep 27",
-                "dailyDuration": 50.0,
-                "weeklySum": 280.0,
-                "hrScore": 1.4,
-                "hrColor": "#e53935",
+                "dailyDuration": 0.0,
+                "weeklySum": 164.26358235677083,
+                "hrScore": 0.974425984312996,
+                "hrColor": "#9ecea0",
                 "hasData": true
             },
             {
                 "label": "Sep 28",
-                "dailyDuration": 55.0,
-                "weeklySum": 300.0,
-                "hrScore": 1.5,
-                "hrColor": "#e53935",
+                "dailyDuration": 0.0,
+                "weeklySum": 164.26358235677083,
+                "hrScore": 0.974425984312996,
+                "hrColor": "#9ecea0",
                 "hasData": true
             },
             {
                 "label": "Sep 29",
-                "dailyDuration": 60.0,
-                "weeklySum": 320.0,
-                "hrScore": 1.6,
-                "hrColor": "#e53935",
+                "dailyDuration": 47.1454833984375,
+                "weeklySum": 173.8295654296875,
+                "hrScore": 0.9726038922991072,
+                "hrColor": "#97ca9a",
                 "hasData": true
             }
         ],
@@ -553,77 +575,154 @@
         ]
     },
     "bodyComp": {
-        "latestScore": 6.000000000000001,
-        "averageScore": 3.0000000000000004,
+        "latestScore": -2.2859717892990927,
+        "averageScore": -2.3283770421148517,
         "daily": [
             {
                 "label": "Sep 23",
-                "weight": 70.0,
-                "bodyFat": 15.0,
-                "ffmi": 18.0,
-                "fmi": 3.0,
-                "hrScore": 1.0,
-                "hrColor": "#ffffff",
+                "weight": 90.879,
+                "bodyFat": 18.4,
+                "ffmi": 21.206572678658237,
+                "fmi": 4.781874231462151,
+                "hrScore": 0.7698356830335441,
+                "hrColor": "#43a047",
                 "hasData": true
             },
             {
                 "label": "Sep 24",
-                "weight": 70.2,
-                "bodyFat": 15.1,
-                "ffmi": 18.05,
-                "fmi": 3.02,
-                "hrScore": 1.1,
-                "hrColor": "#e53935",
+                "weight": 91.66,
+                "bodyFat": 18.8,
+                "ffmi": 21.283971517629897,
+                "fmi": 4.9278160656581536,
+                "hrScore": 0.7679007120592526,
+                "hrColor": "#43a047",
                 "hasData": true
             },
             {
                 "label": "Sep 25",
-                "weight": 70.4,
-                "bodyFat": 15.2,
-                "ffmi": 18.1,
-                "fmi": 3.04,
-                "hrScore": 1.2,
-                "hrColor": "#e53935",
+                "weight": 91.66,
+                "bodyFat": 18.8,
+                "ffmi": 21.283971517629897,
+                "fmi": 4.9278160656581536,
+                "hrScore": 0.7679007120592526,
+                "hrColor": "#43a047",
                 "hasData": true
             },
             {
                 "label": "Sep 26",
-                "weight": 70.6,
-                "bodyFat": 15.3,
-                "ffmi": 18.15,
-                "fmi": 3.06,
-                "hrScore": 1.3,
-                "hrColor": "#e53935",
+                "weight": 92.269,
+                "bodyFat": 18.8,
+                "ffmi": 21.42538476936715,
+                "fmi": 4.960557064828848,
+                "hrScore": 0.7643653807658213,
+                "hrColor": "#43a047",
                 "hasData": true
             },
             {
                 "label": "Sep 27",
-                "weight": 70.8,
-                "bodyFat": 15.4,
-                "ffmi": 18.2,
-                "fmi": 3.08,
-                "hrScore": 1.4,
-                "hrColor": "#e53935",
+                "weight": 92.269,
+                "bodyFat": 18.8,
+                "ffmi": 21.42538476936715,
+                "fmi": 4.960557064828848,
+                "hrScore": 0.7643653807658213,
+                "hrColor": "#43a047",
                 "hasData": true
             },
             {
                 "label": "Sep 28",
-                "weight": 71.0,
-                "bodyFat": 15.5,
-                "ffmi": 18.25,
-                "fmi": 3.1,
-                "hrScore": 1.5,
-                "hrColor": "#e53935",
+                "weight": 92.269,
+                "bodyFat": 18.8,
+                "ffmi": 21.42538476936715,
+                "fmi": 4.960557064828848,
+                "hrScore": 0.7643653807658213,
+                "hrColor": "#43a047",
                 "hasData": true
             },
             {
                 "label": "Sep 29",
-                "weight": 71.2,
-                "bodyFat": 15.6,
-                "ffmi": 18.3,
-                "fmi": 3.12,
-                "hrScore": 1.6,
-                "hrColor": "#e53935",
+                "weight": 91.169,
+                "bodyFat": 18.9,
+                "ffmi": 21.14388715719637,
+                "fmi": 4.927490348594468,
+                "hrScore": 0.7714028210700907,
+                "hrColor": "#43a047",
+                "hasData": true
+            }
+        ],
+        "colorStops": [
+            {
+                "score": 2,
+                "color": "#d32f2f"
+            },
+            {
+                "score": 1,
+                "color": "#f57c00"
+            },
+            {
+                "score": 0,
+                "color": "#ffffff"
+            },
+            {
+                "score": -1,
+                "color": "#7cb342"
+            },
+            {
+                "score": -2,
+                "color": "#388e3c"
+            }
+        ]
+    },
+    "rhr": {
+        "latestScore": -1.8669999999999998,
+        "averageScore": -1.7418571428571428,
+        "daily": [
+            {
+                "label": "Sep 23",
+                "restingHeartRate": 47,
+                "hrScore": 0.8206,
+                "hrColor": "#43a047",
+                "hasData": true
+            },
+            {
+                "label": "Sep 24",
+                "restingHeartRate": 49,
+                "hrScore": 0.8352,
+                "hrColor": "#43a047",
+                "hasData": true
+            },
+            {
+                "label": "Sep 25",
+                "restingHeartRate": 52,
+                "hrScore": 0.8571,
+                "hrColor": "#43a047",
+                "hasData": true
+            },
+            {
+                "label": "Sep 26",
+                "restingHeartRate": 47,
+                "hrScore": 0.8206,
+                "hrColor": "#43a047",
+                "hasData": true
+            },
+            {
+                "label": "Sep 27",
+                "restingHeartRate": 47,
+                "hrScore": 0.8206,
+                "hrColor": "#43a047",
+                "hasData": true
+            },
+            {
+                "label": "Sep 28",
+                "restingHeartRate": 46,
+                "hrScore": 0.8133,
+                "hrColor": "#43a047",
+                "hasData": true
+            },
+            {
+                "label": "Sep 29",
+                "restingHeartRate": 46,
+                "hrScore": 0.8133,
+                "hrColor": "#43a047",
                 "hasData": true
             }
         ],
@@ -783,6 +882,14 @@
                 updateGradientBar('bodyComp', bodyCompData.colorStops);
                 setupPointers('bodyComp', bodyCompData.latestScore, bodyCompData.averageScore, bodyCompData.colorStops);
                 createBodyCompChart(bodyCompData);
+            }
+
+            // --- Setup Section for RESTING HEART RATE ---
+            if (chartData && chartData.rhr) {
+                const rhrData = chartData.rhr;
+                updateGradientBar('rhr', rhrData.colorStops);
+                setupPointers('rhr', rhrData.latestScore, rhrData.averageScore, rhrData.colorStops);
+                createRhrChart(rhrData);
             }
 
             // --- Chart Creation Functions ---
@@ -1477,6 +1584,123 @@
                                             return `FMI: ${value.toFixed(2)}`;
                                         }
                                         return `${datasetLabel}: ${value.toFixed(2)}`;
+                                    },
+                                    afterLabel: function(context) {
+                                        const dataIndex = context.dataIndex;
+                                        const day = validDays[dataIndex];
+                                        return `HR Score: ${day.hrScore.toFixed(3)}`;
+                                    }
+                                }
+                            },
+                            datalabels: {
+                                display: false
+                            }
+                        },
+                        interaction: {
+                            intersect: false,
+                            mode: 'index'
+                        }
+                    }
+                });
+            }
+
+            function createRhrChart(rhrData) {
+                // Handle missing days - filter out days without data
+                const validDays = rhrData.daily.filter(d => d.hasData);
+                
+                if (validDays.length === 0) {
+                    console.log('No resting heart rate data available');
+                    return;
+                }
+
+                const ctx = document.getElementById('rhr-chart').getContext('2d');
+                
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: validDays.map(d => d.label),
+                        datasets: [
+                            {
+                                label: 'Resting Heart Rate (BPM)',
+                                data: validDays.map(d => d.restingHeartRate),
+                                borderColor: '#E91E63',
+                                backgroundColor: hexToRgba('#E91E63', 0.1),
+                                tension: 0.3,
+                                pointBackgroundColor: validDays.map(d => d.hrColor),
+                                pointBorderColor: validDays.map(d => d.hrColor),
+                                pointRadius: 5,
+                                pointHoverRadius: 7,
+                                borderWidth: 3,
+                                fill: true
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        animation: {
+                            duration: 0
+                        },
+                        transitions: {
+                            active: {
+                                animation: {
+                                    duration: 0
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                type: 'linear',
+                                display: true,
+                                title: {
+                                    display: true,
+                                    text: 'Resting Heart Rate (BPM)',
+                                    color: '#E91E63',
+                                    font: {
+                                        size: 12
+                                    }
+                                },
+                                ticks: {
+                                    color: '#E91E63',
+                                    font: {
+                                        size: 10
+                                    }
+                                },
+                                grid: {
+                                    color: 'rgba(255,255,255,0.1)'
+                                }
+                            },
+                            x: {
+                                ticks: { 
+                                    color: '#aaa',
+                                    maxRotation: 45,
+                                    font: {
+                                        size: 10
+                                    }
+                                },
+                                grid: {
+                                    color: 'rgba(255,255,255,0.1)'
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                display: true,
+                                position: 'top',
+                                labels: {
+                                    color: '#aaa',
+                                    usePointStyle: true,
+                                    font: {
+                                        size: 11
+                                    },
+                                    padding: 10
+                                }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        const value = context.raw;
+                                        return `RHR: ${value} BPM`;
                                     },
                                     afterLabel: function(context) {
                                         const dataIndex = context.dataIndex;

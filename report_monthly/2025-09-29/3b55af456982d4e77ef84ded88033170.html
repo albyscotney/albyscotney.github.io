@@ -182,79 +182,75 @@
                 </div>
             </div>
         </div>
+
+        <div class="metric-wrapper">
+            <div id="rhr-summary" class="summary-item">
+                <h2>Resting Heart Rate Score ❤️</h2>
+                <div class="score-scale-container">
+                    <div class="scale-wrapper">
+                        <div class="score-scale-bar"></div>
+                        <div id="rhr-last-pointer" class="scale-pointer pointer-last"><div class="pointer-label">Last</div></div>
+                        <div id="rhr-avg-pointer" class="scale-pointer pointer-avg"><div class="pointer-label">Avg</div></div>
+                    </div>
+                </div>
+            </div>
+            <div id="rhr-details" class="details-container">
+                <div class="chart-wrapper">
+                    <h3>Resting Heart Rate Trends</h3>
+                    <p class="chart-subtitle">Daily resting heart rate in BPM over time. Color indicates health risk based on hazard ratios.</p>
+                    <div style="height: 300px; position: relative;">
+                        <canvas id="rhr-chart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
         // --- DATA PLACEHOLDER (To be replaced by Python) ---
         const chartData = {
     "sleep": {
-        "latestScore": 6.000000000000001,
-        "averageScore": 3.0000000000000004,
+        "latestScore": 3.833081571229202,
+        "averageScore": 2.3468328577057496,
         "daily": [
             {
-                "label": "Apr 2025",
-                "consistencyScore": null,
-                "durationScore": null,
-                "consistencyColor": "#666666",
-                "durationColor": "#666666",
-                "sleepTime": null,
-                "wakeTime": null,
-                "sleepDuration": null,
-                "timeInBed": null,
-                "awakeCount": 0,
-                "hasData": false
-            },
-            {
-                "label": "May 2025",
-                "consistencyScore": null,
-                "durationScore": null,
-                "consistencyColor": "#666666",
-                "durationColor": "#666666",
-                "sleepTime": null,
-                "wakeTime": null,
-                "sleepDuration": null,
-                "timeInBed": null,
-                "awakeCount": 0,
-                "hasData": false
-            },
-            {
-                "label": "Jun 2025",
-                "consistencyScore": null,
-                "durationScore": null,
-                "consistencyColor": "#666666",
-                "durationColor": "#666666",
-                "sleepTime": null,
-                "wakeTime": null,
-                "sleepDuration": null,
-                "timeInBed": null,
-                "awakeCount": 0,
-                "hasData": false
-            },
-            {
-                "label": "Jul 2025",
-                "consistencyScore": null,
-                "durationScore": null,
-                "consistencyColor": "#666666",
-                "durationColor": "#666666",
-                "sleepTime": null,
-                "wakeTime": null,
-                "sleepDuration": null,
-                "timeInBed": null,
-                "awakeCount": 0,
-                "hasData": false
+                "label": "Sep 2025",
+                "consistencyScore": 1.3987877759158107,
+                "durationScore": 1.2866727069867652,
+                "consistencyColor": "#e53935",
+                "durationColor": "#e53935",
+                "sleepTime": "22:35",
+                "wakeTime": "07:20",
+                "sleepDuration": 7.769298245614036,
+                "timeInBed": 8.198245614035088,
+                "awakeCount": 2,
+                "hasData": true
             },
             {
                 "label": "Aug 2025",
-                "consistencyScore": null,
-                "durationScore": null,
-                "consistencyColor": "#666666",
-                "durationColor": "#666666",
-                "sleepTime": null,
-                "wakeTime": null,
-                "sleepDuration": null,
-                "timeInBed": null,
-                "awakeCount": 0,
-                "hasData": false
+                "consistencyScore": 1.2105155603359676,
+                "durationScore": 1.1900123310324993,
+                "consistencyColor": "#e53935",
+                "durationColor": "#e53935",
+                "sleepTime": "22:33",
+                "wakeTime": "07:18",
+                "sleepDuration": 7.7701275045537335,
+                "timeInBed": 8.177231329690347,
+                "awakeCount": 2,
+                "hasData": true
+            },
+            {
+                "label": "Jul 2025",
+                "consistencyScore": 1.1400000000000001,
+                "durationScore": 1.2586666666666666,
+                "consistencyColor": "#e53935",
+                "durationColor": "#e53935",
+                "sleepTime": "22:30",
+                "wakeTime": "07:15",
+                "sleepDuration": 7.6588611111111105,
+                "timeInBed": 8.156083333333333,
+                "awakeCount": 3,
+                "hasData": true
             }
         ],
         "colorStops": [
@@ -281,57 +277,41 @@
         ]
     },
     "vo2": {
-        "latestScore": 0.0,
-        "averageScore": 3.0000000000000004,
+        "latestScore": 1.35,
+        "averageScore": -2.441954022988506,
         "daily": [
             {
                 "date": "Sep 2025",
-                "vo2": 48.0
+                "vo2": 53.92758620689656
             },
             {
-                "date": "Sep 2025",
-                "vo2": 47.5
+                "date": "Aug 2025",
+                "vo2": 53.47931034482759
             },
             {
-                "date": "Sep 2025",
-                "vo2": 47.0
-            },
-            {
-                "date": "Sep 2025",
-                "vo2": 46.5
-            },
-            {
-                "date": "Sep 2025",
-                "vo2": 46.0
-            },
-            {
-                "date": "Sep 2025",
-                "vo2": 45.5
-            },
-            {
-                "date": "Sep 2025",
-                "vo2": 45.0
+                "date": "Jul 2025",
+                "vo2": 46.35
             }
         ],
         "zones": [
             {
-                "value": 35.0,
+                "value": 36.05,
                 "color": "#e53935"
             },
             {
-                "value": 36.93,
+                "value": 38.85,
                 "color": "#e53935"
             },
             {
-                "value": 42.18,
+                "value": 44.8,
                 "color": "#ffffff"
             },
             {
-                "value": 48.83,
+                "value": 51.28,
                 "color": "#43a047"
             },
             {
-                "value": 52.5,
+                "value": 54.95,
                 "color": "#43a047"
             }
         ],
@@ -359,48 +339,32 @@
         ]
     },
     "steps": {
-        "latestScore": 6.000000000000001,
-        "averageScore": 3.0000000000000004,
+        "latestScore": 0.0,
+        "averageScore": 1.9333333333333336,
         "daily": [
             {
-                "label": "Apr 2025",
-                "dailySteps": 0,
-                "rollingAvgSteps": 0,
+                "label": "Sep 2025",
+                "dailySteps": 13513,
+                "rollingAvgSteps": 13414,
                 "hazardRatio": 1.0,
-                "hrColor": "#666666",
-                "hasData": false
-            },
-            {
-                "label": "May 2025",
-                "dailySteps": 0,
-                "rollingAvgSteps": 0,
-                "hazardRatio": 1.0,
-                "hrColor": "#666666",
-                "hasData": false
-            },
-            {
-                "label": "Jun 2025",
-                "dailySteps": 0,
-                "rollingAvgSteps": 0,
-                "hazardRatio": 1.0,
-                "hrColor": "#666666",
-                "hasData": false
-            },
-            {
-                "label": "Jul 2025",
-                "dailySteps": 0,
-                "rollingAvgSteps": 0,
-                "hazardRatio": 1.0,
-                "hrColor": "#666666",
-                "hasData": false
+                "hrColor": "#ffffff",
+                "hasData": true
             },
             {
                 "label": "Aug 2025",
-                "dailySteps": 0,
-                "rollingAvgSteps": 0,
-                "hazardRatio": 1.0,
-                "hrColor": "#666666",
-                "hasData": false
+                "dailySteps": 9768,
+                "rollingAvgSteps": 8369,
+                "hazardRatio": 1.44,
+                "hrColor": "#e53935",
+                "hasData": true
+            },
+            {
+                "label": "Jul 2025",
+                "dailySteps": 8700,
+                "rollingAvgSteps": 7920,
+                "hazardRatio": 1.1400000000000001,
+                "hrColor": "#e53935",
+                "hasData": true
             }
         ],
         "colorStops": [
@@ -427,48 +391,32 @@
         ]
     },
     "strength": {
-        "latestScore": 6.000000000000001,
-        "averageScore": 3.0000000000000004,
+        "latestScore": -0.10498505731091012,
+        "averageScore": 0.2811890558438268,
         "daily": [
             {
-                "label": "Apr 2025",
-                "dailyDuration": 0,
-                "weeklySum": 0,
-                "hrScore": 1.0,
-                "hrColor": "#666666",
-                "hasData": false
-            },
-            {
-                "label": "May 2025",
-                "dailyDuration": 0,
-                "weeklySum": 0,
-                "hrScore": 1.0,
-                "hrColor": "#666666",
-                "hasData": false
-            },
-            {
-                "label": "Jun 2025",
-                "dailyDuration": 0,
-                "weeklySum": 0,
-                "hrScore": 1.0,
-                "hrColor": "#666666",
-                "hasData": false
-            },
-            {
-                "label": "Jul 2025",
-                "dailyDuration": 0,
-                "weeklySum": 0,
-                "hrScore": 1.0,
-                "hrColor": "#666666",
-                "hasData": false
+                "label": "Sep 2025",
+                "dailyDuration": 14.511143686579562,
+                "weeklySum": 93.11082462003861,
+                "hrScore": 0.989501494268909,
+                "hrColor": "#d7ebd8",
+                "hasData": true
             },
             {
                 "label": "Aug 2025",
-                "dailyDuration": 0,
-                "weeklySum": 0,
-                "hrScore": 1.0,
-                "hrColor": "#666666",
-                "hasData": false
+                "dailyDuration": 24.237059759324595,
+                "weeklySum": 162.0100819577453,
+                "hrScore": 0.9748552224842391,
+                "hrColor": "#a0cfa2",
+                "hasData": true
+            },
+            {
+                "label": "Jul 2025",
+                "dailyDuration": 36.0,
+                "weeklySum": 224.0,
+                "hrScore": 1.12,
+                "hrColor": "#e53935",
+                "hasData": true
             }
         ],
         "colorStops": [
@@ -495,58 +443,87 @@
         ]
     },
     "bodyComp": {
-        "latestScore": 6.000000000000001,
-        "averageScore": 3.0000000000000004,
+        "latestScore": 2.7950327131850616,
+        "averageScore": 2.8650109043950223,
         "daily": [
             {
-                "label": "Apr 2025",
-                "weight": 0,
-                "bodyFat": 0,
-                "ffmi": 0,
-                "fmi": 0,
-                "hrScore": 1.0,
-                "hrColor": "#666666",
-                "hasData": false
-            },
-            {
-                "label": "May 2025",
-                "weight": 0,
-                "bodyFat": 0,
-                "ffmi": 0,
-                "fmi": 0,
-                "hrScore": 1.0,
-                "hrColor": "#666666",
-                "hasData": false
-            },
-            {
-                "label": "Jun 2025",
-                "weight": 0,
-                "bodyFat": 0,
-                "ffmi": 0,
-                "fmi": 0,
-                "hrScore": 1.0,
-                "hrColor": "#666666",
-                "hasData": false
-            },
-            {
-                "label": "Jul 2025",
-                "weight": 0,
-                "bodyFat": 0,
-                "ffmi": 0,
-                "fmi": 0,
-                "hrScore": 1.0,
-                "hrColor": "#666666",
-                "hasData": false
+                "label": "Sep 2025",
+                "weight": 84.17557894736842,
+                "bodyFat": 18.49824561403509,
+                "ffmi": 20.405191084032822,
+                "fmi": 4.237931621641825,
+                "hrScore": 1.2795032713185062,
+                "hrColor": "#e53935",
+                "hasData": true
             },
             {
                 "label": "Aug 2025",
-                "weight": 0,
-                "bodyFat": 0,
-                "ffmi": 0,
-                "fmi": 0,
-                "hrScore": 1.0,
-                "hrColor": "#666666",
-                "hasData": false
+                "weight": 74.4,
+                "bodyFat": 17.2,
+                "ffmi": 18.88,
+                "fmi": 3.44,
+                "hrScore": 1.4400000000000002,
+                "hrColor": "#e53935",
+                "hasData": true
+            },
+            {
+                "label": "Jul 2025",
+                "weight": 71.4,
+                "bodyFat": 15.7,
+                "ffmi": 18.279999999999998,
+                "fmi": 3.14,
+                "hrScore": 1.1400000000000001,
+                "hrColor": "#e53935",
+                "hasData": true
+            }
+        ],
+        "colorStops": [
+            {
+                "score": 2,
+                "color": "#d32f2f"
+            },
+            {
+                "score": 1,
+                "color": "#f57c00"
+            },
+            {
+                "score": 0,
+                "color": "#ffffff"
+            },
+            {
+                "score": -1,
+                "color": "#7cb342"
+            },
+            {
+                "score": -2,
+                "color": "#388e3c"
+            }
+        ]
+    },
+    "rhr": {
+        "latestScore": -1.7084137931034482,
+        "averageScore": -1.6877615869484597,
+        "daily": [
+            {
+                "label": "Sep 2025",
+                "rhr": 48,
+                "hrScore": 0.8291586206896552,
+                "hrColor": "#43a047",
+                "hasData": true
+            },
+            {
+                "label": "Aug 2025",
+                "rhr": 47,
+                "hrScore": 0.8220129032258066,
+                "hrColor": "#43a047",
+                "hasData": true
+            },
+            {
+                "label": "Jul 2025",
+                "rhr": 50,
+                "hrScore": 0.8425,
+                "hrColor": "#43a047",
+                "hasData": true
             }
         ],
         "colorStops": [
@@ -705,6 +682,14 @@
                 updateGradientBar('bodyComp', bodyCompData.colorStops);
                 setupPointers('bodyComp', bodyCompData.latestScore, bodyCompData.averageScore, bodyCompData.colorStops);
                 createBodyCompChart(bodyCompData);
+            }
+
+            // --- Setup Section for RESTING HEART RATE ---
+            if (chartData && chartData.rhr) {
+                const rhrData = chartData.rhr;
+                updateGradientBar('rhr', rhrData.colorStops);
+                setupPointers('rhr', rhrData.latestScore, rhrData.averageScore, rhrData.colorStops);
+                createRhrChart(rhrData);
             }
 
             // --- Chart Creation Functions ---
@@ -1399,6 +1384,123 @@
                                             return `FMI: ${value.toFixed(2)}`;
                                         }
                                         return `${datasetLabel}: ${value.toFixed(2)}`;
+                                    },
+                                    afterLabel: function(context) {
+                                        const dataIndex = context.dataIndex;
+                                        const day = validDays[dataIndex];
+                                        return `HR Score: ${day.hrScore.toFixed(3)}`;
+                                    }
+                                }
+                            },
+                            datalabels: {
+                                display: false
+                            }
+                        },
+                        interaction: {
+                            intersect: false,
+                            mode: 'index'
+                        }
+                    }
+                });
+            }
+
+            function createRhrChart(rhrData) {
+                // Handle missing days - filter out days without data
+                const validDays = rhrData.daily.filter(d => d.hasData);
+                
+                if (validDays.length === 0) {
+                    console.log('No resting heart rate data available');
+                    return;
+                }
+
+                const ctx = document.getElementById('rhr-chart').getContext('2d');
+                
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: validDays.map(d => d.label),
+                        datasets: [
+                            {
+                                label: 'Resting Heart Rate (BPM)',
+                                data: validDays.map(d => d.restingHeartRate),
+                                borderColor: '#E91E63',
+                                backgroundColor: hexToRgba('#E91E63', 0.1),
+                                tension: 0.3,
+                                pointBackgroundColor: validDays.map(d => d.hrColor),
+                                pointBorderColor: validDays.map(d => d.hrColor),
+                                pointRadius: 5,
+                                pointHoverRadius: 7,
+                                borderWidth: 3,
+                                fill: true
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        animation: {
+                            duration: 0
+                        },
+                        transitions: {
+                            active: {
+                                animation: {
+                                    duration: 0
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                type: 'linear',
+                                display: true,
+                                title: {
+                                    display: true,
+                                    text: 'Resting Heart Rate (BPM)',
+                                    color: '#E91E63',
+                                    font: {
+                                        size: 12
+                                    }
+                                },
+                                ticks: {
+                                    color: '#E91E63',
+                                    font: {
+                                        size: 10
+                                    }
+                                },
+                                grid: {
+                                    color: 'rgba(255,255,255,0.1)'
+                                }
+                            },
+                            x: {
+                                ticks: { 
+                                    color: '#aaa',
+                                    maxRotation: 45,
+                                    font: {
+                                        size: 10
+                                    }
+                                },
+                                grid: {
+                                    color: 'rgba(255,255,255,0.1)'
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                display: true,
+                                position: 'top',
+                                labels: {
+                                    color: '#aaa',
+                                    usePointStyle: true,
+                                    font: {
+                                        size: 11
+                                    },
+                                    padding: 10
+                                }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        const value = context.raw;
+                                        return `RHR: ${value} BPM`;
                                     },
                                     afterLabel: function(context) {
                                         const dataIndex = context.dataIndex;
