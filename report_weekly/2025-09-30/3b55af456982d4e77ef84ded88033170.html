@@ -846,11 +846,11 @@
                     id: 'sleepBarPlugin',
                     beforeDatasetsDraw(chart) {
                         const { ctx, scales: { x, y } } = chart;
-                        
+
                         sleepWindowsData.forEach((sleepData, index) => {
                             let startTime = sleepData.sleepTime;
                             let endTime = sleepData.sleepTime + sleepData.timeInBed;
-                            
+
                             // Adjust times for the 18-42 hour range (6pm to 6pm next day)
                             // If sleep time is before 18:00 (6pm), it belongs to the next day
                             if (startTime < 18) {
@@ -859,7 +859,7 @@
                             if (endTime < 18) {
                                 endTime += 24; // Move to next day
                             }
-                            
+
                             // Set color based on consistency score
                             const score = sleepData.consistencyScore || 1.0;
                             let backgroundColor, borderColor;
@@ -879,36 +879,36 @@
                                 backgroundColor = `rgb(${r}, ${g}, ${b})`;
                                 borderColor = `rgb(${Math.round(46 + (198 - 46) * ratio)}, ${Math.round(125 + (40 - 125) * ratio)}, ${Math.round(50 + (40 - 50) * ratio)})`;
                             }
-                            
+
                             // Get pixel positions
                             const startPixel = x.getPixelForValue(startTime);
                             const endPixel = x.getPixelForValue(endTime);
                             const barHeight = 12; // Fixed bar height
                             const barY = y.getPixelForValue(index) - barHeight / 2;
-                            
+
                             // Draw single continuous bar (no midnight crossing needed with 18-42 range)
                             ctx.fillStyle = backgroundColor;
                             ctx.fillRect(startPixel, barY, endPixel - startPixel, barHeight);
-                            
+
                             // Draw border
                             ctx.strokeStyle = borderColor;
                             ctx.lineWidth = 1.5;
                             ctx.strokeRect(startPixel, barY, endPixel - startPixel, barHeight);
                         });
                     },
-                    
+
                     // Add tooltip functionality
                     afterEvent(chart, event) {
                         const { x, y } = event;
                         const { scales } = chart;
-                        
+
                         // Check if mouse is over any sleep bar
                         let hoveredBar = null;
-                        
+
                         sleepWindowsData.forEach((sleepData, index) => {
                             let startTime = sleepData.sleepTime;
                             let endTime = sleepData.sleepTime + sleepData.timeInBed;
-                            
+
                             // Adjust times for the 18-42 hour range
                             if (startTime < 18) {
                                 startTime += 24;
@@ -916,21 +916,21 @@
                             if (endTime < 18) {
                                 endTime += 24;
                             }
-                            
+
                             const startPixel = scales.x.getPixelForValue(startTime);
                             const endPixel = scales.x.getPixelForValue(endTime);
                             const barHeight = 12;
                             const barY = scales.y.getPixelForValue(index) - barHeight / 2;
-                            
+
                             // Check if mouse is within the bar bounds
                             if (x >= startPixel && x <= endPixel && y >= barY && y <= barY + barHeight) {
                                 hoveredBar = { sleepData, index };
                             }
                         });
-                        
+
                         // Update cursor style
                         chart.canvas.style.cursor = hoveredBar ? 'pointer' : 'default';
-                        
+
                         // Store hovered bar for tooltip
                         chart.hoveredSleepBar = hoveredBar;
                     }
@@ -943,18 +943,18 @@
                         if (chart.hoveredSleepBar) {
                             const { sleepData, index } = chart.hoveredSleepBar;
                             const { ctx, scales } = chart;
-                            
+
                             // Get mouse position
                             const mouseX = chart.canvas.getBoundingClientRect().left + chart.canvas.width / 2;
                             const mouseY = chart.canvas.getBoundingClientRect().top + chart.canvas.height / 2;
-                            
+
                             // Create tooltip content
                             const sleepTime = decimalToTime(sleepData.sleepTime);
                             const wakeTime = decimalToTime(sleepData.wakeTime);
                             const timeInBed = sleepData.timeInBed.toFixed(1);
                             const consistencyScore = sleepData.consistencyScore ? sleepData.consistencyScore.toFixed(2) : 'N/A';
                             const awakeCount = sleepData.awakeCount || 0;
-                            
+
                             const tooltipText = [
                                 `Sleep Time: ${sleepTime}`,
                                 `Wake Time: ${wakeTime}`,
@@ -962,31 +962,31 @@
                                 `Sleep Consistency: ${consistencyScore}`,
                                 `Awake Count: ${awakeCount}`
                             ];
-                            
+
                             // Draw tooltip background
                             const padding = 8;
                             const lineHeight = 16;
                             const maxWidth = Math.max(...tooltipText.map(text => ctx.measureText(text).width));
                             const tooltipWidth = maxWidth + padding * 2;
                             const tooltipHeight = tooltipText.length * lineHeight + padding * 2;
-                            
+
                             const tooltipX = mouseX - tooltipWidth / 2;
                             const tooltipY = mouseY - tooltipHeight - 10;
-                            
+
                             // Draw background
                             ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
                             ctx.fillRect(tooltipX, tooltipY, tooltipWidth, tooltipHeight);
-                            
+
                             // Draw border
                             ctx.strokeStyle = '#666';
                             ctx.lineWidth = 1;
                             ctx.strokeRect(tooltipX, tooltipY, tooltipWidth, tooltipHeight);
-                            
+
                             // Draw text
                             ctx.fillStyle = '#fff';
                             ctx.font = '12px Arial';
                             ctx.textAlign = 'left';
-                            
+
                             tooltipText.forEach((text, i) => {
                                 ctx.fillText(text, tooltipX + padding, tooltipY + padding + (i + 1) * lineHeight);
                             });
@@ -1352,14 +1352,14 @@
             function createBodyCompChart(bodyCompData) {
                 // Handle missing days - filter out days without data
                 const validDays = bodyCompData.daily.filter(d => d.hasData);
-                
+
                 if (validDays.length === 0) {
                     console.log('No body composition data available');
                     return;
                 }
 
                 const ctx = document.getElementById('bodyComp-chart').getContext('2d');
-                
+
                 new Chart(ctx, {
                     type: 'bar',
                     data: {
@@ -1465,7 +1465,7 @@
                                 }
                             },
                             x: {
-                                ticks: { 
+                                ticks: {
                                     color: '#aaa',
                                     maxRotation: 45,
                                     font: {
@@ -1495,7 +1495,7 @@
                                     label: function(context) {
                                         const datasetLabel = context.dataset.label;
                                         const value = context.raw;
-                                        
+
                                         if (datasetLabel === 'Weight (kg)') {
                                             return `Weight: ${value.toFixed(1)} kg`;
                                         } else if (datasetLabel === 'FFMI') {
@@ -1527,14 +1527,14 @@
             function createRhrChart(rhrData) {
                 // Handle missing days - filter out days without data
                 const validDays = rhrData.daily.filter(d => d.hasData);
-                
+
                 if (validDays.length === 0) {
                     console.log('No resting heart rate data available');
                     return;
                 }
 
                 const ctx = document.getElementById('rhr-chart').getContext('2d');
-                
+
                 new Chart(ctx, {
                     type: 'line',
                     data: {
@@ -1591,7 +1591,7 @@
                                 }
                             },
                             x: {
-                                ticks: { 
+                                ticks: {
                                     color: '#aaa',
                                     maxRotation: 45,
                                     font: {
