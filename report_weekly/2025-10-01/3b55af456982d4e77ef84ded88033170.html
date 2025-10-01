@@ -204,6 +204,35 @@
                 </div>
             </div>
         </div>
+
+        <div class="metric-wrapper">
+            <div id="heart-rate-summary" class="summary-item">
+                <h2>Heart Rate Activity Score 💓</h2>
+                <div class="score-scale-container">
+                    <div class="scale-wrapper">
+                        <div class="score-scale-bar"></div>
+                        <div id="heart-rate-last-pointer" class="scale-pointer pointer-last"><div class="pointer-label">Last</div></div>
+                        <div id="heart-rate-avg-pointer" class="scale-pointer pointer-avg"><div class="pointer-label">Avg</div></div>
+                    </div>
+                </div>
+            </div>
+            <div id="heart-rate-details" class="details-container">
+                <div class="chart-wrapper">
+                    <h3>Activity Time Distribution</h3>
+                    <p class="chart-subtitle">Time spent in moderate (MPA) and vigorous (VPA) physical activity. Shows adjusted VPA time and 7-day rolling average.</p>
+                    <div style="height: 300px; position: relative;">
+                        <canvas id="heart-rate-activity-chart"></canvas>
+                    </div>
+                </div>
+                <div class="chart-wrapper">
+                    <h3>Hazard Ratio Trend</h3>
+                    <p class="chart-subtitle">Health risk score based on physical activity levels. Lower is better.</p>
+                    <div style="height: 300px; position: relative;">
+                        <canvas id="heart-rate-hr-chart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -744,6 +773,138 @@
                 "color": "#388e3c"
             }
         ]
+    },
+    "heartRate": {
+        "latestScore": 0.025023342670401627,
+        "averageScore": 0.09402595689552262,
+        "daily": [
+            {
+                "label": "Week of Sep 29",
+                "mpaTime": 106.0,
+                "vpaTime": 14.0,
+                "adjVpaTime": 67.0,
+                "rolling7Day": 113.33333333333333,
+                "hazardRatio": 0.9974976657329598,
+                "restingHR": 50.333333333333336,
+                "maxHR": 195.0,
+                "hrReserve": 144.66666666666666,
+                "zoneTimes": {},
+                "hasData": true
+            },
+            {
+                "label": "Week of Sep 22",
+                "mpaTime": 244.0,
+                "vpaTime": 30.0,
+                "adjVpaTime": 152.0,
+                "rolling7Day": 148.85714285714286,
+                "hazardRatio": 0.9861654135338346,
+                "restingHR": 47.42857142857143,
+                "maxHR": 195.0,
+                "hrReserve": 147.57142857142858,
+                "zoneTimes": {},
+                "hasData": true
+            },
+            {
+                "label": "Week of Sep 15",
+                "mpaTime": 80.0,
+                "vpaTime": 34.0,
+                "adjVpaTime": 74.0,
+                "rolling7Day": 64.42857142857143,
+                "hazardRatio": 1.0402568130055763,
+                "restingHR": 49.0,
+                "maxHR": 195.0,
+                "hrReserve": 146.0,
+                "zoneTimes": {},
+                "hasData": true
+            },
+            {
+                "label": "Week of Sep 08",
+                "mpaTime": 52.0,
+                "vpaTime": 36.0,
+                "adjVpaTime": 62.0,
+                "rolling7Day": 139.28571428571428,
+                "hazardRatio": 0.9943848272215919,
+                "restingHR": 47.42857142857143,
+                "maxHR": 195.0,
+                "hrReserve": 147.57142857142858,
+                "zoneTimes": {},
+                "hasData": true
+            },
+            {
+                "label": "Week of Sep 01",
+                "mpaTime": 430.0,
+                "vpaTime": 40.0,
+                "adjVpaTime": 255.0,
+                "rolling7Day": 237.85714285714286,
+                "hazardRatio": 0.9654731562562581,
+                "restingHR": 48.285714285714285,
+                "maxHR": 195.0,
+                "hrReserve": 146.71428571428572,
+                "zoneTimes": {},
+                "hasData": true
+            },
+            {
+                "label": "Week of Aug 25",
+                "mpaTime": 276.0,
+                "vpaTime": 56.0,
+                "adjVpaTime": 194.0,
+                "rolling7Day": 162.42857142857142,
+                "hazardRatio": 0.9824597207303974,
+                "restingHR": 47.142857142857146,
+                "maxHR": 195.0,
+                "hrReserve": 147.85714285714286,
+                "zoneTimes": {},
+                "hasData": true
+            },
+            {
+                "label": "Week of Aug 18",
+                "mpaTime": 222.0,
+                "vpaTime": 28.0,
+                "adjVpaTime": 139.0,
+                "rolling7Day": 134.0,
+                "hazardRatio": 0.9920002846195045,
+                "restingHR": 47.0,
+                "maxHR": 195.0,
+                "hrReserve": 148.0,
+                "zoneTimes": {},
+                "hasData": true
+            },
+            {
+                "label": "Week of Aug 11",
+                "mpaTime": 80.0,
+                "vpaTime": 0.0,
+                "adjVpaTime": 40.0,
+                "rolling7Day": 233.0,
+                "hazardRatio": 0.9665413533834586,
+                "restingHR": 46.0,
+                "maxHR": 195.0,
+                "hrReserve": 149.0,
+                "zoneTimes": {},
+                "hasData": true
+            }
+        ],
+        "colorStops": [
+            {
+                "score": 2,
+                "color": "#d32f2f"
+            },
+            {
+                "score": 1,
+                "color": "#f57c00"
+            },
+            {
+                "score": 0,
+                "color": "#ffffff"
+            },
+            {
+                "score": -1,
+                "color": "#7cb342"
+            },
+            {
+                "score": -2,
+                "color": "#388e3c"
+            }
+        ]
     }
 };
 
@@ -886,6 +1047,14 @@
                 updateGradientBar('rhr', rhrData.colorStops);
                 setupPointers('rhr', rhrData.latestScore, rhrData.averageScore, rhrData.colorStops);
                 createRhrChart(rhrData);
+            }
+
+            // --- Setup Section for HEART RATE ACTIVITY ---
+            if (chartData && chartData.heartRate) {
+                const heartRateData = chartData.heartRate;
+                updateGradientBar('heart-rate', heartRateData.colorStops);
+                setupPointers('heart-rate', heartRateData.latestScore, heartRateData.averageScore, heartRateData.colorStops);
+                createHeartRateCharts(heartRateData);
             }
 
             // --- Chart Creation Functions ---
@@ -1702,6 +1871,256 @@
                                         const dataIndex = context.dataIndex;
                                         const day = validDays[dataIndex];
                                         return `HR Score: ${day.hrScore.toFixed(3)}`;
+                                    }
+                                }
+                            },
+                            datalabels: {
+                                display: false
+                            }
+                        },
+                        interaction: {
+                            intersect: false,
+                            mode: 'index'
+                        }
+                    }
+                });
+            }
+
+            function createHeartRateCharts(heartRateData) {
+                // Handle missing days - filter out days without data
+                const validDays = heartRateData.daily.filter(d => d.hasData);
+
+                if (validDays.length === 0) {
+                    console.log('No heart rate activity data available');
+                    return;
+                }
+
+                // Create activity time distribution chart (stacked bar with rolling average line)
+                const ctx1 = document.getElementById('heart-rate-activity-chart').getContext('2d');
+
+                new Chart(ctx1, {
+                    type: 'bar',
+                    data: {
+                        labels: validDays.map(d => d.label),
+                        datasets: [
+                            {
+                                label: 'MPA Time (min)',
+                                data: validDays.map(d => d.mpaTime),
+                                backgroundColor: hexToRgba('#FFA726', 0.8),
+                                borderColor: '#FFA726',
+                                borderWidth: 1,
+                                stack: 'activity'
+                            },
+                            {
+                                label: 'VPA Time (min)',
+                                data: validDays.map(d => d.vpaTime),
+                                backgroundColor: hexToRgba('#EF5350', 0.8),
+                                borderColor: '#EF5350',
+                                borderWidth: 1,
+                                stack: 'activity'
+                            },
+                            {
+                                label: '7-Day Rolling Avg (min)',
+                                data: validDays.map(d => d.rolling7Day),
+                                type: 'line',
+                                borderColor: '#42A5F5',
+                                backgroundColor: hexToRgba('#42A5F5', 0.2),
+                                tension: 0.3,
+                                pointRadius: 4,
+                                pointHoverRadius: 6,
+                                borderWidth: 3,
+                                fill: false,
+                                yAxisID: 'y'
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        animation: {
+                            duration: 0
+                        },
+                        transitions: {
+                            active: {
+                                animation: {
+                                    duration: 0
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                type: 'linear',
+                                display: true,
+                                position: 'left',
+                                title: {
+                                    display: true,
+                                    text: 'Activity Time (minutes)',
+                                    color: '#FFA726',
+                                    font: {
+                                        size: 12
+                                    }
+                                },
+                                ticks: {
+                                    color: '#FFA726',
+                                    font: {
+                                        size: 10
+                                    }
+                                },
+                                grid: {
+                                    color: 'rgba(255,255,255,0.1)'
+                                },
+                                stacked: true
+                            },
+                            x: {
+                                ticks: {
+                                    color: '#aaa',
+                                    maxRotation: 45,
+                                    font: {
+                                        size: 10
+                                    }
+                                },
+                                grid: {
+                                    color: 'rgba(255,255,255,0.1)'
+                                },
+                                stacked: true
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                display: true,
+                                position: 'top',
+                                labels: {
+                                    color: '#aaa',
+                                    usePointStyle: true,
+                                    font: {
+                                        size: 11
+                                    },
+                                    padding: 10
+                                }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        const label = context.dataset.label || '';
+                                        const value = context.raw;
+                                        return `${label}: ${value.toFixed(1)} min`;
+                                    },
+                                    afterLabel: function(context) {
+                                        const dataIndex = context.dataIndex;
+                                        const day = validDays[dataIndex];
+                                        return `Adj VPA: ${day.adjVpaTime.toFixed(1)} min`;
+                                    }
+                                }
+                            },
+                            datalabels: {
+                                display: false
+                            }
+                        },
+                        interaction: {
+                            intersect: false,
+                            mode: 'index'
+                        }
+                    }
+                });
+
+                // Create hazard ratio trend chart
+                const ctx2 = document.getElementById('heart-rate-hr-chart').getContext('2d');
+
+                new Chart(ctx2, {
+                    type: 'line',
+                    data: {
+                        labels: validDays.map(d => d.label),
+                        datasets: [
+                            {
+                                label: 'Hazard Ratio (HR)',
+                                data: validDays.map(d => d.hazardRatio),
+                                borderColor: '#9C27B0',
+                                backgroundColor: hexToRgba('#9C27B0', 0.1),
+                                tension: 0.3,
+                                pointBackgroundColor: '#9C27B0',
+                                pointBorderColor: '#9C27B0',
+                                pointRadius: 5,
+                                pointHoverRadius: 7,
+                                borderWidth: 3,
+                                fill: true
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        animation: {
+                            duration: 0
+                        },
+                        transitions: {
+                            active: {
+                                animation: {
+                                    duration: 0
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                type: 'linear',
+                                display: true,
+                                title: {
+                                    display: true,
+                                    text: 'Hazard Ratio (Lower is Better)',
+                                    color: '#9C27B0',
+                                    font: {
+                                        size: 12
+                                    }
+                                },
+                                ticks: {
+                                    color: '#9C27B0',
+                                    font: {
+                                        size: 10
+                                    }
+                                },
+                                grid: {
+                                    color: 'rgba(255,255,255,0.1)'
+                                }
+                            },
+                            x: {
+                                ticks: {
+                                    color: '#aaa',
+                                    maxRotation: 45,
+                                    font: {
+                                        size: 10
+                                    }
+                                },
+                                grid: {
+                                    color: 'rgba(255,255,255,0.1)'
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                display: true,
+                                position: 'top',
+                                labels: {
+                                    color: '#aaa',
+                                    usePointStyle: true,
+                                    font: {
+                                        size: 11
+                                    },
+                                    padding: 10
+                                }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        const value = context.raw;
+                                        return `HR: ${value.toFixed(3)}`;
+                                    },
+                                    afterLabel: function(context) {
+                                        const dataIndex = context.dataIndex;
+                                        const day = validDays[dataIndex];
+                                        return [
+                                            `Resting HR: ${day.restingHR ? day.restingHR.toFixed(0) : 'N/A'} BPM`,
+                                            `Max HR: ${day.maxHR ? day.maxHR.toFixed(0) : 'N/A'} BPM`,
+                                            `HR Reserve: ${day.hrReserve ? day.hrReserve.toFixed(0) : 'N/A'} BPM`
+                                        ];
                                     }
                                 }
                             },
