@@ -79,6 +79,20 @@
 <body>
     <div class="container" id="main-container">
         <h1>Health Analysis</h1>
+        
+        <!-- Navigation Buttons -->
+        <div class="navigation-container" style="margin-bottom: 30px; text-align: center;">
+            <div class="nav-buttons" style="display: inline-flex; gap: 10px; background-color: #1e1e1e; padding: 10px; border-radius: 8px; border: 1px solid #333;">
+                <a href="#" id="daily-nav" class="nav-button" style="padding: 8px 16px; background-color: #333; color: #fff; text-decoration: none; border-radius: 4px; transition: background-color 0.2s;">Daily</a>
+                <a href="#" id="weekly-nav" class="nav-button" style="padding: 8px 16px; background-color: #333; color: #fff; text-decoration: none; border-radius: 4px; transition: background-color 0.2s;">Weekly</a>
+                <a href="#" id="monthly-nav" class="nav-button" style="padding: 8px 16px; background-color: #333; color: #fff; text-decoration: none; border-radius: 4px; transition: background-color 0.2s;">Monthly</a>
+            </div>
+            <div class="date-nav" style="margin-top: 10px;">
+                <a href="#" id="prev-day" class="date-nav-button" style="padding: 6px 12px; background-color: #1e1e1e; color: #fff; text-decoration: none; border-radius: 4px; border: 1px solid #333; margin-right: 5px;">← Previous</a>
+                <span id="current-date" style="color: #aaa; margin: 0 10px;"></span>
+                <a href="#" id="next-day" class="date-nav-button" style="padding: 6px 12px; background-color: #1e1e1e; color: #fff; text-decoration: none; border-radius: 4px; border: 1px solid #333; margin-left: 5px;">Next →</a>
+            </div>
+        </div>
 
         <div class="metric-wrapper">
             <div id="sleep-summary" class="summary-item">
@@ -843,6 +857,9 @@
 
         document.addEventListener('DOMContentLoaded', function() {
             Chart.register(ChartDataLabels);
+
+            // --- Navigation Setup ---
+            setupNavigation();
 
             // --- Accordion Click Logic ---
             document.querySelectorAll('.summary-item').forEach(summary => {
@@ -2067,6 +2084,88 @@
                         }
                     }
                 });
+            }
+
+            // --- Navigation Functions ---
+            function setupNavigation() {
+                // Get current URL and extract date and report type
+                const currentUrl = window.location.href;
+                const urlParts = currentUrl.split('/');
+                
+                // Extract date from URL (format: YYYY-MM-DD)
+                const dateMatch = currentUrl.match(/\/(\d{4}-\d{2}-\d{2})\//);
+                const currentDate = dateMatch ? dateMatch[1] : new Date().toISOString().split('T')[0];
+                
+                // Determine current report type from URL
+                let currentReportType = 'daily';
+                if (currentUrl.includes('/report_weekly/')) {
+                    currentReportType = 'weekly';
+                } else if (currentUrl.includes('/report_monthly/')) {
+                    currentReportType = 'monthly';
+                }
+                
+                // Set current date display
+                document.getElementById('current-date').textContent = currentDate;
+                
+                // Set active navigation button
+                document.querySelectorAll('.nav-button').forEach(btn => {
+                    btn.style.backgroundColor = '#333';
+                });
+                
+                if (currentReportType === 'daily') {
+                    document.getElementById('daily-nav').style.backgroundColor = '#4CAF50';
+                } else if (currentReportType === 'weekly') {
+                    document.getElementById('weekly-nav').style.backgroundColor = '#4CAF50';
+                } else if (currentReportType === 'monthly') {
+                    document.getElementById('monthly-nav').style.backgroundColor = '#4CAF50';
+                }
+                
+                // Setup navigation button click handlers
+                document.getElementById('daily-nav').addEventListener('click', function(e) {
+                    e.preventDefault();
+                    navigateToReport('daily', currentDate);
+                });
+                
+                document.getElementById('weekly-nav').addEventListener('click', function(e) {
+                    e.preventDefault();
+                    navigateToReport('weekly', currentDate);
+                });
+                
+                document.getElementById('monthly-nav').addEventListener('click', function(e) {
+                    e.preventDefault();
+                    navigateToReport('monthly', currentDate);
+                });
+                
+                // Setup date navigation
+                document.getElementById('prev-day').addEventListener('click', function(e) {
+                    e.preventDefault();
+                    navigateToDate(currentReportType, currentDate, -1);
+                });
+                
+                document.getElementById('next-day').addEventListener('click', function(e) {
+                    e.preventDefault();
+                    navigateToDate(currentReportType, currentDate, 1);
+                });
+            }
+            
+            function navigateToReport(reportType, date) {
+                const baseUrl = 'https://albyscotney.github.io';
+                const reportTypeMap = {
+                    'daily': 'report_daily',
+                    'weekly': 'report_weekly',
+                    'monthly': 'report_monthly'
+                };
+                
+                const newUrl = `${baseUrl}/${reportTypeMap[reportType]}/${date}/`;
+                window.location.href = newUrl;
+            }
+            
+            function navigateToDate(reportType, currentDate, direction) {
+                const date = new Date(currentDate);
+                date.setDate(date.getDate() + direction);
+                const newDate = date.toISOString().split('T')[0];
+                
+                navigateToReport(reportType, newDate);
             }
         });
     </script>
