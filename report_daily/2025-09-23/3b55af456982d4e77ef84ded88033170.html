@@ -71,11 +71,28 @@
         .details-container.visible { display: flex; }
         .chart-wrapper { background-color: #1e1e1e; padding: 20px; border-radius: 12px; border: 1px solid #333; }
         .chart-subtitle { margin-top: -10px; margin-bottom: 20px; font-size: 0.9em; color: #999; }
+        .vo2-chart-container { position: relative; }
+        .vo2-gradient-bg { position: absolute; top: 0; left: 0; right: 0; bottom: 0; pointer-events: none; border-radius: 8px; z-index: 1; }
+        #vo2-max-chart { position: relative; z-index: 2; }
     </style>
 </head>
 <body>
     <div class="container" id="main-container">
         <h1>Health Analysis</h1>
+
+        <!-- Navigation Buttons -->
+        <div class="navigation-container" style="margin-bottom: 30px; text-align: center;">
+            <div class="nav-buttons" style="display: inline-flex; gap: 10px; background-color: #1e1e1e; padding: 10px; border-radius: 8px; border: 1px solid #333;">
+                <a href="#" id="daily-nav" class="nav-button" style="padding: 8px 16px; background-color: #333; color: #fff; text-decoration: none; border-radius: 4px; transition: background-color 0.2s;">Daily</a>
+                <a href="#" id="weekly-nav" class="nav-button" style="padding: 8px 16px; background-color: #333; color: #fff; text-decoration: none; border-radius: 4px; transition: background-color 0.2s;">Weekly</a>
+                <a href="#" id="monthly-nav" class="nav-button" style="padding: 8px 16px; background-color: #333; color: #fff; text-decoration: none; border-radius: 4px; transition: background-color 0.2s;">Monthly</a>
+            </div>
+            <div class="date-nav" style="margin-top: 10px;">
+                <a href="#" id="prev-day" class="date-nav-button" style="padding: 6px 12px; background-color: #1e1e1e; color: #fff; text-decoration: none; border-radius: 4px; border: 1px solid #333; margin-right: 5px;">← Previous</a>
+                <span id="current-date" style="color: #aaa; margin: 0 10px;"></span>
+                <a href="#" id="next-day" class="date-nav-button" style="padding: 6px 12px; background-color: #1e1e1e; color: #fff; text-decoration: none; border-radius: 4px; border: 1px solid #333; margin-left: 5px;">Next →</a>
+            </div>
+        </div>
 
         <div class="metric-wrapper">
             <div id="sleep-summary" class="summary-item">
@@ -89,8 +106,8 @@
                 </div>
             </div>
             <div id="sleep-details" class="details-container">
-                <div class="chart-wrapper"><h3>Sleep Consistency</h3><p class="chart-subtitle">Score based on deviation from recent average.</p><canvas id="sleep-consistency-chart"></canvas></div>
-                <div class="chart-wrapper"><h3>Sleep Duration</h3><p class="chart-subtitle">Score based on total time slept.</p><canvas id="sleep-duration-chart"></canvas></div>
+                <div class="chart-wrapper"><h3>Sleep Windows</h3><p class="chart-subtitle">Sleep periods showing time in bed. Color indicates sleep consistency.</p><div style="height: 300px; position: relative;"><canvas id="sleep-windows-chart"></canvas></div></div>
+                <div class="chart-wrapper"><h3>Sleep Duration</h3><p class="chart-subtitle">Total hours slept each day.</p><div style="height: 300px; position: relative;"><canvas id="sleep-duration-chart"></canvas></div></div>
             </div>
         </div>
 
@@ -109,8 +126,124 @@
                 <div class="chart-wrapper">
                     <h3>VO2 Max Trend</h3>
                     <p class="chart-subtitle">Your estimated VO2 max over time. Higher is better.</p>
+                    <div class="vo2-chart-container">
                     <canvas id="vo2-max-chart"></canvas>
+                        <div id="vo2-gradient-bg" class="vo2-gradient-bg"></div>
+                    </div>
                     <div id="vo2-zones-data" style="display: none;"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="metric-wrapper">
+            <div id="steps-summary" class="summary-item">
+                <h2>Steps Score 🚶</h2>
+                <div class="score-scale-container">
+                    <div class="scale-wrapper">
+                        <div class="score-scale-bar"></div>
+                        <div id="steps-last-pointer" class="scale-pointer pointer-last"><div class="pointer-label">Last</div></div>
+                        <div id="steps-avg-pointer" class="scale-pointer pointer-avg"><div class="pointer-label">Avg</div></div>
+                    </div>
+                </div>
+            </div>
+            <div id="steps-details" class="details-container">
+                <div class="chart-wrapper">
+                    <h3>Daily Steps</h3>
+                    <p class="chart-subtitle">Daily steps with 7-day rolling average. Color indicates health risk based on steps.</p>
+                    <canvas id="steps-chart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="metric-wrapper">
+            <div id="strength-summary" class="summary-item">
+                <h2>Strength Training Score 💪</h2>
+                <div class="score-scale-container">
+                    <div class="scale-wrapper">
+                        <div class="score-scale-bar"></div>
+                        <div id="strength-last-pointer" class="scale-pointer pointer-last"><div class="pointer-label">Last</div></div>
+                        <div id="strength-avg-pointer" class="scale-pointer pointer-avg"><div class="pointer-label">Avg</div></div>
+                    </div>
+                </div>
+            </div>
+            <div id="strength-details" class="details-container">
+                <div class="chart-wrapper">
+                    <h3>Strength Training</h3>
+                    <p class="chart-subtitle">Daily strength training duration with 7-day rolling sum. Color indicates heart rate multiplier based on weekly volume.</p>
+                    <canvas id="strength-chart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="metric-wrapper">
+            <div id="bodyComp-summary" class="summary-item">
+                <h2>Body Composition Score 🏋️</h2>
+                <div class="score-scale-container">
+                    <div class="scale-wrapper">
+                        <div class="score-scale-bar"></div>
+                        <div id="bodyComp-last-pointer" class="scale-pointer pointer-last"><div class="pointer-label">Last</div></div>
+                        <div id="bodyComp-avg-pointer" class="scale-pointer pointer-avg"><div class="pointer-label">Avg</div></div>
+                    </div>
+                </div>
+            </div>
+            <div id="bodyComp-details" class="details-container">
+                <div class="chart-wrapper">
+                    <h3>Body Composition Trends</h3>
+                    <p class="chart-subtitle">Weight, body fat percentage, FFMI, and FMI over time. Color indicates health risk based on FFMI.</p>
+                    <div style="height: 300px; position: relative;">
+                        <canvas id="bodyComp-chart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="metric-wrapper">
+            <div id="rhr-summary" class="summary-item">
+                <h2>Resting Heart Rate Score ❤️</h2>
+                <div class="score-scale-container">
+                    <div class="scale-wrapper">
+                        <div class="score-scale-bar"></div>
+                        <div id="rhr-last-pointer" class="scale-pointer pointer-last"><div class="pointer-label">Last</div></div>
+                        <div id="rhr-avg-pointer" class="scale-pointer pointer-avg"><div class="pointer-label">Avg</div></div>
+                    </div>
+                </div>
+            </div>
+            <div id="rhr-details" class="details-container">
+                <div class="chart-wrapper">
+                    <h3>Resting Heart Rate Trends</h3>
+                    <p class="chart-subtitle">Daily resting heart rate in BPM over time. Color indicates health risk based on hazard ratios.</p>
+                    <div style="height: 300px; position: relative;">
+                        <canvas id="rhr-chart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="metric-wrapper">
+            <div id="heart-rate-summary" class="summary-item">
+                <h2>Heart Rate Activity Score 💓</h2>
+                <div class="score-scale-container">
+                    <div class="scale-wrapper">
+                        <div class="score-scale-bar"></div>
+                        <div id="heart-rate-last-pointer" class="scale-pointer pointer-last"><div class="pointer-label">Last</div></div>
+                        <div id="heart-rate-avg-pointer" class="scale-pointer pointer-avg"><div class="pointer-label">Avg</div></div>
+                    </div>
+                </div>
+            </div>
+            <div id="heart-rate-details" class="details-container">
+                <div class="chart-wrapper">
+                    <h3>Activity Time Distribution</h3>
+                    <p class="chart-subtitle">Time spent in moderate (MPA) and vigorous (VPA) physical activity. Shows adjusted VPA time and 7-day rolling average.</p>
+                    <div style="height: 300px; position: relative;">
+                        <canvas id="heart-rate-activity-chart"></canvas>
+                    </div>
+                </div>
+                <div class="chart-wrapper">
+                    <h3>Hazard Ratio Trend</h3>
+                    <p class="chart-subtitle">Health risk score based on physical activity levels. Lower is better.</p>
+                    <div style="height: 300px; position: relative;">
+                        <canvas id="heart-rate-hr-chart"></canvas>
+                    </div>
                 </div>
             </div>
         </div>
@@ -120,71 +253,99 @@
         // --- DATA PLACEHOLDER (To be replaced by Python) ---
         const chartData = {
     "sleep": {
-        "latestScore": 1.9040000000000012,
-        "averageScore": 0.42691202402648454,
+        "latestScore": -1.1650000000000005,
+        "averageScore": -0.5997321852844473,
         "daily": [
             {
-                "label": "Sep 21",
-                "consistencyScore": 1.28,
+                "label": "Oct 02",
+                "consistencyScore": 0.95,
                 "durationScore": 0.93,
-                "consistencyColor": "#e53935",
+                "consistencyColor": "#43a047",
                 "durationColor": "#43a047",
-                "sleepTime": "23:23",
-                "wakeTime": "06:57"
+                "sleepTime": "01:02",
+                "wakeTime": "08:25",
+                "sleepDuration": 7.383333333333334,
+                "timeInBed": 7.4,
+                "awakeCount": 0,
+                "hasData": true
             },
             {
-                "label": "Sep 20",
-                "consistencyScore": 1.28,
-                "durationScore": 0.93,
-                "consistencyColor": "#e53935",
-                "durationColor": "#43a047",
-                "sleepTime": "02:28",
-                "wakeTime": "09:58"
-            },
-            {
-                "label": "Sep 19",
-                "consistencyScore": 0.9903178355660625,
-                "durationScore": 1.11,
-                "consistencyColor": "#daecdb",
+                "label": "Oct 01",
+                "consistencyScore": 0.9516860747210092,
+                "durationScore": 1.0513333333333335,
+                "consistencyColor": "#49a34d",
                 "durationColor": "#e53935",
-                "sleepTime": "23:11",
-                "wakeTime": "04:43"
+                "sleepTime": "00:57",
+                "wakeTime": "06:55",
+                "sleepDuration": 5.966666666666667,
+                "timeInBed": 6.0,
+                "awakeCount": 0,
+                "hasData": true
             },
             {
-                "label": "Sep 17",
-                "consistencyScore": 0.9504730713245997,
-                "durationScore": 1.0215416666666666,
-                "consistencyColor": "#44a048",
-                "durationColor": "#f3a9a7",
-                "sleepTime": "00:21",
-                "wakeTime": "06:32"
-            },
-            {
-                "label": "Sep 16",
-                "consistencyScore": 0.9530507035419699,
+                "label": "Sep 30",
+                "consistencyScore": 0.9516860747210092,
                 "durationScore": 0.93,
-                "consistencyColor": "#4ea552",
+                "consistencyColor": "#49a34d",
                 "durationColor": "#43a047",
-                "sleepTime": "22:58",
-                "wakeTime": "06:46"
+                "sleepTime": "01:02",
+                "wakeTime": "08:14",
+                "sleepDuration": 7.2,
+                "timeInBed": 7.266666666666667,
+                "awakeCount": 0,
+                "hasData": true
             },
             {
-                "label": "Sep 15",
-                "consistencyScore": 1.030459342023588,
-                "durationScore": 0.9791228070175438,
-                "consistencyColor": "#ef8683",
-                "durationColor": "#b0d7b2",
-                "sleepTime": "00:32",
-                "wakeTime": "07:28"
+                "label": "Sep 29",
+                "consistencyScore": 0.95,
+                "durationScore": 1.053625,
+                "consistencyColor": "#43a047",
+                "durationColor": "#e53935",
+                "sleepTime": "00:56",
+                "wakeTime": "06:53",
+                "sleepDuration": 5.95,
+                "timeInBed": 6.016666666666667,
+                "awakeCount": 0,
+                "hasData": true
             },
             {
-                "label": "Sep 14",
-                "consistencyScore": 1.024252017380509,
+                "label": "Sep 28",
+                "consistencyScore": 0.95,
+                "durationScore": 1.0,
+                "consistencyColor": "#43a047",
+                "durationColor": "#ffffff",
+                "sleepTime": "00:00",
+                "wakeTime": "06:38",
+                "sleepDuration": 6.633333333333334,
+                "timeInBed": 6.800000000000001,
+                "awakeCount": 1,
+                "hasData": true
+            },
+            {
+                "label": "Sep 27",
+                "consistencyScore": 0.9693039138429208,
+                "durationScore": 0.9852631578947368,
+                "consistencyColor": "#8bc48e",
+                "durationColor": "#c7e3c8",
+                "sleepTime": "00:45",
+                "wakeTime": "07:39",
+                "sleepDuration": 6.9,
+                "timeInBed": 7.2,
+                "awakeCount": 1,
+                "hasData": true
+            },
+            {
+                "label": "Sep 26",
+                "consistencyScore": 0.97324402416601,
                 "durationScore": 0.93,
-                "consistencyColor": "#f29e9d",
+                "consistencyColor": "#9acc9c",
                 "durationColor": "#43a047",
-                "sleepTime": "23:49",
-                "wakeTime": "07:17"
+                "sleepTime": "23:51",
+                "wakeTime": "07:05",
+                "sleepDuration": 7.233333333333333,
+                "timeInBed": 7.566666666666666,
+                "awakeCount": 1,
+                "hasData": true
             }
         ],
         "colorStops": [
@@ -211,35 +372,35 @@
         ]
     },
     "vo2": {
-        "latestScore": -4.098637602179834,
-        "averageScore": -4.073725184896845,
+        "latestScore": -4.6,
+        "averageScore": -4.6,
         "daily": [
             {
-                "date": "Sep 22",
+                "date": "Oct 03",
+                "vo2": 53.9
+            },
+            {
+                "date": "Oct 02",
+                "vo2": 53.9
+            },
+            {
+                "date": "Oct 01",
+                "vo2": 53.9
+            },
+            {
+                "date": "Sep 30",
                 "vo2": 53.8
             },
             {
-                "date": "Sep 21",
-                "vo2": 53.6
+                "date": "Sep 29",
+                "vo2": 53.9
             },
             {
-                "date": "Sep 20",
-                "vo2": 53.6
-            },
-            {
-                "date": "Sep 19",
+                "date": "Sep 28",
                 "vo2": 53.8
             },
             {
-                "date": "Sep 18",
-                "vo2": 53.8
-            },
-            {
-                "date": "Sep 17",
-                "vo2": 53.8
-            },
-            {
-                "date": "Sep 16",
+                "date": "Sep 27",
                 "vo2": 53.8
             }
         ],
@@ -287,210 +448,1184 @@
                 "color": "#388e3c"
             }
         ]
+    },
+    "steps": {
+        "latestScore": 0.0,
+        "averageScore": 0.0,
+        "daily": [
+            {
+                "label": "Oct 03",
+                "dailySteps": 1325,
+                "rollingAvgSteps": 13405,
+                "hazardRatio": 1.0,
+                "hrColor": "#ffffff",
+                "hasData": true
+            },
+            {
+                "label": "Oct 02",
+                "dailySteps": 24868,
+                "rollingAvgSteps": 14298,
+                "hazardRatio": 1.0,
+                "hrColor": "#ffffff",
+                "hasData": true
+            },
+            {
+                "label": "Oct 01",
+                "dailySteps": 16902,
+                "rollingAvgSteps": 14425,
+                "hazardRatio": 1.0,
+                "hrColor": "#ffffff",
+                "hasData": true
+            },
+            {
+                "label": "Sep 30",
+                "dailySteps": 15140,
+                "rollingAvgSteps": 12981,
+                "hazardRatio": 1.0,
+                "hrColor": "#ffffff",
+                "hasData": true
+            },
+            {
+                "label": "Sep 29",
+                "dailySteps": 14063,
+                "rollingAvgSteps": 12747,
+                "hazardRatio": 1.0,
+                "hrColor": "#ffffff",
+                "hasData": true
+            },
+            {
+                "label": "Sep 28",
+                "dailySteps": 3774,
+                "rollingAvgSteps": 13571,
+                "hazardRatio": 1.0,
+                "hrColor": "#ffffff",
+                "hasData": true
+            },
+            {
+                "label": "Sep 27",
+                "dailySteps": 17768,
+                "rollingAvgSteps": 13896,
+                "hazardRatio": 1.0,
+                "hrColor": "#ffffff",
+                "hasData": true
+            }
+        ],
+        "colorStops": [
+            {
+                "score": 2,
+                "color": "#d32f2f"
+            },
+            {
+                "score": 1,
+                "color": "#f57c00"
+            },
+            {
+                "score": 0,
+                "color": "#ffffff"
+            },
+            {
+                "score": -1,
+                "color": "#7cb342"
+            },
+            {
+                "score": -2,
+                "color": "#388e3c"
+            }
+        ]
+    },
+    "strength": {
+        "latestScore": -0.3495484406001992,
+        "averageScore": -0.3297080974968125,
+        "daily": [
+            {
+                "label": "Oct 03",
+                "dailyDuration": 0.0,
+                "weeklySum": 213.5129313151042,
+                "hrScore": 0.9650451559399801,
+                "hrColor": "#7bbc7e",
+                "hasData": true
+            },
+            {
+                "label": "Oct 02",
+                "dailyDuration": 42.10764973958333,
+                "weeklySum": 267.9152465820313,
+                "hrScore": 0.96,
+                "hrColor": "#68b36b",
+                "hasData": true
+            },
+            {
+                "label": "Oct 01",
+                "dailyDuration": 0.0,
+                "weeklySum": 225.80759684244794,
+                "hrScore": 0.9627033148871528,
+                "hrColor": "#72b875",
+                "hasData": true
+            },
+            {
+                "label": "Sep 30",
+                "dailyDuration": 124.25979817708334,
+                "weeklySum": 262.4054321289063,
+                "hrScore": 0.96,
+                "hrColor": "#68b36b",
+                "hasData": true
+            },
+            {
+                "label": "Sep 29",
+                "dailyDuration": 47.1454833984375,
+                "weeklySum": 173.82956542968753,
+                "hrScore": 0.9726038922991072,
+                "hrColor": "#97ca9a",
+                "hasData": true
+            },
+            {
+                "label": "Sep 28",
+                "dailyDuration": 0.0,
+                "weeklySum": 164.26358235677085,
+                "hrScore": 0.974425984312996,
+                "hrColor": "#9ecea0",
+                "hasData": true
+            },
+            {
+                "label": "Sep 27",
+                "dailyDuration": 0.0,
+                "weeklySum": 164.26358235677085,
+                "hrScore": 0.974425984312996,
+                "hrColor": "#9ecea0",
+                "hasData": true
+            }
+        ],
+        "colorStops": [
+            {
+                "score": 2,
+                "color": "#d32f2f"
+            },
+            {
+                "score": 1,
+                "color": "#f57c00"
+            },
+            {
+                "score": 0,
+                "color": "#ffffff"
+            },
+            {
+                "score": -1,
+                "color": "#7cb342"
+            },
+            {
+                "score": -2,
+                "color": "#388e3c"
+            }
+        ]
+    },
+    "bodyComp": {
+        "latestScore": -2.288022719556361,
+        "averageScore": -2.281444365178168,
+        "daily": [
+            {
+                "label": "Oct 03",
+                "weight": 91.73,
+                "bodyFat": 18.5,
+                "ffmi": 21.152090878225444,
+                "fmi": 4.8013948619284745,
+                "hrScore": 0.7711977280443639,
+                "hrColor": "#43a047",
+                "hasData": true
+            },
+            {
+                "label": "Oct 02",
+                "weight": 92.29,
+                "bodyFat": 18.4,
+                "ffmi": 21.30733363512902,
+                "fmi": 4.804594839293799,
+                "hrScore": 0.7673166591217745,
+                "hrColor": "#43a047",
+                "hasData": true
+            },
+            {
+                "label": "Oct 01",
+                "weight": 91.3,
+                "bodyFat": 18.4,
+                "ffmi": 21.078768673607968,
+                "fmi": 4.753055681303757,
+                "hrScore": 0.7730307831598008,
+                "hrColor": "#43a047",
+                "hasData": true
+            },
+            {
+                "label": "Sep 30",
+                "weight": 91.41,
+                "bodyFat": 18.7,
+                "ffmi": 21.026575939339068,
+                "fmi": 4.836371095518334,
+                "hrScore": 0.7743356015165233,
+                "hrColor": "#43a047",
+                "hasData": true
+            },
+            {
+                "label": "Sep 29",
+                "weight": 91.169,
+                "bodyFat": 18.9,
+                "ffmi": 20.919550418741512,
+                "fmi": 4.875209653689452,
+                "hrScore": 0.7770112395314622,
+                "hrColor": "#43a047",
+                "hasData": true
+            },
+            {
+                "label": "Sep 28",
+                "weight": 92.269,
+                "bodyFat": 18.8,
+                "ffmi": 21.19806133997284,
+                "fmi": 4.907925531914895,
+                "hrScore": 0.770048466500679,
+                "hrColor": "#43a047",
+                "hasData": true
+            },
+            {
+                "label": "Sep 27",
+                "weight": 92.269,
+                "bodyFat": 18.8,
+                "ffmi": 21.19806133997284,
+                "fmi": 4.907925531914895,
+                "hrScore": 0.770048466500679,
+                "hrColor": "#43a047",
+                "hasData": true
+            }
+        ],
+        "colorStops": [
+            {
+                "score": 2,
+                "color": "#d32f2f"
+            },
+            {
+                "score": 1,
+                "color": "#f57c00"
+            },
+            {
+                "score": 0,
+                "color": "#ffffff"
+            },
+            {
+                "score": -1,
+                "color": "#7cb342"
+            },
+            {
+                "score": -2,
+                "color": "#388e3c"
+            }
+        ]
+    },
+    "rhr": {
+        "latestScore": -1.6479999999999995,
+        "averageScore": -1.6584285714285707,
+        "daily": [
+            {
+                "label": "Oct 03",
+                "rhr": 49,
+                "hrScore": 0.8352,
+                "hrColor": "#43a047",
+                "hasData": true
+            },
+            {
+                "label": "Oct 02",
+                "rhr": 49,
+                "hrScore": 0.8352,
+                "hrColor": "#43a047",
+                "hasData": true
+            },
+            {
+                "label": "Oct 01",
+                "rhr": 50,
+                "hrScore": 0.8425,
+                "hrColor": "#43a047",
+                "hasData": true
+            },
+            {
+                "label": "Sep 30",
+                "rhr": 50,
+                "hrScore": 0.8425,
+                "hrColor": "#43a047",
+                "hasData": true
+            },
+            {
+                "label": "Sep 29",
+                "rhr": 51,
+                "hrScore": 0.8498,
+                "hrColor": "#43a047",
+                "hasData": true
+            },
+            {
+                "label": "Sep 28",
+                "rhr": 46,
+                "hrScore": 0.8133,
+                "hrColor": "#43a047",
+                "hasData": true
+            },
+            {
+                "label": "Sep 27",
+                "rhr": 47,
+                "hrScore": 0.8206,
+                "hrColor": "#43a047",
+                "hasData": true
+            }
+        ],
+        "colorStops": [
+            {
+                "score": 2,
+                "color": "#d32f2f"
+            },
+            {
+                "score": 1,
+                "color": "#f57c00"
+            },
+            {
+                "score": 0,
+                "color": "#ffffff"
+            },
+            {
+                "score": -1,
+                "color": "#7cb342"
+            },
+            {
+                "score": -2,
+                "color": "#388e3c"
+            }
+        ]
+    },
+    "heartRate": {
+        "latestScore": 0.09047619047619082,
+        "averageScore": 0.08401465849497636,
+        "daily": [
+            {
+                "label": "Oct 03",
+                "mpaTime": 0.0,
+                "vpaTime": 0.0,
+                "adjVpaTime": 0.0,
+                "rolling7Day": 127.0,
+                "hazardRatio": 0.9909523809523809,
+                "restingHR": 49.0,
+                "maxHR": 195.0,
+                "hrReserve": 146.0,
+                "zoneTimes": {
+                    "0-4": 0.0,
+                    "100-104": 0.0,
+                    "105-109": 0.0,
+                    "10-14": 0.0,
+                    "110-114": 0.0,
+                    "115-119": 0.0,
+                    "120-124": 0.0,
+                    "125-129": 0.0,
+                    "130-134": 0.0,
+                    "135-139": 0.0,
+                    "140-144": 0.0,
+                    "145-149": 0.0,
+                    "150-154": 0.0,
+                    "155-159": 0.0,
+                    "15-19": 0.0,
+                    "160-164": 0.0,
+                    "165-169": 0.0,
+                    "170-174": 0.0,
+                    "175-179": 0.0,
+                    "180-184": 0.0,
+                    "185-189": 0.0,
+                    "190-194": 0.0,
+                    "195-199": 0.0,
+                    "200plus": 0.0,
+                    "20-24": 0.0,
+                    "25-29": 0.0,
+                    "30-34": 0.0,
+                    "35-39": 0.0,
+                    "40-44": 0.0,
+                    "45-49": 0.0,
+                    "50-54": 0.0,
+                    "55-59": 0.0,
+                    "5-9": 0.0,
+                    "60-64": 0.0,
+                    "65-69": 0.0,
+                    "70-74": 0.0,
+                    "75-79": 0.0,
+                    "80-84": 0.0,
+                    "85-89": 0.0,
+                    "90-94": 0.0,
+                    "95-99": 0.0
+                },
+                "hasData": true
+            },
+            {
+                "label": "Oct 02",
+                "mpaTime": 102.0,
+                "vpaTime": 2.0,
+                "adjVpaTime": 53.0,
+                "rolling7Day": 127.0,
+                "hazardRatio": 0.9909523809523809,
+                "restingHR": 49.0,
+                "maxHR": 195.0,
+                "hrReserve": 146.0,
+                "zoneTimes": {
+                    "0-4": 0.0,
+                    "100-104": 0.0,
+                    "105-109": 0.0,
+                    "10-14": 0.0,
+                    "110-114": 0.0,
+                    "115-119": 0.0,
+                    "120-124": 0.0,
+                    "125-129": 0.0,
+                    "130-134": 0.0,
+                    "135-139": 0.0,
+                    "140-144": 0.0,
+                    "145-149": 0.0,
+                    "150-154": 0.0,
+                    "155-159": 0.0,
+                    "15-19": 0.0,
+                    "160-164": 0.0,
+                    "165-169": 0.0,
+                    "170-174": 0.0,
+                    "175-179": 0.0,
+                    "180-184": 0.0,
+                    "185-189": 0.0,
+                    "190-194": 0.0,
+                    "195-199": 0.0,
+                    "200plus": 0.0,
+                    "20-24": 0.0,
+                    "25-29": 0.0,
+                    "30-34": 0.0,
+                    "35-39": 0.0,
+                    "40-44": 0.0,
+                    "45-49": 0.0,
+                    "50-54": 0.0,
+                    "55-59": 0.0,
+                    "5-9": 0.0,
+                    "60-64": 0.0,
+                    "65-69": 0.0,
+                    "70-74": 0.0,
+                    "75-79": 0.0,
+                    "80-84": 0.0,
+                    "85-89": 0.0,
+                    "90-94": 0.0,
+                    "95-99": 0.0
+                },
+                "hasData": true
+            },
+            {
+                "label": "Oct 01",
+                "mpaTime": 40.0,
+                "vpaTime": 2.0,
+                "adjVpaTime": 22.0,
+                "rolling7Day": 131.0,
+                "hazardRatio": 0.9895488721804511,
+                "restingHR": 50.0,
+                "maxHR": 195.0,
+                "hrReserve": 145.0,
+                "zoneTimes": {
+                    "0-4": 0.0,
+                    "100-104": 0.0,
+                    "105-109": 0.0,
+                    "10-14": 0.0,
+                    "110-114": 0.0,
+                    "115-119": 0.0,
+                    "120-124": 0.0,
+                    "125-129": 0.0,
+                    "130-134": 0.0,
+                    "135-139": 0.0,
+                    "140-144": 0.0,
+                    "145-149": 0.0,
+                    "150-154": 0.0,
+                    "155-159": 0.0,
+                    "15-19": 0.0,
+                    "160-164": 0.0,
+                    "165-169": 0.0,
+                    "170-174": 0.0,
+                    "175-179": 0.0,
+                    "180-184": 0.0,
+                    "185-189": 0.0,
+                    "190-194": 0.0,
+                    "195-199": 0.0,
+                    "200plus": 0.0,
+                    "20-24": 0.0,
+                    "25-29": 0.0,
+                    "30-34": 0.0,
+                    "35-39": 0.0,
+                    "40-44": 0.0,
+                    "45-49": 0.0,
+                    "50-54": 0.0,
+                    "55-59": 0.0,
+                    "5-9": 0.0,
+                    "60-64": 0.0,
+                    "65-69": 0.0,
+                    "70-74": 0.0,
+                    "75-79": 0.0,
+                    "80-84": 0.0,
+                    "85-89": 0.0,
+                    "90-94": 0.0,
+                    "95-99": 0.0
+                },
+                "hasData": true
+            },
+            {
+                "label": "Sep 30",
+                "mpaTime": 44.0,
+                "vpaTime": 0.0,
+                "adjVpaTime": 22.0,
+                "rolling7Day": 109.0,
+                "hazardRatio": 0.9995238095238095,
+                "restingHR": 50.0,
+                "maxHR": 195.0,
+                "hrReserve": 145.0,
+                "zoneTimes": {
+                    "0-4": 0.0,
+                    "100-104": 0.0,
+                    "105-109": 0.0,
+                    "10-14": 0.0,
+                    "110-114": 0.0,
+                    "115-119": 0.0,
+                    "120-124": 0.0,
+                    "125-129": 0.0,
+                    "130-134": 0.0,
+                    "135-139": 0.0,
+                    "140-144": 0.0,
+                    "145-149": 0.0,
+                    "150-154": 0.0,
+                    "155-159": 0.0,
+                    "15-19": 0.0,
+                    "160-164": 0.0,
+                    "165-169": 0.0,
+                    "170-174": 0.0,
+                    "175-179": 0.0,
+                    "180-184": 0.0,
+                    "185-189": 0.0,
+                    "190-194": 0.0,
+                    "195-199": 0.0,
+                    "200plus": 0.0,
+                    "20-24": 0.0,
+                    "25-29": 0.0,
+                    "30-34": 0.0,
+                    "35-39": 0.0,
+                    "40-44": 0.0,
+                    "45-49": 0.0,
+                    "50-54": 0.0,
+                    "55-59": 0.0,
+                    "5-9": 0.0,
+                    "60-64": 0.0,
+                    "65-69": 0.0,
+                    "70-74": 0.0,
+                    "75-79": 0.0,
+                    "80-84": 0.0,
+                    "85-89": 0.0,
+                    "90-94": 0.0,
+                    "95-99": 0.0
+                },
+                "hasData": true
+            },
+            {
+                "label": "Sep 29",
+                "mpaTime": 36.0,
+                "vpaTime": 12.0,
+                "adjVpaTime": 30.0,
+                "rolling7Day": 107.0,
+                "hazardRatio": 1.0005882352941176,
+                "restingHR": 51.0,
+                "maxHR": 195.0,
+                "hrReserve": 144.0,
+                "zoneTimes": {
+                    "0-4": 0.0,
+                    "100-104": 0.0,
+                    "105-109": 0.0,
+                    "10-14": 0.0,
+                    "110-114": 0.0,
+                    "115-119": 0.0,
+                    "120-124": 0.0,
+                    "125-129": 0.0,
+                    "130-134": 0.0,
+                    "135-139": 0.0,
+                    "140-144": 0.0,
+                    "145-149": 0.0,
+                    "150-154": 0.0,
+                    "155-159": 0.0,
+                    "15-19": 0.0,
+                    "160-164": 0.0,
+                    "165-169": 0.0,
+                    "170-174": 0.0,
+                    "175-179": 0.0,
+                    "180-184": 0.0,
+                    "185-189": 0.0,
+                    "190-194": 0.0,
+                    "195-199": 0.0,
+                    "200plus": 0.0,
+                    "20-24": 0.0,
+                    "25-29": 0.0,
+                    "30-34": 0.0,
+                    "35-39": 0.0,
+                    "40-44": 0.0,
+                    "45-49": 0.0,
+                    "50-54": 0.0,
+                    "55-59": 0.0,
+                    "5-9": 0.0,
+                    "60-64": 0.0,
+                    "65-69": 0.0,
+                    "70-74": 0.0,
+                    "75-79": 0.0,
+                    "80-84": 0.0,
+                    "85-89": 0.0,
+                    "90-94": 0.0,
+                    "95-99": 0.0
+                },
+                "hasData": true
+            },
+            {
+                "label": "Sep 28",
+                "mpaTime": 0.0,
+                "vpaTime": 0.0,
+                "adjVpaTime": 0.0,
+                "rolling7Day": 152.0,
+                "hazardRatio": 0.9848120300751879,
+                "restingHR": 46.0,
+                "maxHR": 195.0,
+                "hrReserve": 149.0,
+                "zoneTimes": {
+                    "0-4": 0.0,
+                    "100-104": 0.0,
+                    "105-109": 0.0,
+                    "10-14": 0.0,
+                    "110-114": 0.0,
+                    "115-119": 0.0,
+                    "120-124": 0.0,
+                    "125-129": 0.0,
+                    "130-134": 0.0,
+                    "135-139": 0.0,
+                    "140-144": 0.0,
+                    "145-149": 0.0,
+                    "150-154": 0.0,
+                    "155-159": 0.0,
+                    "15-19": 0.0,
+                    "160-164": 0.0,
+                    "165-169": 0.0,
+                    "170-174": 0.0,
+                    "175-179": 0.0,
+                    "180-184": 0.0,
+                    "185-189": 0.0,
+                    "190-194": 0.0,
+                    "195-199": 0.0,
+                    "200plus": 0.0,
+                    "20-24": 0.0,
+                    "25-29": 0.0,
+                    "30-34": 0.0,
+                    "35-39": 0.0,
+                    "40-44": 0.0,
+                    "45-49": 0.0,
+                    "50-54": 0.0,
+                    "55-59": 0.0,
+                    "5-9": 0.0,
+                    "60-64": 0.0,
+                    "65-69": 0.0,
+                    "70-74": 0.0,
+                    "75-79": 0.0,
+                    "80-84": 0.0,
+                    "85-89": 0.0,
+                    "90-94": 0.0,
+                    "95-99": 0.0
+                },
+                "hasData": true
+            },
+            {
+                "label": "Sep 27",
+                "mpaTime": 0.0,
+                "vpaTime": 0.0,
+                "adjVpaTime": 0.0,
+                "rolling7Day": 152.0,
+                "hazardRatio": 0.9848120300751879,
+                "restingHR": 47.0,
+                "maxHR": 195.0,
+                "hrReserve": 148.0,
+                "zoneTimes": {
+                    "0-4": 0.0,
+                    "100-104": 0.0,
+                    "105-109": 0.0,
+                    "10-14": 0.0,
+                    "110-114": 0.0,
+                    "115-119": 0.0,
+                    "120-124": 0.0,
+                    "125-129": 0.0,
+                    "130-134": 0.0,
+                    "135-139": 0.0,
+                    "140-144": 0.0,
+                    "145-149": 0.0,
+                    "150-154": 0.0,
+                    "155-159": 0.0,
+                    "15-19": 0.0,
+                    "160-164": 0.0,
+                    "165-169": 0.0,
+                    "170-174": 0.0,
+                    "175-179": 0.0,
+                    "180-184": 0.0,
+                    "185-189": 0.0,
+                    "190-194": 0.0,
+                    "195-199": 0.0,
+                    "200plus": 0.0,
+                    "20-24": 0.0,
+                    "25-29": 0.0,
+                    "30-34": 0.0,
+                    "35-39": 0.0,
+                    "40-44": 0.0,
+                    "45-49": 0.0,
+                    "50-54": 0.0,
+                    "55-59": 0.0,
+                    "5-9": 0.0,
+                    "60-64": 0.0,
+                    "65-69": 0.0,
+                    "70-74": 0.0,
+                    "75-79": 0.0,
+                    "80-84": 0.0,
+                    "85-89": 0.0,
+                    "90-94": 0.0,
+                    "95-99": 0.0
+                },
+                "hasData": true
+            }
+        ],
+        "colorStops": [
+            {
+                "score": 2,
+                "color": "#d32f2f"
+            },
+            {
+                "score": 1,
+                "color": "#f57c00"
+            },
+            {
+                "score": 0,
+                "color": "#ffffff"
+            },
+            {
+                "score": -1,
+                "color": "#7cb342"
+            },
+            {
+                "score": -2,
+                "color": "#388e3c"
+            }
+        ]
     }
 };
 
-        document.addEventListener('DOMContentLoaded', function() {
-            Chart.register(ChartDataLabels);
+        // Chart.js configuration
+        Chart.register(ChartDataLabels);
+        Chart.register(ChartAnnotation);
 
-            // --- Accordion Click Logic ---
-            document.querySelectorAll('.summary-item').forEach(summary => {
-                summary.addEventListener('click', function() {
-                    const detailsId = this.id.replace('-summary', '-details');
-                    const detailsEl = document.getElementById(detailsId);
-                    if (!detailsEl) return;
-                    const isAlreadyVisible = detailsEl.classList.contains('visible');
-                    document.querySelectorAll('.details-container').forEach(d => d.classList.remove('visible'));
-                    if (!isAlreadyVisible) detailsEl.classList.add('visible');
-                });
-            });
+        // Color utility functions
+        function hexToRgb(hex) {
+            const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+            return result ? {
+                r: parseInt(result[1], 16),
+                g: parseInt(result[2], 16),
+                b: parseInt(result[3], 16)
+            } : null;
+        }
 
-            // --- Reusable Helper Functions ---
-            const hexToRgba = (hex, alpha=1) => { if(!hex) return 'rgba(136,136,136,0.6)'; const [r,g,b] = hex.match(/\w\w/g).map(x=>parseInt(x,16)); return `rgba(${r},${g},${b},${alpha})`; };
-            const timeToDecimal = (t) => { if (!t) return null; const [h,m] = t.split(':').map(Number); return h < 12 ? h + 24 + m / 60 : h + m / 60; };
-            const decimalToTime = (d) => { if (!d) return 'N/A'; const h = Math.floor(d)%24, m = Math.round((d%1)*60); return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`; };
-            const getContrastColor = (hex) => { if(!hex) return '#FFFFFF'; const [r,g,b] = hex.match(/\w\w/g).map(x => parseInt(x, 16)); return (r * 0.299 + g * 0.587 + b * 0.114) > 186 ? '#000000' : '#FFFFFF'; };
+        function rgbToHex(r, g, b) {
+            return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+        }
 
-            // --- FIXED HELPER FUNCTIONS ---
+        function getColorForScore(score) {
+            if (score >= 1.5) return "#d32f2f";
+            if (score >= 1.2) return "#f57c00";
+            if (score >= 0.8) return "#ffffff";
+            if (score >= 0.5) return "#7cb342";
+            return "#388e3c";
+        }
 
-            const scoreToPercentage = (score, stops) => {
-                const allScores = stops.map(s => s.score);
-                const minScore = Math.min(...allScores);
-                const maxScore = Math.max(...allScores);
-
-                const scoreRange = maxScore - minScore;
-                if (scoreRange === 0) return 50;
-
-                const boundedScore = Math.max(minScore, Math.min(score, maxScore));
-
-                return ((boundedScore - minScore) / scoreRange) * 100;
-            };
-
-            const getColorForScore = (score, stops) => {
-                const sortedStops = [...stops].sort((a, b) => a.score - b.score);
-
-                if (score <= sortedStops[0].score) return sortedStops[0].color;
-                if (score >= sortedStops[sortedStops.length - 1].score) return sortedStops[sortedStops.length - 1].color;
-
-                let stop1, stop2;
-                for (let i = 0; i < sortedStops.length - 1; i++) {
-                    if (score >= sortedStops[i].score && score <= sortedStops[i+1].score) {
-                        stop1 = sortedStops[i];
-                        stop2 = sortedStops[i+1];
-                        break;
-                    }
-                }
-
-                const range = stop2.score - stop1.score;
-                const ratio = range === 0 ? 0 : (score - stop1.score) / range;
-
-                const r1 = parseInt(stop1.color.slice(1,3), 16), g1 = parseInt(stop1.color.slice(3,5), 16), b1 = parseInt(stop1.color.slice(5,7), 16);
-                const r2 = parseInt(stop2.color.slice(1,3), 16), g2 = parseInt(stop2.color.slice(3,5), 16), b2 = parseInt(stop2.color.slice(5,7), 16);
-
-                const R = Math.round(r1 * (1-ratio) + r2 * ratio);
-                const G = Math.round(g1 * (1-ratio) + g2 * ratio);
-                const B = Math.round(b1 * (1-ratio) + b2 * ratio);
-
-                return `rgb(${R}, ${G}, ${B})`;
-            };
-
-            function setupPointers(prefix, lastScore, avgScore, stops) {
-                const lastPointer = document.getElementById(`${prefix}-last-pointer`);
-                const avgPointer = document.getElementById(`${prefix}-avg-pointer`);
-
-                lastPointer.style.left = `${scoreToPercentage(lastScore, stops)}%`;
-                avgPointer.style.left = `${scoreToPercentage(avgScore, stops)}%`;
-
-                lastPointer.style.borderTopColor = getColorForScore(lastScore, stops);
-                avgPointer.style.borderBottomColor = getColorForScore(avgScore, stops);
-
-                const lastLabel = lastPointer.querySelector('.pointer-label');
-                const avgLabel = avgPointer.querySelector('.pointer-label');
-
-                if (lastLabel) lastLabel.textContent = `Last: ${lastScore.toFixed(2)}`;
-                if (avgLabel) avgLabel.textContent = `Avg: ${avgScore.toFixed(2)}`;
-            }
-
-            function updateGradientBar(prefix, stops) {
-                const gradientString = [...stops]
-                    .sort((a, b) => a.score - b.score)
-                    .map(stop =>
-                        `${stop.color} ${scoreToPercentage(stop.score, stops)}%`
-                    )
-                    .join(', ');
-
-                const bar = document.querySelector(`#${prefix}-summary .score-scale-bar`);
-                if(bar) bar.style.background = `linear-gradient(to right, ${gradientString})`;
-            }
-
-            // --- Setup Section for SLEEP ---
+        // Initialize charts and interactions
+        function initializeCharts() {
             if (chartData && chartData.sleep) {
                 const sleepData = chartData.sleep;
-                updateGradientBar('sleep', sleepData.colorStops);
-                setupPointers('sleep', sleepData.latestScore, sleepData.averageScore, sleepData.colorStops);
                 createSleepCharts(sleepData);
+                updateSleepSummary(sleepData);
             }
 
-            // --- Setup Section for VO2 MAX ---
             if (chartData && chartData.vo2) {
                 const vo2Data = chartData.vo2;
-                updateGradientBar('vo2', vo2Data.colorStops);
-                setupPointers('vo2', vo2Data.latestScore, vo2Data.averageScore, vo2Data.colorStops);
-                createVo2MaxChart(vo2Data);
+                createVO2Charts(vo2Data);
+                updateVO2Summary(vo2Data);
             }
 
-            // --- Chart Creation Functions ---
-            function createSleepCharts(sleepData) {
-                const allScores = sleepData.colorStops.map(s => s.score);
-                const minScore = Math.min(...allScores);
-                const maxScore = Math.max(...allScores);
-                const defaultDatalabels = { anchor: 'center', align: 'center', font: { weight: 'bold', size: 14 }, color: (c) => getContrastColor(sleepData.daily[c.dataIndex].consistencyColor), formatter: (v,c) => parseFloat(c.chart.options.plugins.datalabels.scores[c.dataIndex]).toFixed(2) };
-                const isTimeBased = sleepData.daily.length > 0 && sleepData.daily[0].sleepTime;
-
-                const consistencyData = isTimeBased ? sleepData.daily.map(d => [timeToDecimal(d.sleepTime), timeToDecimal(d.wakeTime)]) : sleepData.daily.map(d => d.consistencyScore);
-                const consistencyTooltip = isTimeBased ? c => `Slept from ${decimalToTime(c.raw[0])} to ${decimalToTime(c.raw[1])}` : c => `Score: ${parseFloat(c.raw).toFixed(2)}`;
-                const consistencyYScale = isTimeBased ? { min: 20, max: 34, ticks: { stepSize: 1, color: '#aaa', callback: v => decimalToTime(v) }} : {min: minScore, max: maxScore, ticks: { color: '#aaa', callback: v => v.toFixed(2)}};
-
-                const durationData = isTimeBased ? sleepData.daily.map(d => timeToDecimal(d.wakeTime) - timeToDecimal(d.sleepTime)) : sleepData.daily.map(d => d.durationScore);
-                const durationYScale = isTimeBased ? { beginAtZero: true, title: { display: true, text: 'Hours', color: '#aaa' }, ticks: { color: '#aaa' }} : {min: minScore, max: maxScore, title: { display: true, text: 'Score', color: '#aaa' }, ticks: { color: '#aaa', callback: v => v.toFixed(2)}};
-
-                new Chart('sleep-consistency-chart', { type: 'bar', data: { datasets: [{ data: consistencyData, backgroundColor: sleepData.daily.map(d => hexToRgba(d.consistencyColor, 0.6)), borderColor: sleepData.daily.map(d => d.consistencyColor), borderWidth: 1.5, borderSkipped: false }] }, options: { scales: { y: consistencyYScale, x: { labels: sleepData.daily.map(d => d.label), ticks: { color: '#aaa' }} }, plugins: { legend: { display: false }, tooltip: { callbacks: { label: consistencyTooltip }}, datalabels: { ...defaultDatalabels, scores: sleepData.daily.map(d => d.consistencyScore) }}}});
-                new Chart('sleep-duration-chart', { type: 'bar', data: { datasets: [{ data: durationData, backgroundColor: sleepData.daily.map(d => hexToRgba(d.durationColor, 0.6)), borderColor: sleepData.daily.map(d => d.durationColor), borderWidth: 1.5 }] }, options: { scales: { y: durationYScale, x: { labels: sleepData.daily.map(d => d.label), ticks: { color: '#aaa' }} }, plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => `${isTimeBased ? 'Hours' : 'Score'}: ${parseFloat(c.raw).toFixed(2)}` }}, datalabels: { ...defaultDatalabels, scores: sleepData.daily.map(d => d.durationScore) }}}});
+            if (chartData && chartData.steps) {
+                const stepsData = chartData.steps;
+                createStepsCharts(stepsData);
+                updateStepsSummary(stepsData);
             }
 
-            function createVo2MaxChart(vo2Data) {
-                const dailyData = vo2Data.daily;
-                const zones = vo2Data.zones || []; // Get zones from your data, default to empty array
+            if (chartData && chartData.strength) {
+                const strengthData = chartData.strength;
+                createStrengthCharts(strengthData);
+                updateStrengthSummary(strengthData);
+            }
 
-                // Dynamically determine the Y-axis range to fit all data points and zone lines
-                const allYValues = [...dailyData.map(d => d.vo2), ...zones.map(z => z.value)];
-                const yMax = Math.ceil(Math.max(...allYValues)) + 2;
-                const yMin = Math.floor(Math.min(...allYValues)) - 2;
+            if (chartData && chartData.bodyComp) {
+                const bodyCompData = chartData.bodyComp;
+                createBodyCompCharts(bodyCompData);
+                updateBodyCompSummary(bodyCompData);
+            }
 
-                // --- ANNOTATION LOGIC ---
-                const annotations = {};
-                if (zones.length > 0) {
-                    const sortedZones = [...zones].sort((a, b) => a.value - b.value);
-                    let currentYMin = yMin;
+            if (chartData && chartData.rhr) {
+                const rhrData = chartData.rhr;
+                createRHRCharts(rhrData);
+                updateRHRSummary(rhrData);
+            }
 
-                    sortedZones.forEach((zone, index) => {
-                        annotations[`box${index}`] = {
-                            type: 'box',
-                            yScaleID: 'y',
-                            yMin: currentYMin,
-                            yMax: zone.value,
-                            backgroundColor: zone.color,
-                            borderWidth: 0,
-                            drawTime: 'beforeDatasetsDraw'
-                        };
-                        currentYMin = zone.value;
-                    });
+            if (chartData && chartData.heartRate) {
+                const heartRateData = chartData.heartRate;
+                createHeartRateCharts(heartRateData);
+                updateHeartRateSummary(heartRateData);
+            }
+        }
 
-                    annotations.box_top = {
-                        type: 'box',
-                        yScaleID: 'y',
-                        yMin: currentYMin,
-                        yMax: yMax,
-                        backgroundColor: sortedZones[sortedZones.length - 1].color,
-                        borderWidth: 0,
-                        drawTime: 'beforeDatasetsDraw'
-                    };
-                }
-                // --- END OF ANNOTATION LOGIC ---
+        // Summary update functions
+        function updateSleepSummary(data) {
+            updateSummaryScale('sleep', data.latestScore, data.averageScore, data.colorStops);
+        }
 
-                new Chart('vo2-max-chart', {
-                    type: 'line',
+        function updateVO2Summary(data) {
+            updateSummaryScale('vo2', data.latestScore, data.averageScore, data.colorStops);
+        }
+
+        function updateStepsSummary(data) {
+            updateSummaryScale('steps', data.latestScore, data.averageScore, data.colorStops);
+        }
+
+        function updateStrengthSummary(data) {
+            updateSummaryScale('strength', data.latestScore, data.averageScore, data.colorStops);
+        }
+
+        function updateBodyCompSummary(data) {
+            updateSummaryScale('bodyComp', data.latestScore, data.averageScore, data.colorStops);
+        }
+
+        function updateRHRSummary(data) {
+            updateSummaryScale('rhr', data.latestScore, data.averageScore, data.colorStops);
+        }
+
+        function updateHeartRateSummary(data) {
+            updateSummaryScale('heart-rate', data.latestScore, data.averageScore, data.colorStops);
+        }
+
+        function updateSummaryScale(metric, latestScore, averageScore, colorStops) {
+            const scaleBar = document.querySelector(`#${metric}-summary .score-scale-bar`);
+            const lastPointer = document.querySelector(`#${metric}-last-pointer`);
+            const avgPointer = document.querySelector(`#${metric}-avg-pointer`);
+
+            if (!scaleBar || !lastPointer || !avgPointer) return;
+
+            // Create gradient background
+            const gradient = createGradient(colorStops);
+            scaleBar.style.background = gradient;
+
+            // Position pointers
+            const lastPosition = Math.max(0, Math.min(100, (latestScore + 2) * 25));
+            const avgPosition = Math.max(0, Math.min(100, (averageScore + 2) * 25));
+
+            lastPointer.style.left = `${lastPosition}%`;
+            avgPointer.style.left = `${avgPosition}%`;
+
+            // Set pointer colors
+            const lastColor = getColorForScore(latestScore);
+            const avgColor = getColorForScore(averageScore);
+
+            lastPointer.style.borderTopColor = lastColor;
+            avgPointer.style.borderBottomColor = avgColor;
+        }
+
+        function createGradient(colorStops) {
+            const sortedStops = colorStops.sort((a, b) => b.score - a.score);
+            const gradient = `linear-gradient(to right, ${sortedStops.map(stop => `${stop.color} ${(stop.score + 2) * 25}%`).join(', ')})`;
+            return gradient;
+        }
+
+        // Chart creation functions (simplified versions)
+        function createSleepCharts(data) {
+            // Sleep windows chart
+            const sleepWindowsCtx = document.getElementById('sleep-windows-chart');
+            if (sleepWindowsCtx && data.daily) {
+                new Chart(sleepWindowsCtx, {
+                    type: 'bar',
                     data: {
-                        labels: dailyData.map(d => d.date),
+                        labels: data.daily.map(d => d.label),
                         datasets: [{
-                            data: dailyData.map(d => d.vo2),
-                            borderColor: '#64b5f6',
-                            backgroundColor: hexToRgba('#64b5f6', 0.2),
-                            fill: true,
-                            pointBackgroundColor: '#FFFFFF',
-                            pointBorderColor: '#64b5f6',
-                            pointRadius: 5,
-                            pointHoverRadius: 7,
-                            tension: 0.1
+                            label: 'Sleep Consistency',
+                            data: data.daily.map(d => d.consistencyScore),
+                            backgroundColor: data.daily.map(d => d.consistencyColor),
+                            borderColor: data.daily.map(d => d.consistencyColor),
+                            borderWidth: 1
                         }]
                     },
                     options: {
-                        animation: false, // <--- This line disables animations for the chart
-                        scales: {
-                            y: { min: yMin, max: yMax, title: { display: true, text: 'VO2 Max', color: '#aaa' }, ticks: { color: '#aaa' } },
-                            x: { ticks: { color: '#aaa' } }
-                        },
+                        responsive: true,
+                        maintainAspectRatio: false,
                         plugins: {
                             legend: { display: false },
-                            tooltip: { callbacks: { label: c => `VO2 Max: ${parseFloat(c.raw).toFixed(2)}` } },
-                            datalabels: { anchor: 'end', align: 'top', color: '#ccc', formatter: (v) => parseFloat(v).toFixed(2) },
-                            annotation: {
-                                annotations: annotations
-                            }
+                            datalabels: { display: false }
+                        },
+                        scales: {
+                            y: { beginAtZero: true, max: 2 }
                         }
                     }
                 });
             }
+
+            // Sleep duration chart
+            const sleepDurationCtx = document.getElementById('sleep-duration-chart');
+            if (sleepDurationCtx && data.daily) {
+                new Chart(sleepDurationCtx, {
+                    type: 'line',
+                    data: {
+                        labels: data.daily.map(d => d.label),
+                        datasets: [{
+                            label: 'Sleep Duration (hours)',
+                            data: data.daily.map(d => d.sleepDuration),
+                            borderColor: '#4CAF50',
+                            backgroundColor: 'rgba(76, 175, 80, 0.1)',
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            datalabels: { display: false }
+                        }
+                    }
+                });
+            }
+        }
+
+        function createVO2Charts(data) {
+            const vo2Ctx = document.getElementById('vo2-max-chart');
+            if (vo2Ctx && data.daily) {
+                new Chart(vo2Ctx, {
+                    type: 'line',
+                    data: {
+                        labels: data.daily.map(d => d.date),
+                        datasets: [{
+                            label: 'VO2 Max',
+                            data: data.daily.map(d => d.vo2),
+                            borderColor: '#FF9800',
+                            backgroundColor: 'rgba(255, 152, 0, 0.1)',
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            datalabels: { display: false }
+                        }
+                    }
+                });
+            }
+        }
+
+        function createStepsCharts(data) {
+            const stepsCtx = document.getElementById('steps-chart');
+            if (stepsCtx && data.daily) {
+                new Chart(stepsCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: data.daily.map(d => d.label),
+                        datasets: [{
+                            label: 'Daily Steps',
+                            data: data.daily.map(d => d.dailySteps),
+                            backgroundColor: data.daily.map(d => d.hrColor),
+                            borderColor: data.daily.map(d => d.hrColor),
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            datalabels: { display: false }
+                        }
+                    }
+                });
+            }
+        }
+
+        function createStrengthCharts(data) {
+            const strengthCtx = document.getElementById('strength-chart');
+            if (strengthCtx && data.daily) {
+                new Chart(strengthCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: data.daily.map(d => d.label),
+                        datasets: [{
+                            label: 'Strength Training (minutes)',
+                            data: data.daily.map(d => d.dailyDuration),
+                            backgroundColor: data.daily.map(d => d.hrColor),
+                            borderColor: data.daily.map(d => d.hrColor),
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            datalabels: { display: false }
+                        }
+                    }
+                });
+            }
+        }
+
+        function createBodyCompCharts(data) {
+            const bodyCompCtx = document.getElementById('bodyComp-chart');
+            if (bodyCompCtx && data.daily) {
+                new Chart(bodyCompCtx, {
+                    type: 'line',
+                    data: {
+                        labels: data.daily.map(d => d.label),
+                        datasets: [
+                            {
+                                label: 'Weight (kg)',
+                                data: data.daily.map(d => d.weight),
+                                borderColor: '#FF5722',
+                                backgroundColor: 'rgba(255, 87, 34, 0.1)',
+                                yAxisID: 'y'
+                            },
+                            {
+                                label: 'Body Fat %',
+                                data: data.daily.map(d => d.bodyFat),
+                                borderColor: '#9C27B0',
+                                backgroundColor: 'rgba(156, 39, 176, 0.1)',
+                                yAxisID: 'y1'
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: true },
+                            datalabels: { display: false }
+                        },
+                        scales: {
+                            y: { type: 'linear', display: true, position: 'left' },
+                            y1: { type: 'linear', display: true, position: 'right' }
+                        }
+                    }
+                });
+            }
+        }
+
+        function createRHRCharts(data) {
+            const rhrCtx = document.getElementById('rhr-chart');
+            if (rhrCtx && data.daily) {
+                new Chart(rhrCtx, {
+                    type: 'line',
+                    data: {
+                        labels: data.daily.map(d => d.label),
+                        datasets: [{
+                            label: 'Resting Heart Rate (BPM)',
+                            data: data.daily.map(d => d.rhr),
+                            borderColor: '#E91E63',
+                            backgroundColor: 'rgba(233, 30, 99, 0.1)',
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            datalabels: { display: false }
+                        }
+                    }
+                });
+            }
+        }
+
+        function createHeartRateCharts(data) {
+            const activityCtx = document.getElementById('heart-rate-activity-chart');
+            if (activityCtx && data.daily) {
+                new Chart(activityCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: data.daily.map(d => d.label),
+                        datasets: [
+                            {
+                                label: 'MPA Time (min)',
+                                data: data.daily.map(d => d.mpaTime),
+                                backgroundColor: '#4CAF50'
+                            },
+                            {
+                                label: 'VPA Time (min)',
+                                data: data.daily.map(d => d.vpaTime),
+                                backgroundColor: '#FF9800'
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: true },
+                            datalabels: { display: false }
+                        }
+                    }
+                });
+            }
+
+            const hrCtx = document.getElementById('heart-rate-hr-chart');
+            if (hrCtx && data.daily) {
+                new Chart(hrCtx, {
+                    type: 'line',
+                    data: {
+                        labels: data.daily.map(d => d.label),
+                        datasets: [{
+                            label: 'Hazard Ratio',
+                            data: data.daily.map(d => d.hazardRatio),
+                            borderColor: '#F44336',
+                            backgroundColor: 'rgba(244, 67, 54, 0.1)',
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            datalabels: { display: false }
+                        }
+                    }
+                });
+            }
+        }
+
+        // Event listeners for summary item clicks
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeCharts();
+
+            // Add click listeners to summary items
+            document.querySelectorAll('.summary-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    const detailsId = this.id.replace('-summary', '-details');
+                    const details = document.getElementById(detailsId);
+                    if (details) {
+                        details.classList.toggle('visible');
+                    }
+                });
+            });
+
+            // Navigation functionality
+            const navButtons = document.querySelectorAll('.nav-button');
+            navButtons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    navButtons.forEach(btn => btn.style.backgroundColor = '#333');
+                    this.style.backgroundColor = '#007bff';
+                });
+            });
         });
     </script>
 </body>
