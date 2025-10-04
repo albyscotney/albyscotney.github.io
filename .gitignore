@@ -1,0 +1,5 @@
+# Ignore JSON metadata files
+*.json
+
+# Keep HTML files
+!*.html
