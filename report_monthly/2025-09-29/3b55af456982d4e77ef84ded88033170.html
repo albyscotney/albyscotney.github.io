@@ -80,6 +80,20 @@
     <div class="container" id="main-container">
         <h1>Health Analysis</h1>
 
+        <!-- Navigation Buttons -->
+        <div class="navigation-container" style="margin-bottom: 30px; text-align: center;">
+            <div class="nav-buttons" style="display: inline-flex; gap: 10px; background-color: #1e1e1e; padding: 10px; border-radius: 8px; border: 1px solid #333;">
+                <a href="#" id="daily-nav" class="nav-button" style="padding: 8px 16px; background-color: #333; color: #fff; text-decoration: none; border-radius: 4px; transition: background-color 0.2s;">Daily</a>
+                <a href="#" id="weekly-nav" class="nav-button" style="padding: 8px 16px; background-color: #333; color: #fff; text-decoration: none; border-radius: 4px; transition: background-color 0.2s;">Weekly</a>
+                <a href="#" id="monthly-nav" class="nav-button" style="padding: 8px 16px; background-color: #333; color: #fff; text-decoration: none; border-radius: 4px; transition: background-color 0.2s;">Monthly</a>
+            </div>
+            <div class="date-nav" style="margin-top: 10px;">
+                <a href="#" id="prev-day" class="date-nav-button" style="padding: 6px 12px; background-color: #1e1e1e; color: #fff; text-decoration: none; border-radius: 4px; border: 1px solid #333; margin-right: 5px;">← Previous</a>
+                <span id="current-date" style="color: #aaa; margin: 0 10px;"></span>
+                <a href="#" id="next-day" class="date-nav-button" style="padding: 6px 12px; background-color: #1e1e1e; color: #fff; text-decoration: none; border-radius: 4px; border: 1px solid #333; margin-left: 5px;">Next →</a>
+            </div>
+        </div>
+
         <div class="metric-wrapper">
             <div id="sleep-summary" class="summary-item">
                 <h2>Sleep Score 😴</h2>
@@ -204,52 +218,146 @@
                 </div>
             </div>
         </div>
+
+        <div class="metric-wrapper">
+            <div id="heart-rate-summary" class="summary-item">
+                <h2>Heart Rate Activity Score 💓</h2>
+                <div class="score-scale-container">
+                    <div class="scale-wrapper">
+                        <div class="score-scale-bar"></div>
+                        <div id="heart-rate-last-pointer" class="scale-pointer pointer-last"><div class="pointer-label">Last</div></div>
+                        <div id="heart-rate-avg-pointer" class="scale-pointer pointer-avg"><div class="pointer-label">Avg</div></div>
+                    </div>
+                </div>
+            </div>
+            <div id="heart-rate-details" class="details-container">
+                <div class="chart-wrapper">
+                    <h3>Activity Time Distribution</h3>
+                    <p class="chart-subtitle">Time spent in moderate (MPA) and vigorous (VPA) physical activity. Shows adjusted VPA time and 7-day rolling average.</p>
+                    <div style="height: 300px; position: relative;">
+                        <canvas id="heart-rate-activity-chart"></canvas>
+                    </div>
+                </div>
+                <div class="chart-wrapper">
+                    <h3>Hazard Ratio Trend</h3>
+                    <p class="chart-subtitle">Health risk score based on physical activity levels. Lower is better.</p>
+                    <div style="height: 300px; position: relative;">
+                        <canvas id="heart-rate-hr-chart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
         // --- DATA PLACEHOLDER (To be replaced by Python) ---
         const chartData = {
     "sleep": {
-        "latestScore": 3.833081571229202,
-        "averageScore": 2.3468328577057496,
+        "latestScore": -0.5798035338832286,
+        "averageScore": -0.3300829525025395,
         "daily": [
             {
+                "label": "Oct 2025",
+                "consistencyScore": 0.9508430373605046,
+                "durationScore": 0.9906666666666668,
+                "consistencyColor": "#46a14a",
+                "durationColor": "#dbeddc",
+                "sleepTime": "01:02",
+                "wakeTime": "08:25",
+                "sleepDuration": 6.675000000000001,
+                "timeInBed": 6.7,
+                "awakeCount": 0,
+                "hasData": true
+            },
+            {
                 "label": "Sep 2025",
-                "consistencyScore": 1.3987877759158107,
-                "durationScore": 1.2866727069867652,
-                "consistencyColor": "#e53935",
-                "durationColor": "#e53935",
-                "sleepTime": "22:35",
-                "wakeTime": "07:20",
-                "sleepDuration": 7.769298245614036,
-                "timeInBed": 8.198245614035088,
-                "awakeCount": 2,
+                "consistencyScore": 1.0097444586869733,
+                "durationScore": 0.9706541137326073,
+                "consistencyColor": "#f9d8d7",
+                "durationColor": "#90c793",
+                "sleepTime": "01:02",
+                "wakeTime": "08:14",
+                "sleepDuration": 7.194827586206896,
+                "timeInBed": 7.525287356321838,
+                "awakeCount": 1,
                 "hasData": true
             },
             {
                 "label": "Aug 2025",
-                "consistencyScore": 1.2105155603359676,
-                "durationScore": 1.1900123310324993,
-                "consistencyColor": "#e53935",
-                "durationColor": "#e53935",
-                "sleepTime": "22:33",
-                "wakeTime": "07:18",
-                "sleepDuration": 7.7701275045537335,
-                "timeInBed": 8.177231329690347,
-                "awakeCount": 2,
+                "consistencyScore": 0.9755003680075366,
+                "durationScore": 0.9523584064327486,
+                "consistencyColor": "#a2d0a4",
+                "durationColor": "#4ba44f",
+                "sleepTime": "00:06",
+                "wakeTime": "06:55",
+                "sleepDuration": 7.594592592592592,
+                "timeInBed": 7.905703703703704,
+                "awakeCount": 1,
                 "hasData": true
             },
             {
                 "label": "Jul 2025",
-                "consistencyScore": 1.1400000000000001,
-                "durationScore": 1.2586666666666666,
+                "consistencyScore": 1.0690281419413712,
+                "durationScore": 0.9751556310130165,
                 "consistencyColor": "#e53935",
-                "durationColor": "#e53935",
-                "sleepTime": "22:30",
-                "wakeTime": "07:15",
-                "sleepDuration": 7.6588611111111105,
-                "timeInBed": 8.156083333333333,
-                "awakeCount": 3,
+                "durationColor": "#a1cfa3",
+                "sleepTime": "23:41",
+                "wakeTime": "07:54",
+                "sleepDuration": 7.129354838709677,
+                "timeInBed": 7.515913978494624,
+                "awakeCount": 1,
+                "hasData": true
+            },
+            {
+                "label": "Jun 2025",
+                "consistencyScore": 1.0163006771771979,
+                "durationScore": 0.9638528370135109,
+                "consistencyColor": "#f6bebd",
+                "durationColor": "#77ba79",
+                "sleepTime": "23:00",
+                "wakeTime": "06:26",
+                "sleepDuration": 7.293438697318008,
+                "timeInBed": 7.751484674329502,
+                "awakeCount": 1,
+                "hasData": true
+            },
+            {
+                "label": "May 2025",
+                "consistencyScore": 0.9832050699700726,
+                "durationScore": 0.9421026457272214,
+                "consistencyColor": "#bfdfc1",
+                "durationColor": "#43a047",
+                "sleepTime": "01:19",
+                "wakeTime": "09:03",
+                "sleepDuration": 7.71239247311828,
+                "timeInBed": 8.024758064516128,
+                "awakeCount": 1,
+                "hasData": true
+            },
+            {
+                "label": "Apr 2025",
+                "consistencyScore": 1.0041863565453928,
+                "durationScore": 0.9532257066276804,
+                "consistencyColor": "#fceeee",
+                "durationColor": "#4fa652",
+                "sleepTime": "23:06",
+                "wakeTime": "07:30",
+                "sleepDuration": 7.4635,
+                "timeInBed": 7.775166666666666,
+                "awakeCount": 0,
+                "hasData": true
+            },
+            {
+                "label": "Mar 2025",
+                "consistencyScore": 1.019563406144609,
+                "durationScore": 0.9591984388053467,
+                "consistencyColor": "#f4b1af",
+                "durationColor": "#65b168",
+                "sleepTime": "22:45",
+                "wakeTime": "07:00",
+                "sleepDuration": 7.463263888888889,
+                "timeInBed": 7.99719246031746,
+                "awakeCount": 1,
                 "hasData": true
             }
         ],
@@ -277,20 +385,40 @@
         ]
     },
     "vo2": {
-        "latestScore": 1.35,
-        "averageScore": -2.441954022988506,
+        "latestScore": -4.6,
+        "averageScore": -4.6,
         "daily": [
             {
+                "date": "Oct 2025",
+                "vo2": 53.9
+            },
+            {
                 "date": "Sep 2025",
-                "vo2": 53.92758620689656
+                "vo2": 53.92333333333333
             },
             {
                 "date": "Aug 2025",
-                "vo2": 53.47931034482759
+                "vo2": 53.900000000000006
             },
             {
                 "date": "Jul 2025",
-                "vo2": 46.35
+                "vo2": 54.40967741935484
+            },
+            {
+                "date": "Jun 2025",
+                "vo2": 56.46333333333334
+            },
+            {
+                "date": "May 2025",
+                "vo2": 57.12580645161291
+            },
+            {
+                "date": "Apr 2025",
+                "vo2": 55.99
+            },
+            {
+                "date": "Mar 2025",
+                "vo2": 56.1625
             }
         ],
         "zones": [
@@ -340,30 +468,22 @@
     },
     "steps": {
         "latestScore": 0.0,
-        "averageScore": 1.9333333333333336,
+        "averageScore": 0.148997500000001,
         "daily": [
             {
-                "label": "Sep 2025",
-                "dailySteps": 13513,
-                "rollingAvgSteps": 13414,
+                "label": "Oct 2025",
+                "dailySteps": 14365,
+                "rollingAvgSteps": 14043,
                 "hazardRatio": 1.0,
                 "hrColor": "#ffffff",
                 "hasData": true
             },
             {
-                "label": "Aug 2025",
-                "dailySteps": 9768,
-                "rollingAvgSteps": 8369,
-                "hazardRatio": 1.44,
-                "hrColor": "#e53935",
-                "hasData": true
-            },
-            {
-                "label": "Jul 2025",
-                "dailySteps": 8700,
-                "rollingAvgSteps": 7920,
-                "hazardRatio": 1.1400000000000001,
-                "hrColor": "#e53935",
+                "label": "Sep 2025",
+                "dailySteps": 13011,
+                "rollingAvgSteps": 13118,
+                "hazardRatio": 1.0297995,
+                "hrColor": "#ef8886",
                 "hasData": true
             }
         ],
@@ -391,31 +511,71 @@
         ]
     },
     "strength": {
-        "latestScore": -0.10498505731091012,
-        "averageScore": 0.2811890558438268,
+        "latestScore": -0.37417176390955653,
+        "averageScore": -0.14863217294809772,
         "daily": [
             {
+                "label": "Oct 2025",
+                "dailyDuration": 14.035883246527776,
+                "weeklySum": 235.74525824652778,
+                "hrScore": 0.9625828236090443,
+                "hrColor": "#72b775",
+                "hasData": true
+            },
+            {
                 "label": "Sep 2025",
-                "dailyDuration": 14.511143686579562,
-                "weeklySum": 93.11082462003861,
-                "hrScore": 0.989501494268909,
-                "hrColor": "#d7ebd8",
+                "dailyDuration": 18.169432169596355,
+                "weeklySum": 98.75397820366756,
+                "hrScore": 0.9885181111266121,
+                "hrColor": "#d3e9d4",
                 "hasData": true
             },
             {
                 "label": "Aug 2025",
                 "dailyDuration": 24.237059759324595,
-                "weeklySum": 162.0100819577453,
-                "hrScore": 0.9748552224842391,
-                "hrColor": "#a0cfa2",
+                "weeklySum": 186.0499379147766,
+                "hrScore": 0.970557108079917,
+                "hrColor": "#90c792",
                 "hasData": true
             },
             {
                 "label": "Jul 2025",
-                "dailyDuration": 36.0,
-                "weeklySum": 224.0,
-                "hrScore": 1.12,
-                "hrColor": "#e53935",
+                "dailyDuration": 22.432217308782764,
+                "weeklySum": 146.4851279638147,
+                "hrScore": 0.977812356578321,
+                "hrColor": "#abd4ad",
+                "hasData": true
+            },
+            {
+                "label": "Jun 2025",
+                "dailyDuration": 18.642835150824656,
+                "weeklySum": 129.50860290527348,
+                "hrScore": 0.9810459803989955,
+                "hrColor": "#b7dab9",
+                "hasData": true
+            },
+            {
+                "label": "May 2025",
+                "dailyDuration": 14.577932247038811,
+                "weeklySum": 89.50533053490426,
+                "hrScore": 0.9916794326461894,
+                "hrColor": "#dfefe0",
+                "hasData": true
+            },
+            {
+                "label": "Apr 2025",
+                "dailyDuration": 9.027952745225694,
+                "weeklySum": 68.91549411349827,
+                "hrScore": 0.9966101280898644,
+                "hrColor": "#f2f8f2",
+                "hasData": true
+            },
+            {
+                "label": "Mar 2025",
+                "dailyDuration": 2.478602769639757,
+                "weeklySum": 11.824598651462138,
+                "hrScore": 1.0122883211125773,
+                "hrColor": "#f8cecd",
                 "hasData": true
             }
         ],
@@ -443,37 +603,27 @@
         ]
     },
     "bodyComp": {
-        "latestScore": 2.7950327131850616,
-        "averageScore": 2.8650109043950223,
+        "latestScore": -2.2948494322468695,
+        "averageScore": -2.280901799018895,
         "daily": [
             {
+                "label": "Oct 2025",
+                "weight": 91.77333333333333,
+                "bodyFat": 18.433333333333334,
+                "ffmi": 21.179397728987478,
+                "fmi": 4.78634846084201,
+                "hrScore": 0.7705150567753131,
+                "hrColor": "#43a047",
+                "hasData": true
+            },
+            {
                 "label": "Sep 2025",
-                "weight": 84.17557894736842,
-                "bodyFat": 18.49824561403509,
-                "ffmi": 20.405191084032822,
-                "fmi": 4.237931621641825,
-                "hrScore": 1.2795032713185062,
-                "hrColor": "#e53935",
-                "hasData": true
-            },
-            {
-                "label": "Aug 2025",
-                "weight": 74.4,
-                "bodyFat": 17.2,
-                "ffmi": 18.88,
-                "fmi": 3.44,
-                "hrScore": 1.4400000000000002,
-                "hrColor": "#e53935",
-                "hasData": true
-            },
-            {
-                "label": "Jul 2025",
-                "weight": 71.4,
-                "bodyFat": 15.7,
-                "ffmi": 18.279999999999998,
-                "fmi": 3.14,
-                "hrScore": 1.1400000000000001,
-                "hrColor": "#e53935",
+                "weight": 91.6935,
+                "bodyFat": 18.289285714285715,
+                "ffmi": 21.1993750606286,
+                "fmi": 4.743783608452435,
+                "hrScore": 0.7733045834209079,
+                "hrColor": "#43a047",
                 "hasData": true
             }
         ],
@@ -501,13 +651,20 @@
         ]
     },
     "rhr": {
-        "latestScore": -1.7084137931034482,
-        "averageScore": -1.6877615869484597,
+        "latestScore": -1.6236666666666666,
+        "averageScore": -1.7350578965053765,
         "daily": [
+            {
+                "label": "Oct 2025",
+                "rhr": 49,
+                "hrScore": 0.8376333333333333,
+                "hrColor": "#43a047",
+                "hasData": true
+            },
             {
                 "label": "Sep 2025",
                 "rhr": 48,
-                "hrScore": 0.8291586206896552,
+                "hrScore": 0.82936,
                 "hrColor": "#43a047",
                 "hasData": true
             },
@@ -520,9 +677,169 @@
             },
             {
                 "label": "Jul 2025",
-                "rhr": 50,
-                "hrScore": 0.8425,
+                "rhr": 47,
+                "hrScore": 0.8241322580645162,
                 "hrColor": "#43a047",
+                "hasData": true
+            },
+            {
+                "label": "Jun 2025",
+                "rhr": 47,
+                "hrScore": 0.8264400000000001,
+                "hrColor": "#43a047",
+                "hasData": true
+            },
+            {
+                "label": "May 2025",
+                "rhr": 47,
+                "hrScore": 0.8227193548387097,
+                "hrColor": "#43a047",
+                "hasData": true
+            },
+            {
+                "label": "Apr 2025",
+                "rhr": 47,
+                "hrScore": 0.8269266666666667,
+                "hrColor": "#43a047",
+                "hasData": true
+            },
+            {
+                "label": "Mar 2025",
+                "rhr": 47,
+                "hrScore": 0.8227291666666666,
+                "hrColor": "#43a047",
+                "hasData": true
+            }
+        ],
+        "colorStops": [
+            {
+                "score": 2,
+                "color": "#d32f2f"
+            },
+            {
+                "score": 1,
+                "color": "#f57c00"
+            },
+            {
+                "score": 0,
+                "color": "#ffffff"
+            },
+            {
+                "score": -1,
+                "color": "#7cb342"
+            },
+            {
+                "score": -2,
+                "color": "#388e3c"
+            }
+        ]
+    },
+    "heartRate": {
+        "latestScore": 0.09515455304928921,
+        "averageScore": -0.09725319284389133,
+        "daily": [
+            {
+                "label": "Oct 2025",
+                "mpaTime": 142.0,
+                "vpaTime": 4.0,
+                "adjVpaTime": 75.0,
+                "rolling7Day": 128.33333333333334,
+                "hazardRatio": 0.9904845446950711,
+                "restingHR": 49.333333333333336,
+                "maxHR": 195.0,
+                "hrReserve": 145.66666666666666,
+                "zoneTimes": {},
+                "hasData": true
+            },
+            {
+                "label": "Sep 2025",
+                "mpaTime": 886.0,
+                "vpaTime": 152.0,
+                "adjVpaTime": 595.0,
+                "rolling7Day": 144.96666666666667,
+                "hazardRatio": 0.9968024504979583,
+                "restingHR": 48.2,
+                "maxHR": 195.0,
+                "hrReserve": 146.8,
+                "zoneTimes": {},
+                "hasData": true
+            },
+            {
+                "label": "Aug 2025",
+                "mpaTime": 1170.0,
+                "vpaTime": 174.0,
+                "adjVpaTime": 759.0,
+                "rolling7Day": 162.38709677419354,
+                "hazardRatio": 0.984476799839555,
+                "restingHR": 47.064516129032256,
+                "maxHR": 195.0,
+                "hrReserve": 147.93548387096774,
+                "zoneTimes": {},
+                "hasData": true
+            },
+            {
+                "label": "Jul 2025",
+                "mpaTime": 630.0,
+                "vpaTime": 132.0,
+                "adjVpaTime": 447.0,
+                "rolling7Day": 101.64516129032258,
+                "hazardRatio": 1.0086350014673848,
+                "restingHR": 47.193548387096776,
+                "maxHR": 195.0,
+                "hrReserve": 147.80645161290323,
+                "zoneTimes": {},
+                "hasData": true
+            },
+            {
+                "label": "Jun 2025",
+                "mpaTime": 546.0,
+                "vpaTime": 54.0,
+                "adjVpaTime": 327.0,
+                "rolling7Day": 65.8,
+                "hazardRatio": 1.0682277999219771,
+                "restingHR": 47.56666666666667,
+                "maxHR": 195.0,
+                "hrReserve": 147.43333333333334,
+                "zoneTimes": {},
+                "hasData": true
+            },
+            {
+                "label": "May 2025",
+                "mpaTime": 0.0,
+                "vpaTime": 0.0,
+                "adjVpaTime": 0.0,
+                "rolling7Day": 0.0,
+                "hazardRatio": null,
+                "restingHR": 47.225806451612904,
+                "maxHR": 195.0,
+                "hrReserve": 147.7741935483871,
+                "zoneTimes": {},
+                "hasData": true
+            },
+            {
+                "label": "Apr 2025",
+                "mpaTime": 0.0,
+                "vpaTime": 0.0,
+                "adjVpaTime": 0.0,
+                "rolling7Day": 0.0,
+                "hazardRatio": null,
+                "restingHR": 47.8,
+                "maxHR": 195.0,
+                "hrReserve": 147.2,
+                "zoneTimes": {},
+                "hasData": true
+            },
+            {
+                "label": "Mar 2025",
+                "mpaTime": 0.0,
+                "vpaTime": 0.0,
+                "adjVpaTime": 0.0,
+                "rolling7Day": 0.0,
+                "hazardRatio": null,
+                "restingHR": 47.041666666666664,
+                "maxHR": 195.0,
+                "hrReserve": 147.95833333333334,
+                "zoneTimes": {},
                 "hasData": true
             }
         ],
@@ -551,975 +868,425 @@
     }
 };
 
-        document.addEventListener('DOMContentLoaded', function() {
-            Chart.register(ChartDataLabels);
+        // Chart.js configuration
+        Chart.register(ChartDataLabels);
+        Chart.register(ChartAnnotation);
 
-            // --- Accordion Click Logic ---
-            document.querySelectorAll('.summary-item').forEach(summary => {
-                summary.addEventListener('click', function() {
-                    const detailsId = this.id.replace('-summary', '-details');
-                    const detailsEl = document.getElementById(detailsId);
-                    if (!detailsEl) return;
-                    const isAlreadyVisible = detailsEl.classList.contains('visible');
-                    document.querySelectorAll('.details-container').forEach(d => d.classList.remove('visible'));
-                    if (!isAlreadyVisible) detailsEl.classList.add('visible');
-                });
-            });
+        // Color utility functions
+        function hexToRgb(hex) {
+            const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+            return result ? {
+                r: parseInt(result[1], 16),
+                g: parseInt(result[2], 16),
+                b: parseInt(result[3], 16)
+            } : null;
+        }
 
-            // --- Reusable Helper Functions ---
-            const hexToRgba = (hex, alpha=1) => { if(!hex) return 'rgba(136,136,136,0.6)'; const [r,g,b] = hex.match(/\w\w/g).map(x=>parseInt(x,16)); return `rgba(${r},${g},${b},${alpha})`; };
-            const timeToDecimal = (t) => { if (!t) return null; const [h,m] = t.split(':').map(Number); return h + m / 60; };
-            const decimalToTime = (d) => { if (!d) return 'N/A'; const h = Math.floor(d)%24, m = Math.round((d%1)*60); return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`; };
-            const getContrastColor = (hex) => { if(!hex) return '#FFFFFF'; const [r,g,b] = hex.match(/\w\w/g).map(x => parseInt(x, 16)); return (r * 0.299 + g * 0.587 + b * 0.114) > 186 ? '#000000' : '#FFFFFF'; };
+        function rgbToHex(r, g, b) {
+            return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+        }
 
-            // --- FIXED HELPER FUNCTIONS ---
+        function getColorForScore(score) {
+            if (score >= 1.5) return "#d32f2f";
+            if (score >= 1.2) return "#f57c00";
+            if (score >= 0.8) return "#ffffff";
+            if (score >= 0.5) return "#7cb342";
+            return "#388e3c";
+        }
 
-            const scoreToPercentage = (score, stops) => {
-                const allScores = stops.map(s => s.score);
-                const minScore = Math.min(...allScores);
-                const maxScore = Math.max(...allScores);
-
-                const scoreRange = maxScore - minScore;
-                if (scoreRange === 0) return 50;
-
-                const boundedScore = Math.max(minScore, Math.min(score, maxScore));
-
-                return ((boundedScore - minScore) / scoreRange) * 100;
-            };
-
-            const getColorForScore = (score, stops) => {
-                const sortedStops = [...stops].sort((a, b) => a.score - b.score);
-
-                if (score <= sortedStops[0].score) return sortedStops[0].color;
-                if (score >= sortedStops[sortedStops.length - 1].score) return sortedStops[sortedStops.length - 1].color;
-
-                let stop1, stop2;
-                for (let i = 0; i < sortedStops.length - 1; i++) {
-                    if (score >= sortedStops[i].score && score <= sortedStops[i+1].score) {
-                        stop1 = sortedStops[i];
-                        stop2 = sortedStops[i+1];
-                        break;
-                    }
-                }
-
-                const range = stop2.score - stop1.score;
-                const ratio = range === 0 ? 0 : (score - stop1.score) / range;
-
-                const r1 = parseInt(stop1.color.slice(1,3), 16), g1 = parseInt(stop1.color.slice(3,5), 16), b1 = parseInt(stop1.color.slice(5,7), 16);
-                const r2 = parseInt(stop2.color.slice(1,3), 16), g2 = parseInt(stop2.color.slice(3,5), 16), b2 = parseInt(stop2.color.slice(5,7), 16);
-
-                const R = Math.round(r1 * (1-ratio) + r2 * ratio);
-                const G = Math.round(g1 * (1-ratio) + g2 * ratio);
-                const B = Math.round(b1 * (1-ratio) + b2 * ratio);
-
-                return `rgb(${R}, ${G}, ${B})`;
-            };
-
-            function setupPointers(prefix, lastScore, avgScore, stops) {
-                const lastPointer = document.getElementById(`${prefix}-last-pointer`);
-                const avgPointer = document.getElementById(`${prefix}-avg-pointer`);
-
-                lastPointer.style.left = `${scoreToPercentage(lastScore, stops)}%`;
-                avgPointer.style.left = `${scoreToPercentage(avgScore, stops)}%`;
-
-                lastPointer.style.borderTopColor = getColorForScore(lastScore, stops);
-                avgPointer.style.borderBottomColor = getColorForScore(avgScore, stops);
-
-                const lastLabel = lastPointer.querySelector('.pointer-label');
-                const avgLabel = avgPointer.querySelector('.pointer-label');
-
-                if (lastLabel) lastLabel.textContent = `Last: ${lastScore.toFixed(2)}`;
-                if (avgLabel) avgLabel.textContent = `Avg: ${avgScore.toFixed(2)}`;
-            }
-
-            function updateGradientBar(prefix, stops) {
-                const gradientString = [...stops]
-                    .sort((a, b) => a.score - b.score)
-                    .map(stop =>
-                        `${stop.color} ${scoreToPercentage(stop.score, stops)}%`
-                    )
-                    .join(', ');
-
-                const bar = document.querySelector(`#${prefix}-summary .score-scale-bar`);
-                if(bar) bar.style.background = `linear-gradient(to right, ${gradientString})`;
-            }
-
-            // --- Setup Section for SLEEP ---
+        // Initialize charts and interactions
+        function initializeCharts() {
             if (chartData && chartData.sleep) {
                 const sleepData = chartData.sleep;
-                updateGradientBar('sleep', sleepData.colorStops);
-                setupPointers('sleep', sleepData.latestScore, sleepData.averageScore, sleepData.colorStops);
                 createSleepCharts(sleepData);
+                updateSleepSummary(sleepData);
             }
 
-            // --- Setup Section for VO2 MAX ---
             if (chartData && chartData.vo2) {
                 const vo2Data = chartData.vo2;
-                updateGradientBar('vo2', vo2Data.colorStops);
-                setupPointers('vo2', vo2Data.latestScore, vo2Data.averageScore, vo2Data.colorStops);
-                createVo2MaxChart(vo2Data);
+                createVO2Charts(vo2Data);
+                updateVO2Summary(vo2Data);
             }
 
-            // --- Setup Section for STEPS ---
             if (chartData && chartData.steps) {
                 const stepsData = chartData.steps;
-                updateGradientBar('steps', stepsData.colorStops);
-                setupPointers('steps', stepsData.latestScore, stepsData.averageScore, stepsData.colorStops);
-                createStepsChart(stepsData);
+                createStepsCharts(stepsData);
+                updateStepsSummary(stepsData);
             }
 
-            // --- Setup Section for STRENGTH TRAINING ---
             if (chartData && chartData.strength) {
                 const strengthData = chartData.strength;
-                updateGradientBar('strength', strengthData.colorStops);
-                setupPointers('strength', strengthData.latestScore, strengthData.averageScore, strengthData.colorStops);
-                createStrengthChart(strengthData);
+                createStrengthCharts(strengthData);
+                updateStrengthSummary(strengthData);
             }
 
-            // --- Setup Section for BODY COMPOSITION ---
             if (chartData && chartData.bodyComp) {
                 const bodyCompData = chartData.bodyComp;
-                updateGradientBar('bodyComp', bodyCompData.colorStops);
-                setupPointers('bodyComp', bodyCompData.latestScore, bodyCompData.averageScore, bodyCompData.colorStops);
-                createBodyCompChart(bodyCompData);
+                createBodyCompCharts(bodyCompData);
+                updateBodyCompSummary(bodyCompData);
             }
 
-            // --- Setup Section for RESTING HEART RATE ---
             if (chartData && chartData.rhr) {
                 const rhrData = chartData.rhr;
-                updateGradientBar('rhr', rhrData.colorStops);
-                setupPointers('rhr', rhrData.latestScore, rhrData.averageScore, rhrData.colorStops);
-                createRhrChart(rhrData);
+                createRHRCharts(rhrData);
+                updateRHRSummary(rhrData);
             }
 
-            // --- Chart Creation Functions ---
-            function createSleepCharts(sleepData) {
-                // Handle missing days - filter out days without data
-                const validDays = sleepData.daily.filter(d => d.hasData);
+            if (chartData && chartData.heartRate) {
+                const heartRateData = chartData.heartRate;
+                createHeartRateCharts(heartRateData);
+                updateHeartRateSummary(heartRateData);
+            }
+        }
 
-                // Create forest plot-style sleep windows chart
-                const sleepWindowsData = validDays.map(d => {
-                    const sleepTime = timeToDecimal(d.sleepTime);
-                    const wakeTime = timeToDecimal(d.wakeTime);
-                    const timeInBed = d.timeInBed || d.sleepDuration || 0; // Use actual time in bed
+        // Summary update functions
+        function updateSleepSummary(data) {
+            updateSummaryScale('sleep', data.latestScore, data.averageScore, data.colorStops);
+        }
 
-                    // Calculate the actual end time (sleep time + time in bed)
-                    let endTime = sleepTime + timeInBed;
+        function updateVO2Summary(data) {
+            updateSummaryScale('vo2', data.latestScore, data.averageScore, data.colorStops);
+        }
 
-                    // Handle day rollover (if sleep goes past midnight)
-                    if (endTime >= 24) {
-                        endTime = endTime - 24;
-                    }
+        function updateStepsSummary(data) {
+            updateSummaryScale('steps', data.latestScore, data.averageScore, data.colorStops);
+        }
 
-                    return {
-                        sleepTime: sleepTime,
-                        wakeTime: wakeTime,
-                        timeInBed: timeInBed,
-                        endTime: endTime,
-                        consistencyScore: d.consistencyScore,
-                        awakeCount: d.awakeCount || 0
-                    };
-                });
+        function updateStrengthSummary(data) {
+            updateSummaryScale('strength', data.latestScore, data.averageScore, data.colorStops);
+        }
 
-                // Custom plugin to draw sleep period bars and handle tooltips
-                const sleepBarPlugin = {
-                    id: 'sleepBarPlugin',
-                    beforeDatasetsDraw(chart) {
-                        const { ctx, scales: { x, y } } = chart;
+        function updateBodyCompSummary(data) {
+            updateSummaryScale('bodyComp', data.latestScore, data.averageScore, data.colorStops);
+        }
 
-                        sleepWindowsData.forEach((sleepData, index) => {
-                            let startTime = sleepData.sleepTime;
-                            let endTime = sleepData.sleepTime + sleepData.timeInBed;
+        function updateRHRSummary(data) {
+            updateSummaryScale('rhr', data.latestScore, data.averageScore, data.colorStops);
+        }
 
-                            // Adjust times for the 18-42 hour range (6pm to 6pm next day)
-                            // If sleep time is before 18:00 (6pm), it belongs to the next day
-                            if (startTime < 18) {
-                                startTime += 24; // Move to next day
-                            }
-                            if (endTime < 18) {
-                                endTime += 24; // Move to next day
-                            }
+        function updateHeartRateSummary(data) {
+            updateSummaryScale('heart-rate', data.latestScore, data.averageScore, data.colorStops);
+        }
 
-                            // Set color based on consistency score
-                            const score = sleepData.consistencyScore || 1.0;
-                            let backgroundColor, borderColor;
+        function updateSummaryScale(metric, latestScore, averageScore, colorStops) {
+            const scaleBar = document.querySelector(`#${metric}-summary .score-scale-bar`);
+            const lastPointer = document.querySelector(`#${metric}-last-pointer`);
+            const avgPointer = document.querySelector(`#${metric}-avg-pointer`);
 
-                            if (score <= 0.9) {
-                                backgroundColor = '#4caf50';
-                                borderColor = '#2e7d32';
-                            } else if (score >= 1.5) {
-                                backgroundColor = '#f44336';
-                                borderColor = '#c62828';
-                            } else {
-                                // Gradient between green and red for middle values
-                                const ratio = (score - 0.9) / (1.5 - 0.9);
-                                const r = Math.round(76 + (244 - 76) * ratio);
-                                const g = Math.round(175 + (67 - 175) * ratio);
-                                const b = Math.round(80 + (54 - 80) * ratio);
-                                backgroundColor = `rgb(${r}, ${g}, ${b})`;
-                                borderColor = `rgb(${Math.round(46 + (198 - 46) * ratio)}, ${Math.round(125 + (40 - 125) * ratio)}, ${Math.round(50 + (40 - 50) * ratio)})`;
-                            }
+            if (!scaleBar || !lastPointer || !avgPointer) return;
 
-                            // Get pixel positions
-                            const startPixel = x.getPixelForValue(startTime);
-                            const endPixel = x.getPixelForValue(endTime);
-                            const barHeight = 12; // Fixed bar height
-                            const barY = y.getPixelForValue(index) - barHeight / 2;
+            // Create gradient background
+            const gradient = createGradient(colorStops);
+            scaleBar.style.background = gradient;
 
-                            // Draw single continuous bar (no midnight crossing needed with 18-42 range)
-                            ctx.fillStyle = backgroundColor;
-                            ctx.fillRect(startPixel, barY, endPixel - startPixel, barHeight);
+            // Position pointers
+            const lastPosition = Math.max(0, Math.min(100, (latestScore + 2) * 25));
+            const avgPosition = Math.max(0, Math.min(100, (averageScore + 2) * 25));
 
-                            // Draw border
-                            ctx.strokeStyle = borderColor;
-                            ctx.lineWidth = 1.5;
-                            ctx.strokeRect(startPixel, barY, endPixel - startPixel, barHeight);
-                        });
-                    },
+            lastPointer.style.left = `${lastPosition}%`;
+            avgPointer.style.left = `${avgPosition}%`;
 
-                    // Add tooltip functionality
-                    afterEvent(chart, event) {
-                        const { x, y } = event;
-                        const { scales } = chart;
+            // Set pointer colors
+            const lastColor = getColorForScore(latestScore);
+            const avgColor = getColorForScore(averageScore);
 
-                        // Check if mouse is over any sleep bar
-                        let hoveredBar = null;
+            lastPointer.style.borderTopColor = lastColor;
+            avgPointer.style.borderBottomColor = avgColor;
+        }
 
-                        sleepWindowsData.forEach((sleepData, index) => {
-                            let startTime = sleepData.sleepTime;
-                            let endTime = sleepData.sleepTime + sleepData.timeInBed;
+        function createGradient(colorStops) {
+            const sortedStops = colorStops.sort((a, b) => b.score - a.score);
+            const gradient = `linear-gradient(to right, ${sortedStops.map(stop => `${stop.color} ${(stop.score + 2) * 25}%`).join(', ')})`;
+            return gradient;
+        }
 
-                            // Adjust times for the 18-42 hour range
-                            if (startTime < 18) {
-                                startTime += 24;
-                            }
-                            if (endTime < 18) {
-                                endTime += 24;
-                            }
-
-                            const startPixel = scales.x.getPixelForValue(startTime);
-                            const endPixel = scales.x.getPixelForValue(endTime);
-                            const barHeight = 12;
-                            const barY = scales.y.getPixelForValue(index) - barHeight / 2;
-
-                            // Check if mouse is within the bar bounds
-                            if (x >= startPixel && x <= endPixel && y >= barY && y <= barY + barHeight) {
-                                hoveredBar = { sleepData, index };
-                            }
-                        });
-
-                        // Update cursor style
-                        chart.canvas.style.cursor = hoveredBar ? 'pointer' : 'default';
-
-                        // Store hovered bar for tooltip
-                        chart.hoveredSleepBar = hoveredBar;
-                    }
-                };
-
-                // Custom tooltip plugin for sleep bars
-                const sleepTooltipPlugin = {
-                    id: 'sleepTooltipPlugin',
-                    afterDraw(chart) {
-                        if (chart.hoveredSleepBar) {
-                            const { sleepData, index } = chart.hoveredSleepBar;
-                            const { ctx, scales } = chart;
-
-                            // Get mouse position
-                            const mouseX = chart.canvas.getBoundingClientRect().left + chart.canvas.width / 2;
-                            const mouseY = chart.canvas.getBoundingClientRect().top + chart.canvas.height / 2;
-
-                            // Create tooltip content
-                            const sleepTime = decimalToTime(sleepData.sleepTime);
-                            const wakeTime = decimalToTime(sleepData.wakeTime);
-                            const timeInBed = sleepData.timeInBed.toFixed(1);
-                            const consistencyScore = sleepData.consistencyScore ? sleepData.consistencyScore.toFixed(2) : 'N/A';
-                            const awakeCount = sleepData.awakeCount || 0;
-
-                            const tooltipText = [
-                                `Sleep Time: ${sleepTime}`,
-                                `Wake Time: ${wakeTime}`,
-                                `Time in Bed: ${timeInBed}h`,
-                                `Sleep Consistency: ${consistencyScore}`,
-                                `Awake Count: ${awakeCount}`
-                            ];
-
-                            // Draw tooltip background
-                            const padding = 8;
-                            const lineHeight = 16;
-                            const maxWidth = Math.max(...tooltipText.map(text => ctx.measureText(text).width));
-                            const tooltipWidth = maxWidth + padding * 2;
-                            const tooltipHeight = tooltipText.length * lineHeight + padding * 2;
-
-                            const tooltipX = mouseX - tooltipWidth / 2;
-                            const tooltipY = mouseY - tooltipHeight - 10;
-
-                            // Draw background
-                            ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
-                            ctx.fillRect(tooltipX, tooltipY, tooltipWidth, tooltipHeight);
-
-                            // Draw border
-                            ctx.strokeStyle = '#666';
-                            ctx.lineWidth = 1;
-                            ctx.strokeRect(tooltipX, tooltipY, tooltipWidth, tooltipHeight);
-
-                            // Draw text
-                            ctx.fillStyle = '#fff';
-                            ctx.font = '12px Arial';
-                            ctx.textAlign = 'left';
-
-                            tooltipText.forEach((text, i) => {
-                                ctx.fillText(text, tooltipX + padding, tooltipY + padding + (i + 1) * lineHeight);
-                            });
-                        }
-                    }
-                };
-
-                // Create horizontal bar chart for sleep windows (forest plot style)
-                new Chart('sleep-windows-chart', {
+        // Chart creation functions (simplified versions)
+        function createSleepCharts(data) {
+            // Sleep windows chart
+            const sleepWindowsCtx = document.getElementById('sleep-windows-chart');
+            if (sleepWindowsCtx && data.daily) {
+                new Chart(sleepWindowsCtx, {
                     type: 'bar',
                     data: {
-                        labels: validDays.map(d => d.label),
+                        labels: data.daily.map(d => d.label),
                         datasets: [{
-                            label: 'Sleep Window',
-                            data: sleepWindowsData.map(d => 0), // Dummy data - we'll draw custom bars
-                            backgroundColor: 'transparent',
-                            borderColor: 'transparent',
-                            borderWidth: 0
+                            label: 'Sleep Consistency',
+                            data: data.daily.map(d => d.consistencyScore),
+                            backgroundColor: data.daily.map(d => d.consistencyColor),
+                            borderColor: data.daily.map(d => d.consistencyColor),
+                            borderWidth: 1
                         }]
                     },
-                    plugins: [sleepBarPlugin, sleepTooltipPlugin],
                     options: {
-                        animation: false, // Disable animations to prevent resizing issues
                         responsive: true,
                         maintainAspectRatio: false,
-                        indexAxis: 'y', // Horizontal bars
-                        layout: {
-                            padding: {
-                                top: 10,
-                                right: 10,
-                                bottom: 10,
-                                left: 10
-                            }
-                        },
-                        scales: {
-                            x: {
-                                min: 18,
-                                max: 42, // 18 + 24 = 42 (6pm to 6pm next day)
-                                title: {
-                                    display: true,
-                                    text: 'Time of Day',
-                                    color: '#aaa'
-                                },
-                                ticks: {
-                                    color: '#aaa',
-                                    stepSize: 2,
-                                    callback: function(value) {
-                                        // Convert decimal hours to time format
-                                        const hours = Math.floor(value);
-                                        const minutes = Math.round((value - hours) * 60);
-                                        const displayHours = hours % 24;
-                                        return `${String(displayHours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
-                                    }
-                                }
-                            },
-                            y: {
-                                ticks: { color: '#aaa' }
-                            }
-                        },
                         plugins: {
                             legend: { display: false },
-                            tooltip: {
-                                enabled: false // Disable default tooltips since we have custom ones
-                            },
-                            datalabels: {
-                                display: false
-                            }
-                        }
-                    }
-                });
-
-                // Duration chart - simple bar chart showing hours slept
-                const durationData = validDays.map(d => d.sleepDuration || 0);
-
-                new Chart('sleep-duration-chart', {
-                    type: 'bar',
-                    data: {
-                        labels: validDays.map(d => d.label),
-                        datasets: [{
-                            label: 'Hours Slept',
-                            data: durationData,
-                            backgroundColor: validDays.map(d => hexToRgba(d.durationColor, 0.6)),
-                            borderColor: validDays.map(d => d.durationColor),
-                            borderWidth: 1.5
-                        }]
-                    },
-                    options: {
-                        animation: false, // Disable animations to prevent resizing issues
-                        scales: {
-                            y: {
-                                beginAtZero: true,
-                                title: {
-                                    display: true,
-                                    text: 'Hours',
-                                    color: '#aaa'
-                                },
-                                ticks: {
-                                    color: '#aaa',
-                                    callback: function(value) {
-                                        return value.toFixed(1) + 'h';
-                                    }
-                                }
-                            },
-                            x: {
-                                ticks: { color: '#aaa' }
-                            }
+                            datalabels: { display: false }
                         },
-                        plugins: {
-                            legend: { display: false },
-                            tooltip: {
-                                callbacks: {
-                                    label: function(context) {
-                                        return `Hours Slept: ${context.raw.toFixed(1)}`;
-                                    }
-                                }
-                            },
-                            datalabels: {
-                                display: false
-                            }
+                        scales: {
+                            y: { beginAtZero: true, max: 2 }
                         }
                     }
                 });
             }
 
-            function createVo2MaxChart(vo2Data) {
-                const dailyData = vo2Data.daily;
-                const zones = vo2Data.zones || []; // Get zones from your data, default to empty array
-
-                // Dynamically determine the Y-axis range to fit all data points and zone lines
-                const allYValues = [...dailyData.map(d => d.vo2), ...zones.map(z => z.value)];
-                const yMax = Math.ceil(Math.max(...allYValues)) + 2;
-                const yMin = Math.floor(Math.min(...allYValues)) - 2;
-
-                // --- GRADIENT BACKGROUND LOGIC ---
-                const annotations = {};
-
-                // Create gradient background for VO2 chart
-                if (zones.length > 0) {
-                    const sortedZones = [...zones].sort((a, b) => a.value - b.value);
-                    const gradientElement = document.getElementById('vo2-gradient-bg');
-
-                    if (gradientElement) {
-                        // Create CSS gradient string
-                        const gradientStops = sortedZones.map((zone, index) => {
-                            const percentage = ((zone.value - yMin) / (yMax - yMin)) * 100;
-                            return `${zone.color} ${percentage}%`;
-                        }).join(', ');
-
-                        gradientElement.style.background = `linear-gradient(to top, ${gradientStops})`;
-                    }
-                }
-                // --- END OF GRADIENT BACKGROUND LOGIC ---
-
-                new Chart('vo2-max-chart', {
+            // Sleep duration chart
+            const sleepDurationCtx = document.getElementById('sleep-duration-chart');
+            if (sleepDurationCtx && data.daily) {
+                new Chart(sleepDurationCtx, {
                     type: 'line',
                     data: {
-                        labels: dailyData.map(d => d.date),
+                        labels: data.daily.map(d => d.label),
                         datasets: [{
-                            data: dailyData.map(d => d.vo2),
-                            borderColor: '#64b5f6',
-                            backgroundColor: hexToRgba('#64b5f6', 0.2),
-                            fill: true,
-                            pointBackgroundColor: '#FFFFFF',
-                            pointBorderColor: '#64b5f6',
-                            pointRadius: 5,
-                            pointHoverRadius: 7,
-                            tension: 0.1
+                            label: 'Sleep Duration (hours)',
+                            data: data.daily.map(d => d.sleepDuration),
+                            borderColor: '#4CAF50',
+                            backgroundColor: 'rgba(76, 175, 80, 0.1)',
+                            fill: true
                         }]
                     },
                     options: {
-                        animation: false, // <--- This line disables animations for the chart
-                        scales: {
-                            y: { min: yMin, max: yMax, title: { display: true, text: 'VO2 Max', color: '#aaa' }, ticks: { color: '#aaa' } },
-                            x: { ticks: { color: '#aaa' } }
-                        },
+                        responsive: true,
+                        maintainAspectRatio: false,
                         plugins: {
                             legend: { display: false },
-                            tooltip: { callbacks: { label: c => `VO2 Max: ${parseFloat(c.raw).toFixed(2)}` } },
-                            datalabels: { anchor: 'end', align: 'top', color: '#ccc', formatter: (v) => parseFloat(v).toFixed(2) }
+                            datalabels: { display: false }
                         }
                     }
                 });
             }
+        }
 
-            function createStepsChart(stepsData) {
-                const dailyData = stepsData.daily;
-                const labels = dailyData.map(d => d.label);
-                const dailySteps = dailyData.map(d => d.dailySteps);
-                const rollingAvgSteps = dailyData.map(d => d.rollingAvgSteps);
-                const hrColors = dailyData.map(d => d.hrColor);
-
-                new Chart('steps-chart', {
-                    type: 'bar',
+        function createVO2Charts(data) {
+            const vo2Ctx = document.getElementById('vo2-max-chart');
+            if (vo2Ctx && data.daily) {
+                new Chart(vo2Ctx, {
+                    type: 'line',
                     data: {
-                        labels: labels,
-                        datasets: [
-                            {
-                                label: 'Daily Steps',
-                                data: dailySteps,
-                                backgroundColor: hrColors,
-                                borderColor: hrColors,
-                                borderWidth: 1,
-                                yAxisID: 'y'
-                            },
-                            {
-                                label: '7-Day Rolling Average',
-                                data: rollingAvgSteps,
-                                type: 'line',
-                                borderColor: '#ff9800',
-                                backgroundColor: 'transparent',
-                                pointBackgroundColor: '#ff9800',
-                                pointBorderColor: '#ff9800',
-                                pointRadius: 4,
-                                pointHoverRadius: 6,
-                                tension: 0.1,
-                                yAxisID: 'y'
-                            }
-                        ]
+                        labels: data.daily.map(d => d.date),
+                        datasets: [{
+                            label: 'VO2 Max',
+                            data: data.daily.map(d => d.vo2),
+                            borderColor: '#FF9800',
+                            backgroundColor: 'rgba(255, 152, 0, 0.1)',
+                            fill: true
+                        }]
                     },
                     options: {
-                        animation: false,
-                        scales: {
-                            y: {
-                                type: 'linear',
-                                display: true,
-                                position: 'left',
-                                title: {
-                                    display: true,
-                                    text: 'Steps',
-                                    color: '#aaa'
-                                },
-                                ticks: {
-                                    color: '#aaa',
-                                    callback: function(value) {
-                                        return value.toLocaleString();
-                                    }
-                                }
-                            },
-                            x: {
-                                ticks: { color: '#aaa' }
-                            }
-                        },
+                        responsive: true,
+                        maintainAspectRatio: false,
                         plugins: {
-                            legend: {
-                                display: true,
-                                labels: {
-                                    color: '#aaa',
-                                    usePointStyle: true
-                                }
-                            },
-                            tooltip: {
-                                callbacks: {
-                                    label: function(context) {
-                                        if (context.datasetIndex === 0) {
-                                            return `Daily Steps: ${context.raw.toLocaleString()}`;
-                                        } else {
-                                            return `Rolling Average: ${context.raw.toLocaleString()}`;
-                                        }
-                                    }
-                                }
-                            },
-                            datalabels: {
-                                display: false
-                            }
-                        },
-                        interaction: {
-                            intersect: false,
-                            mode: 'index'
+                            legend: { display: false },
+                            datalabels: { display: false }
                         }
                     }
                 });
             }
+        }
 
-            function createStrengthChart(strengthData) {
-                const dailyData = strengthData.daily;
-                const labels = dailyData.map(d => d.label);
-                const dailyDuration = dailyData.map(d => d.dailyDuration);
-                const weeklySum = dailyData.map(d => d.weeklySum);
-                const hrColors = dailyData.map(d => d.hrColor);
-
-                new Chart('strength-chart', {
+        function createStepsCharts(data) {
+            const stepsCtx = document.getElementById('steps-chart');
+            if (stepsCtx && data.daily) {
+                new Chart(stepsCtx, {
                     type: 'bar',
                     data: {
-                        labels: labels,
-                        datasets: [
-                            {
-                                label: 'Daily Duration (min)',
-                                data: dailyDuration,
-                                backgroundColor: hrColors,
-                                borderColor: hrColors,
-                                borderWidth: 1,
-                                yAxisID: 'y'
-                            },
-                            {
-                                label: '7-Day Rolling Sum (min)',
-                                data: weeklySum,
-                                type: 'line',
-                                borderColor: '#ff9800',
-                                backgroundColor: 'transparent',
-                                pointBackgroundColor: '#ff9800',
-                                pointBorderColor: '#ff9800',
-                                pointRadius: 4,
-                                pointHoverRadius: 6,
-                                tension: 0.1,
-                                yAxisID: 'y'
-                            }
-                        ]
+                        labels: data.daily.map(d => d.label),
+                        datasets: [{
+                            label: 'Daily Steps',
+                            data: data.daily.map(d => d.dailySteps),
+                            backgroundColor: data.daily.map(d => d.hrColor),
+                            borderColor: data.daily.map(d => d.hrColor),
+                            borderWidth: 1
+                        }]
                     },
                     options: {
-                        animation: false,
-                        scales: {
-                            y: {
-                                type: 'linear',
-                                display: true,
-                                position: 'left',
-                                title: {
-                                    display: true,
-                                    text: 'Minutes',
-                                    color: '#aaa'
-                                },
-                                ticks: {
-                                    color: '#aaa',
-                                    callback: function(value) {
-                                        return value.toFixed(0);
-                                    }
-                                }
-                            },
-                            x: {
-                                ticks: { color: '#aaa' }
-                            }
-                        },
+                        responsive: true,
+                        maintainAspectRatio: false,
                         plugins: {
-                            legend: {
-                                display: true,
-                                labels: {
-                                    color: '#aaa',
-                                    usePointStyle: true
-                                }
-                            },
-                            tooltip: {
-                                callbacks: {
-                                    label: function(context) {
-                                        if (context.datasetIndex === 0) {
-                                            return `Daily Duration: ${context.raw.toFixed(1)} min`;
-                                        } else {
-                                            return `Weekly Sum: ${context.raw.toFixed(1)} min`;
-                                        }
-                                    }
-                                }
-                            },
-                            datalabels: {
-                                display: false
-                            }
-                        },
-                        interaction: {
-                            intersect: false,
-                            mode: 'index'
+                            legend: { display: false },
+                            datalabels: { display: false }
                         }
                     }
                 });
             }
+        }
 
-            function createBodyCompChart(bodyCompData) {
-                // Handle missing days - filter out days without data
-                const validDays = bodyCompData.daily.filter(d => d.hasData);
-
-                if (validDays.length === 0) {
-                    console.log('No body composition data available');
-                    return;
-                }
-
-                const ctx = document.getElementById('bodyComp-chart').getContext('2d');
-
-                new Chart(ctx, {
+        function createStrengthCharts(data) {
+            const strengthCtx = document.getElementById('strength-chart');
+            if (strengthCtx && data.daily) {
+                new Chart(strengthCtx, {
                     type: 'bar',
                     data: {
-                        labels: validDays.map(d => d.label),
+                        labels: data.daily.map(d => d.label),
+                        datasets: [{
+                            label: 'Strength Training (minutes)',
+                            data: data.daily.map(d => d.dailyDuration),
+                            backgroundColor: data.daily.map(d => d.hrColor),
+                            borderColor: data.daily.map(d => d.hrColor),
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            datalabels: { display: false }
+                        }
+                    }
+                });
+            }
+        }
+
+        function createBodyCompCharts(data) {
+            const bodyCompCtx = document.getElementById('bodyComp-chart');
+            if (bodyCompCtx && data.daily) {
+                new Chart(bodyCompCtx, {
+                    type: 'line',
+                    data: {
+                        labels: data.daily.map(d => d.label),
                         datasets: [
                             {
                                 label: 'Weight (kg)',
-                                data: validDays.map(d => d.weight),
-                                backgroundColor: validDays.map(d => hexToRgba(d.hrColor, 0.7)),
-                                borderColor: validDays.map(d => d.hrColor),
-                                borderWidth: 2,
-                                yAxisID: 'y',
-                                order: 2
+                                data: data.daily.map(d => d.weight),
+                                borderColor: '#FF5722',
+                                backgroundColor: 'rgba(255, 87, 34, 0.1)',
+                                yAxisID: 'y'
                             },
                             {
-                                label: 'FFMI',
-                                data: validDays.map(d => d.ffmi),
-                                borderColor: '#2196F3',
-                                backgroundColor: hexToRgba('#2196F3', 0.1),
-                                yAxisID: 'y1',
-                                tension: 0.3,
-                                pointBackgroundColor: validDays.map(d => d.hrColor),
-                                pointBorderColor: validDays.map(d => d.hrColor),
-                                pointRadius: 5,
-                                pointHoverRadius: 7,
-                                borderWidth: 3,
-                                type: 'line',
-                                order: 1
-                            },
-                            {
-                                label: 'FMI',
-                                data: validDays.map(d => d.fmi),
-                                borderColor: '#FF9800',
-                                backgroundColor: hexToRgba('#FF9800', 0.1),
-                                yAxisID: 'y1',
-                                tension: 0.3,
-                                pointBackgroundColor: validDays.map(d => d.hrColor),
-                                pointBorderColor: validDays.map(d => d.hrColor),
-                                pointRadius: 5,
-                                pointHoverRadius: 7,
-                                borderWidth: 3,
-                                type: 'line',
-                                order: 1
+                                label: 'Body Fat %',
+                                data: data.daily.map(d => d.bodyFat),
+                                borderColor: '#9C27B0',
+                                backgroundColor: 'rgba(156, 39, 176, 0.1)',
+                                yAxisID: 'y1'
                             }
                         ]
                     },
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
-                        animation: {
-                            duration: 0
-                        },
-                        transitions: {
-                            active: {
-                                animation: {
-                                    duration: 0
-                                }
-                            }
+                        plugins: {
+                            legend: { display: true },
+                            datalabels: { display: false }
                         },
                         scales: {
-                            y: {
-                                type: 'linear',
-                                display: true,
-                                position: 'left',
-                                title: {
-                                    display: true,
-                                    text: 'Weight (kg)',
-                                    color: '#4CAF50',
-                                    font: {
-                                        size: 12
-                                    }
-                                },
-                                ticks: {
-                                    color: '#4CAF50',
-                                    font: {
-                                        size: 10
-                                    }
-                                },
-                                grid: {
-                                    color: 'rgba(255,255,255,0.1)'
-                                }
-                            },
-                            y1: {
-                                type: 'linear',
-                                display: true,
-                                position: 'right',
-                                title: {
-                                    display: true,
-                                    text: 'FFMI & FMI',
-                                    color: '#2196F3',
-                                    font: {
-                                        size: 12
-                                    }
-                                },
-                                ticks: {
-                                    color: '#2196F3',
-                                    font: {
-                                        size: 10
-                                    }
-                                },
-                                grid: {
-                                    drawOnChartArea: false
-                                }
-                            },
-                            x: {
-                                ticks: {
-                                    color: '#aaa',
-                                    maxRotation: 45,
-                                    font: {
-                                        size: 10
-                                    }
-                                },
-                                grid: {
-                                    color: 'rgba(255,255,255,0.1)'
-                                }
-                            }
-                        },
-                        plugins: {
-                            legend: {
-                                display: true,
-                                position: 'top',
-                                labels: {
-                                    color: '#aaa',
-                                    usePointStyle: true,
-                                    font: {
-                                        size: 11
-                                    },
-                                    padding: 10
-                                }
-                            },
-                            tooltip: {
-                                callbacks: {
-                                    label: function(context) {
-                                        const datasetLabel = context.dataset.label;
-                                        const value = context.raw;
-
-                                        if (datasetLabel === 'Weight (kg)') {
-                                            return `Weight: ${value.toFixed(1)} kg`;
-                                        } else if (datasetLabel === 'FFMI') {
-                                            return `FFMI: ${value.toFixed(2)}`;
-                                        } else if (datasetLabel === 'FMI') {
-                                            return `FMI: ${value.toFixed(2)}`;
-                                        }
-                                        return `${datasetLabel}: ${value.toFixed(2)}`;
-                                    },
-                                    afterLabel: function(context) {
-                                        const dataIndex = context.dataIndex;
-                                        const day = validDays[dataIndex];
-                                        return `HR Score: ${day.hrScore.toFixed(3)}`;
-                                    }
-                                }
-                            },
-                            datalabels: {
-                                display: false
-                            }
-                        },
-                        interaction: {
-                            intersect: false,
-                            mode: 'index'
+                            y: { type: 'linear', display: true, position: 'left' },
+                            y1: { type: 'linear', display: true, position: 'right' }
                         }
                     }
                 });
             }
+        }
 
-            function createRhrChart(rhrData) {
-                // Handle missing days - filter out days without data
-                const validDays = rhrData.daily.filter(d => d.hasData);
-
-                if (validDays.length === 0) {
-                    console.log('No resting heart rate data available');
-                    return;
-                }
-
-                const ctx = document.getElementById('rhr-chart').getContext('2d');
-
-                new Chart(ctx, {
+        function createRHRCharts(data) {
+            const rhrCtx = document.getElementById('rhr-chart');
+            if (rhrCtx && data.daily) {
+                new Chart(rhrCtx, {
                     type: 'line',
                     data: {
-                        labels: validDays.map(d => d.label),
+                        labels: data.daily.map(d => d.label),
+                        datasets: [{
+                            label: 'Resting Heart Rate (BPM)',
+                            data: data.daily.map(d => d.rhr),
+                            borderColor: '#E91E63',
+                            backgroundColor: 'rgba(233, 30, 99, 0.1)',
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            datalabels: { display: false }
+                        }
+                    }
+                });
+            }
+        }
+
+        function createHeartRateCharts(data) {
+            const activityCtx = document.getElementById('heart-rate-activity-chart');
+            if (activityCtx && data.daily) {
+                new Chart(activityCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: data.daily.map(d => d.label),
                         datasets: [
                             {
-                                label: 'Resting Heart Rate (BPM)',
-                                data: validDays.map(d => d.restingHeartRate),
-                                borderColor: '#E91E63',
-                                backgroundColor: hexToRgba('#E91E63', 0.1),
-                                tension: 0.3,
-                                pointBackgroundColor: validDays.map(d => d.hrColor),
-                                pointBorderColor: validDays.map(d => d.hrColor),
-                                pointRadius: 5,
-                                pointHoverRadius: 7,
-                                borderWidth: 3,
-                                fill: true
+                                label: 'MPA Time (min)',
+                                data: data.daily.map(d => d.mpaTime),
+                                backgroundColor: '#4CAF50'
+                            },
+                            {
+                                label: 'VPA Time (min)',
+                                data: data.daily.map(d => d.vpaTime),
+                                backgroundColor: '#FF9800'
                             }
                         ]
                     },
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
-                        animation: {
-                            duration: 0
-                        },
-                        transitions: {
-                            active: {
-                                animation: {
-                                    duration: 0
-                                }
-                            }
-                        },
-                        scales: {
-                            y: {
-                                type: 'linear',
-                                display: true,
-                                title: {
-                                    display: true,
-                                    text: 'Resting Heart Rate (BPM)',
-                                    color: '#E91E63',
-                                    font: {
-                                        size: 12
-                                    }
-                                },
-                                ticks: {
-                                    color: '#E91E63',
-                                    font: {
-                                        size: 10
-                                    }
-                                },
-                                grid: {
-                                    color: 'rgba(255,255,255,0.1)'
-                                }
-                            },
-                            x: {
-                                ticks: {
-                                    color: '#aaa',
-                                    maxRotation: 45,
-                                    font: {
-                                        size: 10
-                                    }
-                                },
-                                grid: {
-                                    color: 'rgba(255,255,255,0.1)'
-                                }
-                            }
-                        },
                         plugins: {
-                            legend: {
-                                display: true,
-                                position: 'top',
-                                labels: {
-                                    color: '#aaa',
-                                    usePointStyle: true,
-                                    font: {
-                                        size: 11
-                                    },
-                                    padding: 10
-                                }
-                            },
-                            tooltip: {
-                                callbacks: {
-                                    label: function(context) {
-                                        const value = context.raw;
-                                        return `RHR: ${value} BPM`;
-                                    },
-                                    afterLabel: function(context) {
-                                        const dataIndex = context.dataIndex;
-                                        const day = validDays[dataIndex];
-                                        return `HR Score: ${day.hrScore.toFixed(3)}`;
-                                    }
-                                }
-                            },
-                            datalabels: {
-                                display: false
-                            }
-                        },
-                        interaction: {
-                            intersect: false,
-                            mode: 'index'
+                            legend: { display: true },
+                            datalabels: { display: false }
                         }
                     }
                 });
             }
+
+            const hrCtx = document.getElementById('heart-rate-hr-chart');
+            if (hrCtx && data.daily) {
+                new Chart(hrCtx, {
+                    type: 'line',
+                    data: {
+                        labels: data.daily.map(d => d.label),
+                        datasets: [{
+                            label: 'Hazard Ratio',
+                            data: data.daily.map(d => d.hazardRatio),
+                            borderColor: '#F44336',
+                            backgroundColor: 'rgba(244, 67, 54, 0.1)',
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            datalabels: { display: false }
+                        }
+                    }
+                });
+            }
+        }
+
+        // Event listeners for summary item clicks
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeCharts();
+
+            // Add click listeners to summary items
+            document.querySelectorAll('.summary-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    const detailsId = this.id.replace('-summary', '-details');
+                    const details = document.getElementById(detailsId);
+                    if (details) {
+                        details.classList.toggle('visible');
+                    }
+                });
+            });
+
+            // Navigation functionality
+            const navButtons = document.querySelectorAll('.nav-button');
+            navButtons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    navButtons.forEach(btn => btn.style.backgroundColor = '#333');
+                    this.style.backgroundColor = '#007bff';
+                });
+            });
         });
     </script>
 </body>
