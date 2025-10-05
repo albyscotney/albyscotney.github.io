@@ -71,6 +71,7 @@
         .details-container.visible { display: flex; }
         .chart-wrapper { background-color: #1e1e1e; padding: 20px; border-radius: 12px; border: 1px solid #333; }
         .chart-subtitle { margin-top: -10px; margin-bottom: 20px; font-size: 0.9em; color: #999; }
+        canvas { max-width: 100% !important; height: auto !important; }
         .vo2-chart-container { position: relative; }
         .vo2-gradient-bg { position: absolute; top: 0; left: 0; right: 0; bottom: 0; pointer-events: none; border-radius: 8px; z-index: 1; }
         #vo2-max-chart { position: relative; z-index: 2; }
@@ -97,7 +98,7 @@
 
 <div class="metric-wrapper">
     <div id="sleep-summary" class="summary-item">
-        <h2>Sleep Score 😴</h2>
+        <h2>Sleep 😴</h2>
         <div class="score-scale-container">
             <div class="scale-wrapper">
                 <div class="score-scale-bar"></div>
@@ -114,7 +115,7 @@
 
 <div class="metric-wrapper">
     <div id="vo2-summary" class="summary-item">
-        <h2>VO2 Max Score 💪</h2>
+        <h2>VO2 Max 💪</h2>
         <div class="score-scale-container">
             <div class="scale-wrapper">
                 <div class="score-scale-bar"></div>
@@ -138,7 +139,7 @@
 
 <div class="metric-wrapper">
     <div id="steps-summary" class="summary-item">
-        <h2>Steps Score 🚶</h2>
+        <h2>Daily Steps 🚶</h2>
         <div class="score-scale-container">
             <div class="scale-wrapper">
                 <div class="score-scale-bar"></div>
@@ -148,17 +149,19 @@
         </div>
     </div>
     <div id="steps-details" class="details-container">
-        <div class="chart-wrapper">
-            <h3>Daily Steps</h3>
-            <p class="chart-subtitle">Daily steps with 7-day rolling average. Color indicates health risk based on steps.</p>
-            <canvas id="steps-chart"></canvas>
-        </div>
+                <div class="chart-wrapper">
+                    <h3>Daily Steps</h3>
+                    <p class="chart-subtitle">Daily steps. Color indicates health risk based on steps.</p>
+                    <div style="position: relative; width: 100%; height: 300px;">
+                        <canvas id="steps-chart"></canvas>
+                    </div>
+                </div>
     </div>
 </div>
 
 <div class="metric-wrapper">
     <div id="strength-summary" class="summary-item">
-        <h2>Strength Training Score 💪</h2>
+        <h2>Strength Training 💪</h2>
         <div class="score-scale-container">
             <div class="scale-wrapper">
                 <div class="score-scale-bar"></div>
@@ -168,17 +171,19 @@
         </div>
     </div>
     <div id="strength-details" class="details-container">
-        <div class="chart-wrapper">
-            <h3>Strength Training</h3>
-            <p class="chart-subtitle">Daily strength training duration with 7-day rolling sum. Color indicates heart rate multiplier based on weekly volume.</p>
-            <canvas id="strength-chart"></canvas>
-        </div>
+                <div class="chart-wrapper">
+                    <h3>Strength Training</h3>
+                    <p class="chart-subtitle">Daily strength training duration with 7-day rolling sum. Color indicates heart rate multiplier based on weekly volume.</p>
+                    <div style="position: relative; width: 100%; height: 300px;">
+                        <canvas id="strength-chart"></canvas>
+                    </div>
+                </div>
     </div>
 </div>
 
 <div class="metric-wrapper">
     <div id="bodyComp-summary" class="summary-item">
-        <h2>Body Composition Score 🏋️</h2>
+        <h2>Body Composition 🏋️</h2>
         <div class="score-scale-container">
             <div class="scale-wrapper">
                 <div class="score-scale-bar"></div>
@@ -200,7 +205,7 @@
 
 <div class="metric-wrapper">
     <div id="rhr-summary" class="summary-item">
-        <h2>Resting Heart Rate Score ❤️</h2>
+        <h2>Resting Heart Rate ❤️</h2>
         <div class="score-scale-container">
             <div class="scale-wrapper">
                 <div class="score-scale-bar"></div>
@@ -222,7 +227,7 @@
 
 <div class="metric-wrapper">
     <div id="heart-rate-summary" class="summary-item">
-        <h2>Heart Rate Activity Score 💓</h2>
+        <h2>Heart Rate Activity 💓</h2>
         <div class="score-scale-container">
             <div class="scale-wrapper">
                 <div class="score-scale-bar"></div>
@@ -1073,45 +1078,88 @@ function createSleepCharts(data) {
     const sleepWindowsCtx = document.getElementById('sleep-windows-chart');
     if (sleepWindowsCtx && data.daily) {
         // Process sleep data to create proper sleep window visualization
-        const sleepWindows = data.daily.map(d => {
+        // Reverse data to show most recent on the right
+        const sleepWindows = data.daily.slice().reverse().map((d, index) => {
             if (!d.sleepTime || !d.wakeTime) {
-                return { x: d.label, y: 0, height: 0, color: '#666' };
+                return { 
+                    y: index, 
+                    x: 12 * 60, // Default to midday if no data
+                    width: 0, 
+                    color: '#666',
+                    sleepTime: d.sleepTime,
+                    wakeTime: d.wakeTime
+                };
             }
             
             // Convert time strings to minutes from midnight
-            const sleepMinutes = timeToMinutes(d.sleepTime);
-            const wakeMinutes = timeToMinutes(d.wakeTime);
+            let sleepMinutes = timeToMinutes(d.sleepTime);
+            let wakeMinutes = timeToMinutes(d.wakeTime);
             
-            // Handle sleep periods that cross midnight
-            let duration = wakeMinutes - sleepMinutes;
-            if (duration < 0) duration += 24 * 60; // Add 24 hours if crossing midnight
+            // Convert to minutes relative to midday-at-boundaries layout
+            // Left boundary (12:00 PM) = -720, Center (12:00 AM) = 0, Right boundary (12:00 PM) = +720
+            // Previous day 12:00 PM to 11:59 PM: -720 to 0
+            // Next day 12:00 AM to 11:59 AM: 0 to +720
+            
+            let sleepRelativeToMidday, wakeRelativeToMidday;
+            
+            if (sleepMinutes >= 12 * 60) {
+                // Sleep time is 12:00 PM or later (previous day)
+                sleepRelativeToMidday = sleepMinutes - (12 * 60) - (12 * 60); // Convert to -720 to 0 range
+            } else {
+                // Sleep time is before 12:00 PM (next day)
+                sleepRelativeToMidday = sleepMinutes; // Convert to 0 to +720 range
+            }
+            
+            if (wakeMinutes >= 12 * 60) {
+                // Wake time is 12:00 PM or later (previous day)
+                wakeRelativeToMidday = wakeMinutes - (12 * 60) - (12 * 60); // Convert to -720 to 0 range
+            } else {
+                // Wake time is before 12:00 PM (next day)
+                wakeRelativeToMidday = wakeMinutes; // Convert to 0 to +720 range
+            }
+            
+            // Handle sleep periods that cross midnight (sleep in previous day, wake in next day)
+            if (sleepMinutes >= 12 * 60 && wakeMinutes < 12 * 60) {
+                // Sleep time is in previous day, wake time is in next day
+                // This is normal overnight sleep
+                // sleepRelativeToMidday is already correct (negative)
+                // wakeRelativeToMidday is already correct (positive)
+            }
+            
+            // Calculate duration
+            const duration = wakeRelativeToMidday - sleepRelativeToMidday;
             
             return {
-                x: d.label,
-                y: sleepMinutes,
-                height: duration,
+                y: index, // Vertical position (day index)
+                x: sleepRelativeToMidday, // Start position relative to midday
+                width: duration, // Duration in minutes
                 color: d.consistencyColor,
                 sleepTime: d.sleepTime,
                 wakeTime: d.wakeTime
             };
         });
         
+        // Create horizontal bar chart with proper time axis
         new Chart(sleepWindowsCtx, {
             type: 'bar',
             data: {
-                labels: sleepWindows.map(w => w.x),
+                labels: sleepWindows.map((w, i) => data.daily.slice().reverse()[i].label),
                 datasets: [{
                     label: 'Sleep Periods',
-                    data: sleepWindows.map(w => ({ x: w.x, y: w.y, height: w.height })),
+                    data: sleepWindows.map(w => ({
+                        x: [w.x, w.x + w.width], // [start, end] times
+                        y: sleepWindows.indexOf(w) // Day index
+                    })),
                     backgroundColor: sleepWindows.map(w => w.color),
                     borderColor: sleepWindows.map(w => w.color),
                     borderWidth: 2,
-                    barThickness: 30
+                    barThickness: 25
                 }]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
+                indexAxis: 'y', // This makes bars horizontal
                 plugins: {
                     legend: { display: false },
                     datalabels: { display: false },
@@ -1122,10 +1170,11 @@ function createSleepCharts(data) {
                             },
                             label: function(context) {
                                 const window = sleepWindows[context.dataIndex];
+                                const duration = Math.round(window.width / 60 * 10) / 10;
                                 return [
                                     `Sleep: ${window.sleepTime}`,
                                     `Wake: ${window.wakeTime}`,
-                                    `Duration: ${Math.round(window.height / 60 * 10) / 10}h`
+                                    `Duration: ${duration}h`
                                 ];
                             }
                         }
@@ -1136,25 +1185,51 @@ function createSleepCharts(data) {
                         display: true,
                         title: {
                             display: true,
-                            text: 'Date'
+                            text: 'Time of Day (Midday to Midday)'
+                        },
+                        min: -12 * 60, // 12 hours before midday (12:00 previous day)
+                        max: 12 * 60,  // 12 hours after midday (12:00 next day)
+                        type: 'linear',
+                        ticks: {
+                            // Force specific tick positions for midday-to-midday display
+                            // Show: 12:00, 15:00, 18:00, 21:00, 00:00, 03:00, 06:00, 09:00, 12:00
+                            stepSize: 180, // Every 3 hours
+                            callback: function(value) {
+                                // For midday-to-midday display with midnight at center:
+                                // We want: 12:00 (left) → 15:00 → 18:00 → 21:00 → 00:00 (center) → 03:00 → 06:00 → 09:00 → 12:00 (right)
+                                // Chart range: -720 to +720 minutes
+                                // -720 = 12:00, -540 = 15:00, -360 = 18:00, -180 = 21:00, 0 = 00:00, +180 = 03:00, +360 = 06:00, +540 = 09:00, +720 = 12:00
+                                
+                                // Convert chart position to actual time
+                                // -720 to 0: previous day 12:00 to midnight
+                                // 0 to +720: midnight to next day 12:00
+                                let actualMinutes;
+                                if (value <= 0) {
+                                    // Previous day: 12:00 PM to 11:59 PM
+                                    actualMinutes = value + (12 * 60) + (12 * 60); // Add 12 hours to get to 12:00 PM
+                                } else {
+                                    // Next day: 12:00 AM to 11:59 AM  
+                                    actualMinutes = value;
+                                }
+                                
+                                let hours = Math.floor(actualMinutes / 60);
+                                const minutes = actualMinutes % 60;
+                                
+                                // Handle 24-hour rollover
+                                if (hours >= 24) hours -= 24;
+                                if (hours < 0) hours += 24;
+                                
+                                return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+                            }
                         }
                     },
                     y: {
                         display: true,
                         title: {
                             display: true,
-                            text: 'Time of Day'
+                            text: 'Date'
                         },
-                        min: 0,
-                        max: 24 * 60, // 24 hours in minutes
-                        ticks: {
-                            callback: function(value) {
-                                const hours = Math.floor(value / 60);
-                                const minutes = value % 60;
-                                return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
-                            },
-                            stepSize: 120 // Every 2 hours
-                        }
+                        type: 'category'
                     }
                 }
             }
@@ -1164,16 +1239,21 @@ function createSleepCharts(data) {
     // Sleep duration chart
     const sleepDurationCtx = document.getElementById('sleep-duration-chart');
     if (sleepDurationCtx && data.daily) {
+        // Reverse data to show most recent on the right
+        const reversedDaily = data.daily.slice().reverse();
+        
         new Chart(sleepDurationCtx, {
-            type: 'line',
+            type: 'bar',
             data: {
-                labels: data.daily.map(d => d.label),
+                labels: reversedDaily.map(d => d.label),
                 datasets: [{
                     label: 'Sleep Duration (hours)',
-                    data: data.daily.map(d => d.sleepDuration),
+                    data: reversedDaily.map(d => d.sleepDuration),
+                    backgroundColor: '#4CAF50',
                     borderColor: '#4CAF50',
-                    backgroundColor: 'rgba(76, 175, 80, 0.1)',
-                    fill: true
+                    borderWidth: 1,
+                    borderRadius: 4,
+                    borderSkipped: false
                 }]
             },
             options: {
@@ -1182,6 +1262,30 @@ function createSleepCharts(data) {
                 plugins: {
                     legend: { display: false },
                     datalabels: { display: false }
+                },
+                scales: {
+                    x: {
+                        display: true,
+                        title: {
+                            display: true,
+                            text: 'Date'
+                        },
+                        offset: true,
+                        grid: {
+                            display: false
+                        }
+                    },
+                    y: {
+                        display: true,
+                        title: {
+                            display: true,
+                            text: 'Hours'
+                        },
+                        beginAtZero: true,
+                        grid: {
+                            display: true
+                        }
+                    }
                 }
             }
         });
@@ -1218,15 +1322,18 @@ function createVO2Charts(data) {
 function createStepsCharts(data) {
     const stepsCtx = document.getElementById('steps-chart');
     if (stepsCtx && data.daily) {
+        // Reverse data to show most recent on the right
+        const reversedDaily = data.daily.slice().reverse();
+        
         new Chart(stepsCtx, {
             type: 'bar',
             data: {
-                labels: data.daily.map(d => d.label),
+                labels: reversedDaily.map(d => d.label),
                 datasets: [{
                     label: 'Daily Steps',
-                    data: data.daily.map(d => d.dailySteps),
-                    backgroundColor: data.daily.map(d => d.hrColor),
-                    borderColor: data.daily.map(d => d.hrColor),
+                    data: reversedDaily.map(d => d.dailySteps),
+                    backgroundColor: reversedDaily.map(d => d.hrColor),
+                    borderColor: reversedDaily.map(d => d.hrColor),
                     borderWidth: 1,
                     borderRadius: 4,
                     borderSkipped: false
@@ -1235,10 +1342,7 @@ function createStepsCharts(data) {
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                animation: {
-                    duration: 1000,
-                    easing: 'easeInOutQuart'
-                },
+                animation: false,
                 plugins: {
                     legend: { display: false },
                     datalabels: { display: false },
@@ -1263,6 +1367,10 @@ function createStepsCharts(data) {
                         title: {
                             display: true,
                             text: 'Date'
+                        },
+                        offset: true,
+                        grid: {
+                            display: false
                         }
                     },
                     y: {
@@ -1272,6 +1380,9 @@ function createStepsCharts(data) {
                             text: 'Steps'
                         },
                         beginAtZero: true,
+                        grid: {
+                            display: true
+                        },
                         ticks: {
                             callback: function(value) {
                                 return value.toLocaleString();
@@ -1287,15 +1398,18 @@ function createStepsCharts(data) {
 function createStrengthCharts(data) {
     const strengthCtx = document.getElementById('strength-chart');
     if (strengthCtx && data.daily) {
+        // Reverse data to show most recent on the right
+        const reversedDaily = data.daily.slice().reverse();
+        
         new Chart(strengthCtx, {
             type: 'bar',
             data: {
-                labels: data.daily.map(d => d.label),
+                labels: reversedDaily.map(d => d.label),
                 datasets: [{
                     label: 'Strength Training (minutes)',
-                    data: data.daily.map(d => d.dailyDuration),
-                    backgroundColor: data.daily.map(d => d.hrColor),
-                    borderColor: data.daily.map(d => d.hrColor),
+                    data: reversedDaily.map(d => d.dailyDuration),
+                    backgroundColor: reversedDaily.map(d => d.hrColor),
+                    borderColor: reversedDaily.map(d => d.hrColor),
                     borderWidth: 1,
                     borderRadius: 4,
                     borderSkipped: false
@@ -1303,10 +1417,15 @@ function createStrengthCharts(data) {
             },
             options: {
                 responsive: true,
-                maintainAspectRatio: false,
-                animation: {
-                    duration: 1000,
-                    easing: 'easeInOutQuart'
+                maintainAspectRatio: true,
+                animation: false,
+                layout: {
+                    padding: {
+                        left: 10,
+                        right: 10,
+                        top: 10,
+                        bottom: 10
+                    }
                 },
                 plugins: {
                     legend: { display: false },
@@ -1333,6 +1452,10 @@ function createStrengthCharts(data) {
                         title: {
                             display: true,
                             text: 'Date'
+                        },
+                        offset: true,
+                        grid: {
+                            display: false
                         }
                     },
                     y: {
@@ -1342,6 +1465,9 @@ function createStrengthCharts(data) {
                             text: 'Minutes'
                         },
                         beginAtZero: true,
+                        grid: {
+                            display: true
+                        },
                         ticks: {
                             callback: function(value) {
                                 return Math.round(value);
@@ -1386,8 +1512,35 @@ function createBodyCompCharts(data) {
                     datalabels: { display: false }
                 },
                 scales: {
-                    y: { type: 'linear', display: true, position: 'left' },
-                    y1: { type: 'linear', display: true, position: 'right' }
+                    x: {
+                        display: true,
+                        title: {
+                            display: true,
+                            text: 'Date'
+                        },
+                        offset: true,
+                        grid: {
+                            display: false
+                        }
+                    },
+                    y: { 
+                        type: 'linear', 
+                        display: true, 
+                        position: 'left',
+                        title: {
+                            display: true,
+                            text: 'Weight (kg)'
+                        }
+                    },
+                    y1: { 
+                        type: 'linear', 
+                        display: true, 
+                        position: 'right',
+                        title: {
+                            display: true,
+                            text: 'Body Fat (%)'
+                        }
+                    }
                 }
             }
         });
@@ -1432,12 +1585,14 @@ function createHeartRateCharts(data) {
                     {
                         label: 'MPA Time (min)',
                         data: data.daily.map(d => d.mpaTime),
-                        backgroundColor: '#4CAF50'
+                        backgroundColor: '#4CAF50',
+                        stack: 'activity'
                     },
                     {
                         label: 'VPA Time (min)',
                         data: data.daily.map(d => d.vpaTime),
-                        backgroundColor: '#FF9800'
+                        backgroundColor: '#FF9800',
+                        stack: 'activity'
                     }
                 ]
             },
@@ -1447,6 +1602,31 @@ function createHeartRateCharts(data) {
                 plugins: {
                     legend: { display: true },
                     datalabels: { display: false }
+                },
+                scales: {
+                    x: {
+                        display: true,
+                        title: {
+                            display: true,
+                            text: 'Date'
+                        },
+                        offset: true,
+                        grid: {
+                            display: false
+                        }
+                    },
+                    y: {
+                        display: true,
+                        title: {
+                            display: true,
+                            text: 'Minutes'
+                        },
+                        beginAtZero: true,
+                        stacked: true,
+                        grid: {
+                            display: true
+                        }
+                    }
                 }
             }
         });
