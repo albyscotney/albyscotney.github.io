@@ -956,6 +956,13 @@
             return "#388e3c";
         }
 
+        // Helper function to convert time string to minutes from midnight
+        function timeToMinutes(timeStr) {
+            if (!timeStr) return 0;
+            const [hours, minutes] = timeStr.split(':').map(Number);
+            return hours * 60 + minutes;
+        }
+
         // Initialize charts and interactions
         function initializeCharts() {
             console.log('initializeCharts called');
@@ -1091,21 +1098,46 @@
         }
 
         
-// Chart creation functions (simplified versions)
+        // Chart creation functions (simplified versions)
 function createSleepCharts(data) {
-    // Sleep windows chart
+    // Sleep windows chart - shows actual sleep periods
     const sleepWindowsCtx = document.getElementById('sleep-windows-chart');
     if (sleepWindowsCtx && data.daily) {
+        // Process sleep data to create proper sleep window visualization
+        const sleepWindows = data.daily.map(d => {
+            if (!d.sleepTime || !d.wakeTime) {
+                return { x: d.label, y: 0, height: 0, color: '#666' };
+            }
+            
+            // Convert time strings to minutes from midnight
+            const sleepMinutes = timeToMinutes(d.sleepTime);
+            const wakeMinutes = timeToMinutes(d.wakeTime);
+            
+            // Handle sleep periods that cross midnight
+            let duration = wakeMinutes - sleepMinutes;
+            if (duration < 0) duration += 24 * 60; // Add 24 hours if crossing midnight
+            
+            return {
+                x: d.label,
+                y: sleepMinutes,
+                height: duration,
+                color: d.consistencyColor,
+                sleepTime: d.sleepTime,
+                wakeTime: d.wakeTime
+            };
+        });
+        
         new Chart(sleepWindowsCtx, {
             type: 'bar',
             data: {
-                labels: data.daily.map(d => d.label),
+                labels: sleepWindows.map(w => w.x),
                 datasets: [{
-                    label: 'Sleep Consistency',
-                    data: data.daily.map(d => d.consistencyScore),
-                    backgroundColor: data.daily.map(d => d.consistencyColor),
-                    borderColor: data.daily.map(d => d.consistencyColor),
-                    borderWidth: 1
+                    label: 'Sleep Periods',
+                    data: sleepWindows.map(w => ({ x: w.x, y: w.y, height: w.height })),
+                    backgroundColor: sleepWindows.map(w => w.color),
+                    borderColor: sleepWindows.map(w => w.color),
+                    borderWidth: 2,
+                    barThickness: 30
                 }]
             },
             options: {
@@ -1113,10 +1145,48 @@ function createSleepCharts(data) {
                 maintainAspectRatio: false,
                 plugins: {
                     legend: { display: false },
-                    datalabels: { display: false }
+                    datalabels: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            title: function(context) {
+                                return context[0].label;
+                            },
+                            label: function(context) {
+                                const window = sleepWindows[context.dataIndex];
+                                return [
+                                    `Sleep: ${window.sleepTime}`,
+                                    `Wake: ${window.wakeTime}`,
+                                    `Duration: ${Math.round(window.height / 60 * 10) / 10}h`
+                                ];
+                            }
+                        }
+                    }
                 },
                 scales: {
-                    y: { beginAtZero: true, max: 2 }
+                    x: {
+                        display: true,
+                        title: {
+                            display: true,
+                            text: 'Date'
+                        }
+                    },
+                    y: {
+                        display: true,
+                        title: {
+                            display: true,
+                            text: 'Time of Day'
+                        },
+                        min: 0,
+                        max: 24 * 60, // 24 hours in minutes
+                        ticks: {
+                            callback: function(value) {
+                                const hours = Math.floor(value / 60);
+                                const minutes = value % 60;
+                                return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+                            },
+                            stepSize: 120 // Every 2 hours
+                        }
+                    }
                 }
             }
         });
@@ -1188,15 +1258,57 @@ function createStepsCharts(data) {
                     data: data.daily.map(d => d.dailySteps),
                     backgroundColor: data.daily.map(d => d.hrColor),
                     borderColor: data.daily.map(d => d.hrColor),
-                    borderWidth: 1
+                    borderWidth: 1,
+                    borderRadius: 4,
+                    borderSkipped: false
                 }]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
+                animation: {
+                    duration: 1000,
+                    easing: 'easeInOutQuart'
+                },
                 plugins: {
                     legend: { display: false },
-                    datalabels: { display: false }
+                    datalabels: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            title: function(context) {
+                                return context[0].label;
+                            },
+                            label: function(context) {
+                                const value = context.parsed.y;
+                                return [
+                                    `Steps: ${value.toLocaleString()}`,
+                                    `Rolling Avg: ${data.daily[context.dataIndex].rollingAvgSteps.toLocaleString()}`
+                                ];
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        display: true,
+                        title: {
+                            display: true,
+                            text: 'Date'
+                        }
+                    },
+                    y: {
+                        display: true,
+                        title: {
+                            display: true,
+                            text: 'Steps'
+                        },
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return value.toLocaleString();
+                            }
+                        }
+                    }
                 }
             }
         });
@@ -1215,15 +1327,58 @@ function createStrengthCharts(data) {
                     data: data.daily.map(d => d.dailyDuration),
                     backgroundColor: data.daily.map(d => d.hrColor),
                     borderColor: data.daily.map(d => d.hrColor),
-                    borderWidth: 1
+                    borderWidth: 1,
+                    borderRadius: 4,
+                    borderSkipped: false
                 }]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
+                animation: {
+                    duration: 1000,
+                    easing: 'easeInOutQuart'
+                },
                 plugins: {
                     legend: { display: false },
-                    datalabels: { display: false }
+                    datalabels: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            title: function(context) {
+                                return context[0].label;
+                            },
+                            label: function(context) {
+                                const value = context.parsed.y;
+                                const weeklySum = data.daily[context.dataIndex].weeklySum;
+                                return [
+                                    `Duration: ${Math.round(value * 10) / 10} min`,
+                                    `Weekly Total: ${Math.round(weeklySum * 10) / 10} min`
+                                ];
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        display: true,
+                        title: {
+                            display: true,
+                            text: 'Date'
+                        }
+                    },
+                    y: {
+                        display: true,
+                        title: {
+                            display: true,
+                            text: 'Minutes'
+                        },
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return Math.round(value);
+                            }
+                        }
+                    }
                 }
             }
         });
@@ -1377,8 +1532,72 @@ function createHeartRateCharts(data) {
                     e.preventDefault();
                     navButtons.forEach(btn => btn.style.backgroundColor = '#333');
                     this.style.backgroundColor = '#007bff';
+                    
+                    // Navigate to the appropriate report type
+                    const reportType = this.id.replace('-nav', '');
+                    const currentDate = document.getElementById('current-date').textContent || new Date().toISOString().split('T')[0];
+                    
+                    // Construct URL based on report type and current date
+                    let baseUrl = window.location.origin + window.location.pathname;
+                    // Remove current report type from path if present
+                    baseUrl = baseUrl.replace(/\/report_(daily|weekly|monthly)\//, '/');
+                    
+                    const newUrl = `${baseUrl}report_${reportType}/${currentDate}/`;
+                    window.location.href = newUrl;
                 });
             });
+
+            // Date navigation functionality
+            const prevButton = document.getElementById('prev-day');
+            const nextButton = document.getElementById('next-day');
+            const currentDateSpan = document.getElementById('current-date');
+            
+            // Initialize current date display
+            if (currentDateSpan && !currentDateSpan.textContent) {
+                const today = new Date();
+                currentDateSpan.textContent = today.toISOString().split('T')[0];
+            }
+            
+            if (prevButton) {
+                prevButton.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    navigateDate(-1);
+                });
+            }
+            
+            if (nextButton) {
+                nextButton.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    navigateDate(1);
+                });
+            }
+            
+            function navigateDate(direction) {
+                const currentDateStr = currentDateSpan.textContent;
+                if (!currentDateStr) return;
+                
+                const currentDate = new Date(currentDateStr);
+                const newDate = new Date(currentDate);
+                newDate.setDate(currentDate.getDate() + direction);
+                
+                const newDateStr = newDate.toISOString().split('T')[0];
+                currentDateSpan.textContent = newDateStr;
+                
+                // Update URL to reflect new date
+                const currentPath = window.location.pathname;
+                const pathParts = currentPath.split('/');
+                
+                // Find and replace the date part
+                for (let i = 0; i < pathParts.length; i++) {
+                    if (pathParts[i].match(/^\d{4}-\d{2}-\d{2}$/)) {
+                        pathParts[i] = newDateStr;
+                        break;
+                    }
+                }
+                
+                const newUrl = pathParts.join('/');
+                window.location.href = newUrl;
+            }
         });
     </script>
 </body>
