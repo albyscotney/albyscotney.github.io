@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Health Analysis</title>
+    <title>Watch Wellness Report</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏥</text></svg>">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.0.1/dist/chartjs-plugin-annotation.min.js"></script>
@@ -80,510 +81,534 @@
         .tab-content { display: none; }
         .tab-content.active { display: block; }
         .nav-button.active { background-color: #007bff !important; }
+        
+        /* Group styling for new unified report */
+        .metric-group {
+            margin-bottom: 40px;
+            border: 1px solid #333;
+            border-radius: 12px;
+            padding: 20px;
+            background-color: #1a1a1a;
+        }
+        
+        .group-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #333;
+        }
+        
+        .group-header h2 {
+            margin: 0;
+            font-size: 1.5em;
+        }
+        
+        .group-ticker {
+            background-color: #007bff;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 1.1em;
+            min-width: 40px;
+            text-align: center;
+        }
+        
+        .metric-group .metric-wrapper {
+            margin-bottom: 15px;
+        }
+        
+        .metric-group .metric-wrapper:last-child {
+            margin-bottom: 0;
+        }
+        
+        /* Expandable group functionality */
+        .group-header {
+            cursor: pointer;
+            user-select: none;
+            transition: background-color 0.2s ease;
+        }
+        
+        .group-header:hover {
+            background-color: #2a2a2a;
+        }
+        
+        .expand-arrow {
+            font-size: 1.2em;
+            transition: transform 0.3s ease;
+            margin-left: 10px;
+        }
+        
+        .group-content {
+            overflow: hidden;
+            transition: max-height 0.3s ease, opacity 0.3s ease;
+        }
+        
+        .group-content.collapsed {
+            max-height: 0;
+            opacity: 0;
+        }
+        
+        .group-content.expanded {
+            max-height: 2000px;
+            opacity: 1;
+        }
+        
+        .group-header.expanded .expand-arrow {
+            transform: rotate(180deg);
+        }
+        
+        /* Gradient scale styling */
+        .gradient-scale {
+            background: linear-gradient(to right, #ff4444 0%, #ff4444 30%, #ffffff 50%, #44ff44 70%, #44ff44 100%);
+            height: 8px;
+            border-radius: 4px;
+            position: relative;
+        }
+        
+        .gradient-scale::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 0;
+            width: 2px;
+            height: 100%;
+            background-color: #ffffff;
+            transform: translateX(-50%);
+        }
+        
+        /* Category summary styling */
+        .category-summary {
+            padding: 20px;
+            background-color: #1a1a1a;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+        
+        .category-summary .score-scale-container {
+            margin: 0;
+        }
+        
+        /* Component sliders styling */
+        .component-sliders {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #1a1a1a;
+            border-radius: 8px;
+        }
+        
+        .component-slider {
+            flex: 1;
+        }
+        
+        .component-slider h4 {
+            margin: 0 0 10px 0;
+            font-size: 0.9em;
+            color: #ccc;
+        }
+        
+        .component-slider .score-scale-container {
+            margin: 0;
+        }
     </style>
 </head>
 <body>
     <div class="container" id="main-container">
         
-<h1>Health Analysis</h1>
+<h1 style="text-align: center; font-size: 2.5em; margin-bottom: 30px;">Watch Wellness Report</h1>
 
 <!-- Navigation Buttons -->
 <div class="navigation-container" style="margin-bottom: 30px; text-align: center;">
     <div class="nav-buttons" style="display: inline-flex; gap: 10px; background-color: #1e1e1e; padding: 10px; border-radius: 8px; border: 1px solid #333;">
-        <a href="#" id="daily-nav" class="nav-button active" style="padding: 8px 16px; background-color: #007bff; color: #fff; text-decoration: none; border-radius: 4px; transition: background-color 0.2s;">Daily</a>
-        <a href="#" id="weekly-nav" class="nav-button" style="padding: 8px 16px; background-color: #333; color: #fff; text-decoration: none; border-radius: 4px; transition: background-color 0.2s;">Weekly</a>
-        <a href="#" id="monthly-nav" class="nav-button" style="padding: 8px 16px; background-color: #333; color: #fff; text-decoration: none; border-radius: 4px; transition: background-color 0.2s;">Monthly</a>
-    </div>
-    <div class="date-nav" style="margin-top: 10px;">
-        <a href="#" id="prev-day" class="date-nav-button" style="padding: 6px 12px; background-color: #1e1e1e; color: #fff; text-decoration: none; border-radius: 4px; border: 1px solid #333; margin-right: 5px;">← Previous</a>
-        <span id="current-date" style="color: #aaa; margin: 0 10px;"></span>
-        <a href="#" id="next-day" class="date-nav-button" style="padding: 6px 12px; background-color: #1e1e1e; color: #fff; text-decoration: none; border-radius: 4px; border: 1px solid #333; margin-left: 5px;">Next →</a>
+        <a href="#" id="daily-controls-nav" class="nav-button active" style="padding: 8px 16px; background-color: #007bff; color: #fff; text-decoration: none; border-radius: 4px; transition: background-color 0.2s;">Daily Controls</a>
+        <a href="#" id="healthspan-nav" class="nav-button" style="padding: 8px 16px; background-color: #333; color: #fff; text-decoration: none; border-radius: 4px; transition: background-color 0.2s;">HealthSpan</a>
     </div>
 </div>
 
 <!-- Tab Content Container -->
 <div id="tab-content">
-    <!-- Daily Tab -->
-    <div id="daily-content" class="tab-content active">
-        <div class="metric-wrapper">
-    <div id="sleep-summary" class="summary-item">
-        <h2>Sleep 😴</h2>
-        <div class="score-scale-container">
-            <div class="scale-wrapper">
-                <div class="score-scale-bar"></div>
-                <div id="sleep-last-pointer" class="scale-pointer pointer-last"><div class="pointer-label">Last</div></div>
-                <div id="sleep-avg-pointer" class="scale-pointer pointer-avg"><div class="pointer-label">Avg</div></div>
+    <!-- Daily Controls Tab -->
+    <div id="daily-controls-content" class="tab-content active">
+        <!-- Sleep Group -->
+        <div class="metric-group">
+            <div class="group-header" onclick="toggleGroup('sleep-group')">
+                <h2>Sleep 😴</h2>
+                <div class="group-ticker">
+                    <span id="sleep-group-ticker">0</span>
+                </div>
+                <div class="expand-arrow">▼</div>
             </div>
-        </div>
-    </div>
-    <div id="sleep-details" class="details-container">
-        <div class="chart-wrapper"><h3>Sleep Windows</h3><p class="chart-subtitle">Sleep periods showing time in bed. Color indicates sleep consistency.</p><div style="height: 300px; position: relative;"><canvas id="sleep-windows-chart"></canvas></div></div>
-        <div class="chart-wrapper"><h3>Sleep Duration</h3><p class="chart-subtitle">Total hours slept each day.</p><div style="height: 300px; position: relative;"><canvas id="sleep-duration-chart"></canvas></div></div>
-    </div>
-</div>
-
-<div class="metric-wrapper">
-    <div id="vo2-summary" class="summary-item">
-        <h2>VO2 Max 💪</h2>
-        <div class="score-scale-container">
-            <div class="scale-wrapper">
-                <div class="score-scale-bar"></div>
-                <div id="vo2-last-pointer" class="scale-pointer pointer-last"><div class="pointer-label">Last</div></div>
-                <div id="vo2-avg-pointer" class="scale-pointer pointer-avg"><div class="pointer-label">Avg</div></div>
-            </div>
-        </div>
-    </div>
-    <div id="vo2-details" class="details-container">
-        <div class="chart-wrapper">
-            <h3>VO2 Max Trend</h3>
-            <p class="chart-subtitle">Your estimated VO2 max over time. Higher is better.</p>
-            <div class="vo2-chart-container">
-            <canvas id="vo2-max-chart"></canvas>
-                <div id="vo2-gradient-bg" class="vo2-gradient-bg"></div>
-            </div>
-            <div id="vo2-zones-data" style="display: none;"></div>
-        </div>
-    </div>
-</div>
-
-<div class="metric-wrapper">
-    <div id="steps-summary" class="summary-item">
-        <h2>Daily Steps 🚶</h2>
-        <div class="score-scale-container">
-            <div class="scale-wrapper">
-                <div class="score-scale-bar"></div>
-                <div id="steps-last-pointer" class="scale-pointer pointer-last"><div class="pointer-label">Last</div></div>
-                <div id="steps-avg-pointer" class="scale-pointer pointer-avg"><div class="pointer-label">Avg</div></div>
-            </div>
-        </div>
-    </div>
-    <div id="steps-details" class="details-container">
-                <div class="chart-wrapper">
-                    <h3>Daily Steps</h3>
-                    <p class="chart-subtitle">Daily steps. Color indicates health risk based on steps.</p>
-                    <div style="position: relative; width: 100%; height: 300px;">
-                        <canvas id="steps-chart"></canvas>
+            
+            <!-- Single sliding scale for Sleep category -->
+            <div class="category-summary">
+                <div class="score-scale-container">
+                    <div class="scale-wrapper">
+                        <div class="score-scale-bar gradient-scale"></div>
+                        <div id="sleep-category-last-pointer" class="scale-pointer pointer-last"><div class="pointer-label">Last</div></div>
+                        <div id="sleep-category-avg-pointer" class="scale-pointer pointer-avg"><div class="pointer-label">Avg</div></div>
                     </div>
                 </div>
-    </div>
-</div>
-
-<div class="metric-wrapper">
-    <div id="strength-summary" class="summary-item">
-        <h2>Strength Training 💪</h2>
-        <div class="score-scale-container">
-            <div class="scale-wrapper">
-                <div class="score-scale-bar"></div>
-                <div id="strength-last-pointer" class="scale-pointer pointer-last"><div class="pointer-label">Last</div></div>
-                <div id="strength-avg-pointer" class="scale-pointer pointer-avg"><div class="pointer-label">Avg</div></div>
             </div>
-        </div>
-    </div>
-    <div id="strength-details" class="details-container">
-                <div class="chart-wrapper">
-                    <h3>Strength Training</h3>
-                    <p class="chart-subtitle">Daily strength training duration with 7-day rolling sum. Color indicates heart rate multiplier based on weekly volume.</p>
-                    <div style="position: relative; width: 100%; height: 300px;">
-                        <canvas id="strength-chart"></canvas>
+            
+            <div id="sleep-group-content" class="group-content collapsed">
+                <div class="metric-wrapper">
+                    <div class="chart-wrapper">
+                        <h4>Sleep Windows</h4>
+                        <p class="chart-subtitle">Sleep periods showing time in bed. Color indicates sleep consistency.</p>
+                        <div style="height: 300px; position: relative;">
+                            <canvas id="sleep-windows-chart"></canvas>
+                        </div>
                     </div>
                 </div>
-    </div>
-</div>
 
-<div class="metric-wrapper">
-    <div id="bodyComp-summary" class="summary-item">
-        <h2>Body Composition 🏋️</h2>
-        <div class="score-scale-container">
-            <div class="scale-wrapper">
-                <div class="score-scale-bar"></div>
-                <div id="bodyComp-last-pointer" class="scale-pointer pointer-last"><div class="pointer-label">Last</div></div>
-                <div id="bodyComp-avg-pointer" class="scale-pointer pointer-avg"><div class="pointer-label">Avg</div></div>
+                <div class="metric-wrapper">
+                    <div class="chart-wrapper">
+                        <h4>Sleep Duration</h4>
+                        <p class="chart-subtitle">Total hours slept each day.</p>
+                        <div style="height: 300px; position: relative;">
+                            <canvas id="sleep-duration-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-    <div id="bodyComp-details" class="details-container">
-        <div class="chart-wrapper">
-            <h3>Body Composition Trends</h3>
-            <p class="chart-subtitle">Weight, body fat percentage, FFMI, and FMI over time. Color indicates health risk based on FFMI.</p>
-            <div style="height: 300px; position: relative;">
-                <canvas id="bodyComp-chart"></canvas>
-            </div>
-        </div>
-    </div>
-</div>
 
-<div class="metric-wrapper">
-    <div id="rhr-summary" class="summary-item">
-        <h2>Resting Heart Rate ❤️</h2>
-        <div class="score-scale-container">
-            <div class="scale-wrapper">
-                <div class="score-scale-bar"></div>
-                <div id="rhr-last-pointer" class="scale-pointer pointer-last"><div class="pointer-label">Last</div></div>
-                <div id="rhr-avg-pointer" class="scale-pointer pointer-avg"><div class="pointer-label">Avg</div></div>
+        <!-- Aerobic Group -->
+        <div class="metric-group">
+            <div class="group-header" onclick="toggleGroup('aerobic-group')">
+                <h2>Aerobic 🏃</h2>
+                <div class="group-ticker">
+                    <span id="aerobic-group-ticker">0</span>
+                </div>
+                <div class="expand-arrow">▼</div>
             </div>
-        </div>
-    </div>
-    <div id="rhr-details" class="details-container">
-        <div class="chart-wrapper">
-            <h3>Resting Heart Rate Trends</h3>
-            <p class="chart-subtitle">Daily resting heart rate in BPM over time. Color indicates health risk based on hazard ratios.</p>
-            <div style="height: 300px; position: relative;">
-                <canvas id="rhr-chart"></canvas>
+            
+            <!-- Single sliding scale for Aerobic category -->
+            <div class="category-summary">
+                <div class="score-scale-container">
+                    <div class="scale-wrapper">
+                        <div class="score-scale-bar gradient-scale"></div>
+                        <div id="aerobic-category-last-pointer" class="scale-pointer pointer-last"><div class="pointer-label">Last</div></div>
+                        <div id="aerobic-category-avg-pointer" class="scale-pointer pointer-avg"><div class="pointer-label">Avg</div></div>
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
-</div>
+            
+            <div id="aerobic-group-content" class="group-content collapsed">
+                <div class="metric-wrapper">
+                    <div class="chart-wrapper">
+                        <h4>Daily Steps</h4>
+                        <p class="chart-subtitle">Daily steps. Color indicates health risk based on steps.</p>
+                        <div style="height: 300px; position: relative;">
+                            <canvas id="steps-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
 
-<div class="metric-wrapper">
-    <div id="heart-rate-summary" class="summary-item">
-        <h2>Heart Rate Activity 💓</h2>
-        <div class="score-scale-container">
-            <div class="scale-wrapper">
-                <div class="score-scale-bar"></div>
-                <div id="heart-rate-last-pointer" class="scale-pointer pointer-last"><div class="pointer-label">Last</div></div>
-                <div id="heart-rate-avg-pointer" class="scale-pointer pointer-avg"><div class="pointer-label">Avg</div></div>
+                <div class="metric-wrapper">
+                    <div class="chart-wrapper">
+                        <h4>Activity Time Distribution</h4>
+                        <p class="chart-subtitle">Time spent in moderate (MPA) and vigorous (VPA) physical activity.</p>
+                        <div style="height: 300px; position: relative;">
+                            <canvas id="heart-rate-activity-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-    <div id="heart-rate-details" class="details-container">
-        <div class="chart-wrapper">
-            <h3>Activity Time Distribution</h3>
-            <p class="chart-subtitle">Time spent in moderate (MPA) and vigorous (VPA) physical activity. Shows adjusted VPA time and 7-day rolling average.</p>
-            <div style="height: 300px; position: relative;">
-                <canvas id="heart-rate-activity-chart"></canvas>
+
+        <!-- Anaerobic Group -->
+        <div class="metric-group">
+            <div class="group-header" onclick="toggleGroup('anaerobic-group')">
+                <h2>Anaerobic 💪</h2>
+                <div class="group-ticker">
+                    <span id="anaerobic-group-ticker">0</span>
+                </div>
+                <div class="expand-arrow">▼</div>
+            </div>
+            
+            <!-- Single sliding scale for Anaerobic category -->
+            <div class="category-summary">
+                <div class="score-scale-container">
+                    <div class="scale-wrapper">
+                        <div class="score-scale-bar gradient-scale"></div>
+                        <div id="anaerobic-category-last-pointer" class="scale-pointer pointer-last"><div class="pointer-label">Last</div></div>
+                        <div id="anaerobic-category-avg-pointer" class="scale-pointer pointer-avg"><div class="pointer-label">Avg</div></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="anaerobic-group-content" class="group-content collapsed">
+                <div class="metric-wrapper">
+                    <div class="chart-wrapper">
+                        <h4>Strength Training</h4>
+                        <p class="chart-subtitle">Daily strength training duration with 7-day rolling sum.</p>
+                        <div style="height: 300px; position: relative;">
+                            <canvas id="strength-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="chart-wrapper">
-            <h3>Hazard Ratio Trend</h3>
-            <p class="chart-subtitle">Health risk score based on physical activity levels. Lower is better.</p>
-            <div style="height: 300px; position: relative;">
-                <canvas id="heart-rate-hr-chart"></canvas>
-            </div>
-        </div>
-    </div>
-</div>
     </div>
     
-    <!-- Weekly Tab -->
-    <div id="weekly-content" class="tab-content">
-        <div class="metric-wrapper">
-    <div id="sleep-summary" class="summary-item">
-        <h2>Sleep 😴</h2>
-        <div class="score-scale-container">
-            <div class="scale-wrapper">
-                <div class="score-scale-bar"></div>
-                <div id="sleep-last-pointer" class="scale-pointer pointer-last"><div class="pointer-label">Last</div></div>
-                <div id="sleep-avg-pointer" class="scale-pointer pointer-avg"><div class="pointer-label">Avg</div></div>
+    <!-- HealthSpan Tab -->
+    <div id="healthspan-content" class="tab-content">
+        <!-- Sleep Group -->
+        <div class="metric-group">
+            <div class="group-header" onclick="toggleGroup('healthspan-sleep-group')">
+                <h2>Sleep 😴</h2>
+                <div class="group-ticker">
+                    <span id="healthspan-sleep-group-ticker">0</span>
+                </div>
+                <div class="expand-arrow">▼</div>
             </div>
-        </div>
-    </div>
-    <div id="sleep-details" class="details-container">
-        <div class="chart-wrapper"><h3>Sleep Windows</h3><p class="chart-subtitle">Sleep periods showing time in bed. Color indicates sleep consistency.</p><div style="height: 300px; position: relative;"><canvas id="sleep-windows-chart"></canvas></div></div>
-        <div class="chart-wrapper"><h3>Sleep Duration</h3><p class="chart-subtitle">Total hours slept each day.</p><div style="height: 300px; position: relative;"><canvas id="sleep-duration-chart"></canvas></div></div>
-    </div>
-</div>
-
-<div class="metric-wrapper">
-    <div id="vo2-summary" class="summary-item">
-        <h2>VO2 Max 💪</h2>
-        <div class="score-scale-container">
-            <div class="scale-wrapper">
-                <div class="score-scale-bar"></div>
-                <div id="vo2-last-pointer" class="scale-pointer pointer-last"><div class="pointer-label">Last</div></div>
-                <div id="vo2-avg-pointer" class="scale-pointer pointer-avg"><div class="pointer-label">Avg</div></div>
-            </div>
-        </div>
-    </div>
-    <div id="vo2-details" class="details-container">
-        <div class="chart-wrapper">
-            <h3>VO2 Max Trend</h3>
-            <p class="chart-subtitle">Your estimated VO2 max over time. Higher is better.</p>
-            <div class="vo2-chart-container">
-            <canvas id="vo2-max-chart"></canvas>
-                <div id="vo2-gradient-bg" class="vo2-gradient-bg"></div>
-            </div>
-            <div id="vo2-zones-data" style="display: none;"></div>
-        </div>
-    </div>
-</div>
-
-<div class="metric-wrapper">
-    <div id="steps-summary" class="summary-item">
-        <h2>Daily Steps 🚶</h2>
-        <div class="score-scale-container">
-            <div class="scale-wrapper">
-                <div class="score-scale-bar"></div>
-                <div id="steps-last-pointer" class="scale-pointer pointer-last"><div class="pointer-label">Last</div></div>
-                <div id="steps-avg-pointer" class="scale-pointer pointer-avg"><div class="pointer-label">Avg</div></div>
-            </div>
-        </div>
-    </div>
-    <div id="steps-details" class="details-container">
-                <div class="chart-wrapper">
-                    <h3>Daily Steps</h3>
-                    <p class="chart-subtitle">Daily steps. Color indicates health risk based on steps.</p>
-                    <div style="position: relative; width: 100%; height: 300px;">
-                        <canvas id="steps-chart"></canvas>
+            
+            <!-- Main sliding scale for Sleep category -->
+            <div class="category-summary">
+                <div class="score-scale-container">
+                    <div class="scale-wrapper">
+                        <div class="score-scale-bar gradient-scale"></div>
+                        <div id="healthspan-sleep-category-last-pointer" class="scale-pointer pointer-last"><div class="pointer-label">Last</div></div>
+                        <div id="healthspan-sleep-category-avg-pointer" class="scale-pointer pointer-avg"><div class="pointer-label">Avg</div></div>
                     </div>
                 </div>
-    </div>
-</div>
-
-<div class="metric-wrapper">
-    <div id="strength-summary" class="summary-item">
-        <h2>Strength Training 💪</h2>
-        <div class="score-scale-container">
-            <div class="scale-wrapper">
-                <div class="score-scale-bar"></div>
-                <div id="strength-last-pointer" class="scale-pointer pointer-last"><div class="pointer-label">Last</div></div>
-                <div id="strength-avg-pointer" class="scale-pointer pointer-avg"><div class="pointer-label">Avg</div></div>
             </div>
-        </div>
-    </div>
-    <div id="strength-details" class="details-container">
-                <div class="chart-wrapper">
-                    <h3>Strength Training</h3>
-                    <p class="chart-subtitle">Daily strength training duration with 7-day rolling sum. Color indicates heart rate multiplier based on weekly volume.</p>
-                    <div style="position: relative; width: 100%; height: 300px;">
-                        <canvas id="strength-chart"></canvas>
+            
+            <div id="healthspan-sleep-group-content" class="group-content collapsed">
+                <!-- Individual component sliders when expanded -->
+                <div class="component-sliders">
+                    <div class="component-slider">
+                        <h4>Sleep Window</h4>
+                        <div class="score-scale-container">
+                            <div class="scale-wrapper">
+                                <div class="score-scale-bar gradient-scale"></div>
+                                <div id="healthspan-sleep-window-last-pointer" class="scale-pointer pointer-last"><div class="pointer-label">Last</div></div>
+                                <div id="healthspan-sleep-window-avg-pointer" class="scale-pointer pointer-avg"><div class="pointer-label">Avg</div></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="component-slider">
+                        <h4>Sleep Duration</h4>
+                        <div class="score-scale-container">
+                            <div class="scale-wrapper">
+                                <div class="score-scale-bar gradient-scale"></div>
+                                <div id="healthspan-sleep-duration-last-pointer" class="scale-pointer pointer-last"><div class="pointer-label">Last</div></div>
+                                <div id="healthspan-sleep-duration-avg-pointer" class="scale-pointer pointer-avg"><div class="pointer-label">Avg</div></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-    </div>
-</div>
-
-<div class="metric-wrapper">
-    <div id="bodyComp-summary" class="summary-item">
-        <h2>Body Composition 🏋️</h2>
-        <div class="score-scale-container">
-            <div class="scale-wrapper">
-                <div class="score-scale-bar"></div>
-                <div id="bodyComp-last-pointer" class="scale-pointer pointer-last"><div class="pointer-label">Last</div></div>
-                <div id="bodyComp-avg-pointer" class="scale-pointer pointer-avg"><div class="pointer-label">Avg</div></div>
-            </div>
-        </div>
-    </div>
-    <div id="bodyComp-details" class="details-container">
-        <div class="chart-wrapper">
-            <h3>Body Composition Trends</h3>
-            <p class="chart-subtitle">Weight, body fat percentage, FFMI, and FMI over time. Color indicates health risk based on FFMI.</p>
-            <div style="height: 300px; position: relative;">
-                <canvas id="bodyComp-chart"></canvas>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="metric-wrapper">
-    <div id="rhr-summary" class="summary-item">
-        <h2>Resting Heart Rate ❤️</h2>
-        <div class="score-scale-container">
-            <div class="scale-wrapper">
-                <div class="score-scale-bar"></div>
-                <div id="rhr-last-pointer" class="scale-pointer pointer-last"><div class="pointer-label">Last</div></div>
-                <div id="rhr-avg-pointer" class="scale-pointer pointer-avg"><div class="pointer-label">Avg</div></div>
-            </div>
-        </div>
-    </div>
-    <div id="rhr-details" class="details-container">
-        <div class="chart-wrapper">
-            <h3>Resting Heart Rate Trends</h3>
-            <p class="chart-subtitle">Daily resting heart rate in BPM over time. Color indicates health risk based on hazard ratios.</p>
-            <div style="height: 300px; position: relative;">
-                <canvas id="rhr-chart"></canvas>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="metric-wrapper">
-    <div id="heart-rate-summary" class="summary-item">
-        <h2>Heart Rate Activity 💓</h2>
-        <div class="score-scale-container">
-            <div class="scale-wrapper">
-                <div class="score-scale-bar"></div>
-                <div id="heart-rate-last-pointer" class="scale-pointer pointer-last"><div class="pointer-label">Last</div></div>
-                <div id="heart-rate-avg-pointer" class="scale-pointer pointer-avg"><div class="pointer-label">Avg</div></div>
-            </div>
-        </div>
-    </div>
-    <div id="heart-rate-details" class="details-container">
-        <div class="chart-wrapper">
-            <h3>Activity Time Distribution</h3>
-            <p class="chart-subtitle">Time spent in moderate (MPA) and vigorous (VPA) physical activity. Shows adjusted VPA time and 7-day rolling average.</p>
-            <div style="height: 300px; position: relative;">
-                <canvas id="heart-rate-activity-chart"></canvas>
-            </div>
-        </div>
-        <div class="chart-wrapper">
-            <h3>Hazard Ratio Trend</h3>
-            <p class="chart-subtitle">Health risk score based on physical activity levels. Lower is better.</p>
-            <div style="height: 300px; position: relative;">
-                <canvas id="heart-rate-hr-chart"></canvas>
-            </div>
-        </div>
-    </div>
-</div>
-    </div>
-    
-    <!-- Monthly Tab -->
-    <div id="monthly-content" class="tab-content">
-        <div class="metric-wrapper">
-    <div id="sleep-summary" class="summary-item">
-        <h2>Sleep 😴</h2>
-        <div class="score-scale-container">
-            <div class="scale-wrapper">
-                <div class="score-scale-bar"></div>
-                <div id="sleep-last-pointer" class="scale-pointer pointer-last"><div class="pointer-label">Last</div></div>
-                <div id="sleep-avg-pointer" class="scale-pointer pointer-avg"><div class="pointer-label">Avg</div></div>
-            </div>
-        </div>
-    </div>
-    <div id="sleep-details" class="details-container">
-        <div class="chart-wrapper"><h3>Sleep Windows</h3><p class="chart-subtitle">Sleep periods showing time in bed. Color indicates sleep consistency.</p><div style="height: 300px; position: relative;"><canvas id="sleep-windows-chart"></canvas></div></div>
-        <div class="chart-wrapper"><h3>Sleep Duration</h3><p class="chart-subtitle">Total hours slept each day.</p><div style="height: 300px; position: relative;"><canvas id="sleep-duration-chart"></canvas></div></div>
-    </div>
-</div>
-
-<div class="metric-wrapper">
-    <div id="vo2-summary" class="summary-item">
-        <h2>VO2 Max 💪</h2>
-        <div class="score-scale-container">
-            <div class="scale-wrapper">
-                <div class="score-scale-bar"></div>
-                <div id="vo2-last-pointer" class="scale-pointer pointer-last"><div class="pointer-label">Last</div></div>
-                <div id="vo2-avg-pointer" class="scale-pointer pointer-avg"><div class="pointer-label">Avg</div></div>
-            </div>
-        </div>
-    </div>
-    <div id="vo2-details" class="details-container">
-        <div class="chart-wrapper">
-            <h3>VO2 Max Trend</h3>
-            <p class="chart-subtitle">Your estimated VO2 max over time. Higher is better.</p>
-            <div class="vo2-chart-container">
-            <canvas id="vo2-max-chart"></canvas>
-                <div id="vo2-gradient-bg" class="vo2-gradient-bg"></div>
-            </div>
-            <div id="vo2-zones-data" style="display: none;"></div>
-        </div>
-    </div>
-</div>
-
-<div class="metric-wrapper">
-    <div id="steps-summary" class="summary-item">
-        <h2>Daily Steps 🚶</h2>
-        <div class="score-scale-container">
-            <div class="scale-wrapper">
-                <div class="score-scale-bar"></div>
-                <div id="steps-last-pointer" class="scale-pointer pointer-last"><div class="pointer-label">Last</div></div>
-                <div id="steps-avg-pointer" class="scale-pointer pointer-avg"><div class="pointer-label">Avg</div></div>
-            </div>
-        </div>
-    </div>
-    <div id="steps-details" class="details-container">
-                <div class="chart-wrapper">
-                    <h3>Daily Steps</h3>
-                    <p class="chart-subtitle">Daily steps. Color indicates health risk based on steps.</p>
-                    <div style="position: relative; width: 100%; height: 300px;">
-                        <canvas id="steps-chart"></canvas>
+            
+                <!-- Sleep Window Chart -->
+                <div class="metric-wrapper">
+                    <div class="chart-wrapper">
+                        <h4>Sleep Windows (Weekly)</h4>
+                        <p class="chart-subtitle">Weekly sleep periods showing time in bed. Color indicates sleep consistency.</p>
+                        <div style="height: 300px; position: relative;">
+                            <canvas id="healthspan-sleep-windows-chart"></canvas>
+                        </div>
                     </div>
                 </div>
-    </div>
-</div>
 
-<div class="metric-wrapper">
-    <div id="strength-summary" class="summary-item">
-        <h2>Strength Training 💪</h2>
-        <div class="score-scale-container">
-            <div class="scale-wrapper">
-                <div class="score-scale-bar"></div>
-                <div id="strength-last-pointer" class="scale-pointer pointer-last"><div class="pointer-label">Last</div></div>
-                <div id="strength-avg-pointer" class="scale-pointer pointer-avg"><div class="pointer-label">Avg</div></div>
-            </div>
-        </div>
-    </div>
-    <div id="strength-details" class="details-container">
-                <div class="chart-wrapper">
-                    <h3>Strength Training</h3>
-                    <p class="chart-subtitle">Daily strength training duration with 7-day rolling sum. Color indicates heart rate multiplier based on weekly volume.</p>
-                    <div style="position: relative; width: 100%; height: 300px;">
-                        <canvas id="strength-chart"></canvas>
+                <!-- Sleep Duration Chart -->
+                <div class="metric-wrapper">
+                    <div class="chart-wrapper">
+                        <h4>Sleep Duration (Weekly)</h4>
+                        <p class="chart-subtitle">Average hours slept per week.</p>
+                        <div style="height: 300px; position: relative;">
+                            <canvas id="healthspan-sleep-duration-chart"></canvas>
+                        </div>
                     </div>
                 </div>
-    </div>
-</div>
+            </div>
+        </div>
 
-<div class="metric-wrapper">
-    <div id="bodyComp-summary" class="summary-item">
-        <h2>Body Composition 🏋️</h2>
-        <div class="score-scale-container">
-            <div class="scale-wrapper">
-                <div class="score-scale-bar"></div>
-                <div id="bodyComp-last-pointer" class="scale-pointer pointer-last"><div class="pointer-label">Last</div></div>
-                <div id="bodyComp-avg-pointer" class="scale-pointer pointer-avg"><div class="pointer-label">Avg</div></div>
+        <!-- Aerobic Group -->
+        <div class="metric-group">
+            <div class="group-header" onclick="toggleGroup('healthspan-aerobic-group')">
+                <h2>Aerobic 🏃</h2>
+                <div class="group-ticker">
+                    <span id="healthspan-aerobic-group-ticker">0</span>
+                </div>
+                <div class="expand-arrow">▼</div>
             </div>
-        </div>
-    </div>
-    <div id="bodyComp-details" class="details-container">
-        <div class="chart-wrapper">
-            <h3>Body Composition Trends</h3>
-            <p class="chart-subtitle">Weight, body fat percentage, FFMI, and FMI over time. Color indicates health risk based on FFMI.</p>
-            <div style="height: 300px; position: relative;">
-                <canvas id="bodyComp-chart"></canvas>
+            
+            <!-- Main sliding scale for Aerobic category -->
+            <div class="category-summary">
+                <div class="score-scale-container">
+                    <div class="scale-wrapper">
+                        <div class="score-scale-bar gradient-scale"></div>
+                        <div id="healthspan-aerobic-category-last-pointer" class="scale-pointer pointer-last"><div class="pointer-label">Last</div></div>
+                        <div id="healthspan-aerobic-category-avg-pointer" class="scale-pointer pointer-avg"><div class="pointer-label">Avg</div></div>
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
-</div>
+            
+            <div id="healthspan-aerobic-group-content" class="group-content collapsed">
+                <!-- Individual component sliders when expanded -->
+                <div class="component-sliders">
+                    <div class="component-slider">
+                        <h4>VO2 Max</h4>
+                        <div class="score-scale-container">
+                            <div class="scale-wrapper">
+                                <div class="score-scale-bar gradient-scale"></div>
+                                <div id="healthspan-vo2-last-pointer" class="scale-pointer pointer-last"><div class="pointer-label">Last</div></div>
+                                <div id="healthspan-vo2-avg-pointer" class="scale-pointer pointer-avg"><div class="pointer-label">Avg</div></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="component-slider">
+                        <h4>Steps</h4>
+                        <div class="score-scale-container">
+                            <div class="scale-wrapper">
+                                <div class="score-scale-bar gradient-scale"></div>
+                                <div id="healthspan-steps-last-pointer" class="scale-pointer pointer-last"><div class="pointer-label">Last</div></div>
+                                <div id="healthspan-steps-avg-pointer" class="scale-pointer pointer-avg"><div class="pointer-label">Avg</div></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="component-slider">
+                        <h4>Heart Rate Activity</h4>
+                        <div class="score-scale-container">
+                            <div class="scale-wrapper">
+                                <div class="score-scale-bar gradient-scale"></div>
+                                <div id="healthspan-heart-rate-last-pointer" class="scale-pointer pointer-last"><div class="pointer-label">Last</div></div>
+                                <div id="healthspan-heart-rate-avg-pointer" class="scale-pointer pointer-avg"><div class="pointer-label">Avg</div></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="component-slider">
+                        <h4>Resting Heart Rate</h4>
+                        <div class="score-scale-container">
+                            <div class="scale-wrapper">
+                                <div class="score-scale-bar gradient-scale"></div>
+                                <div id="healthspan-rhr-last-pointer" class="scale-pointer pointer-last"><div class="pointer-label">Last</div></div>
+                                <div id="healthspan-rhr-avg-pointer" class="scale-pointer pointer-avg"><div class="pointer-label">Avg</div></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            
+                <!-- VO2 Max Chart -->
+                <div class="metric-wrapper">
+                    <div class="chart-wrapper">
+                        <h4>VO2 Max Trend (Weekly)</h4>
+                        <p class="chart-subtitle">Weekly VO2 max over time. Higher is better.</p>
+                        <div style="height: 300px; position: relative;">
+                            <canvas id="healthspan-vo2-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
 
-<div class="metric-wrapper">
-    <div id="rhr-summary" class="summary-item">
-        <h2>Resting Heart Rate ❤️</h2>
-        <div class="score-scale-container">
-            <div class="scale-wrapper">
-                <div class="score-scale-bar"></div>
-                <div id="rhr-last-pointer" class="scale-pointer pointer-last"><div class="pointer-label">Last</div></div>
-                <div id="rhr-avg-pointer" class="scale-pointer pointer-avg"><div class="pointer-label">Avg</div></div>
-            </div>
-        </div>
-    </div>
-    <div id="rhr-details" class="details-container">
-        <div class="chart-wrapper">
-            <h3>Resting Heart Rate Trends</h3>
-            <p class="chart-subtitle">Daily resting heart rate in BPM over time. Color indicates health risk based on hazard ratios.</p>
-            <div style="height: 300px; position: relative;">
-                <canvas id="rhr-chart"></canvas>
-            </div>
-        </div>
-    </div>
-</div>
+                <!-- Steps Chart -->
+                <div class="metric-wrapper">
+                    <div class="chart-wrapper">
+                        <h4>Weekly Steps</h4>
+                        <p class="chart-subtitle">Average daily steps per week.</p>
+                        <div style="height: 300px; position: relative;">
+                            <canvas id="healthspan-steps-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
 
-<div class="metric-wrapper">
-    <div id="heart-rate-summary" class="summary-item">
-        <h2>Heart Rate Activity 💓</h2>
-        <div class="score-scale-container">
-            <div class="scale-wrapper">
-                <div class="score-scale-bar"></div>
-                <div id="heart-rate-last-pointer" class="scale-pointer pointer-last"><div class="pointer-label">Last</div></div>
-                <div id="heart-rate-avg-pointer" class="scale-pointer pointer-avg"><div class="pointer-label">Avg</div></div>
+                <!-- Heart Rate Activity Chart -->
+                <div class="metric-wrapper">
+                    <div class="chart-wrapper">
+                        <h4>Weekly Activity Time</h4>
+                        <p class="chart-subtitle">Weekly time spent in moderate and vigorous physical activity.</p>
+                        <div style="height: 300px; position: relative;">
+                            <canvas id="healthspan-heart-rate-activity-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Resting Heart Rate Chart -->
+                <div class="metric-wrapper">
+                    <div class="chart-wrapper">
+                        <h4>Weekly Resting Heart Rate</h4>
+                        <p class="chart-subtitle">Average resting heart rate per week.</p>
+                        <div style="height: 300px; position: relative;">
+                            <canvas id="healthspan-rhr-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-    <div id="heart-rate-details" class="details-container">
-        <div class="chart-wrapper">
-            <h3>Activity Time Distribution</h3>
-            <p class="chart-subtitle">Time spent in moderate (MPA) and vigorous (VPA) physical activity. Shows adjusted VPA time and 7-day rolling average.</p>
-            <div style="height: 300px; position: relative;">
-                <canvas id="heart-rate-activity-chart"></canvas>
+
+        <!-- Anaerobic Group -->
+        <div class="metric-group">
+            <div class="group-header" onclick="toggleGroup('healthspan-anaerobic-group')">
+                <h2>Anaerobic 💪</h2>
+                <div class="group-ticker">
+                    <span id="healthspan-anaerobic-group-ticker">0</span>
+                </div>
+                <div class="expand-arrow">▼</div>
+            </div>
+            
+            <!-- Main sliding scale for Anaerobic category -->
+            <div class="category-summary">
+                <div class="score-scale-container">
+                    <div class="scale-wrapper">
+                        <div class="score-scale-bar gradient-scale"></div>
+                        <div id="healthspan-anaerobic-category-last-pointer" class="scale-pointer pointer-last"><div class="pointer-label">Last</div></div>
+                        <div id="healthspan-anaerobic-category-avg-pointer" class="scale-pointer pointer-avg"><div class="pointer-label">Avg</div></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="healthspan-anaerobic-group-content" class="group-content collapsed">
+                <!-- Individual component sliders when expanded -->
+                <div class="component-sliders">
+                    <div class="component-slider">
+                        <h4>Strength Training</h4>
+                        <div class="score-scale-container">
+                            <div class="scale-wrapper">
+                                <div class="score-scale-bar gradient-scale"></div>
+                                <div id="healthspan-strength-last-pointer" class="scale-pointer pointer-last"><div class="pointer-label">Last</div></div>
+                                <div id="healthspan-strength-avg-pointer" class="scale-pointer pointer-avg"><div class="pointer-label">Avg</div></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="component-slider">
+                        <h4>Body Composition</h4>
+                        <div class="score-scale-container">
+                            <div class="scale-wrapper">
+                                <div class="score-scale-bar gradient-scale"></div>
+                                <div id="healthspan-body-comp-last-pointer" class="scale-pointer pointer-last"><div class="pointer-label">Last</div></div>
+                                <div id="healthspan-body-comp-avg-pointer" class="scale-pointer pointer-avg"><div class="pointer-label">Avg</div></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            
+                <!-- Strength Training Chart -->
+                <div class="metric-wrapper">
+                    <div class="chart-wrapper">
+                        <h4>Weekly Strength Training</h4>
+                        <p class="chart-subtitle">Weekly strength training duration.</p>
+                        <div style="height: 300px; position: relative;">
+                            <canvas id="healthspan-strength-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Body Composition Chart -->
+                <div class="metric-wrapper">
+                    <div class="chart-wrapper">
+                        <h4>Weekly Body Composition</h4>
+                        <p class="chart-subtitle">Weekly weight and body fat percentage trends.</p>
+                        <div style="height: 300px; position: relative;">
+                            <canvas id="healthspan-body-comp-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="chart-wrapper">
-            <h3>Hazard Ratio Trend</h3>
-            <p class="chart-subtitle">Health risk score based on physical activity levels. Lower is better.</p>
-            <div style="height: 300px; position: relative;">
-                <canvas id="heart-rate-hr-chart"></canvas>
-            </div>
-        </div>
-    </div>
-</div>
     </div>
 </div>
 
@@ -592,7 +617,7 @@
     <script>
         // --- DATA PLACEHOLDER (To be replaced by Python) ---
         const chartData = {
-    "daily": {
+    "daily-controls": {
         "sleep": {
             "latestScore": -1.1070160116448324,
             "averageScore": -0.6995007263579855,
@@ -712,84 +737,6 @@
                 }
             ]
         },
-        "vo2": {
-            "latestScore": -4.6,
-            "averageScore": -4.6,
-            "daily": [
-                {
-                    "date": "Oct 04",
-                    "vo2": 53.9
-                },
-                {
-                    "date": "Oct 03",
-                    "vo2": 53.9
-                },
-                {
-                    "date": "Oct 02",
-                    "vo2": 53.9
-                },
-                {
-                    "date": "Oct 01",
-                    "vo2": 53.9
-                },
-                {
-                    "date": "Sep 30",
-                    "vo2": 53.8
-                },
-                {
-                    "date": "Sep 29",
-                    "vo2": 53.9
-                },
-                {
-                    "date": "Sep 28",
-                    "vo2": 53.8
-                }
-            ],
-            "zones": [
-                {
-                    "value": 36.05,
-                    "color": "#e53935"
-                },
-                {
-                    "value": 38.85,
-                    "color": "#e53935"
-                },
-                {
-                    "value": 44.8,
-                    "color": "#ffffff"
-                },
-                {
-                    "value": 51.28,
-                    "color": "#43a047"
-                },
-                {
-                    "value": 54.95,
-                    "color": "#43a047"
-                }
-            ],
-            "colorStops": [
-                {
-                    "score": 2,
-                    "color": "#d32f2f"
-                },
-                {
-                    "score": 1,
-                    "color": "#f57c00"
-                },
-                {
-                    "score": 0,
-                    "color": "#ffffff"
-                },
-                {
-                    "score": -1,
-                    "color": "#7cb342"
-                },
-                {
-                    "score": -2,
-                    "color": "#388e3c"
-                }
-            ]
-        },
         "steps": {
             "latestScore": 0.0,
             "averageScore": 0.0,
@@ -848,255 +795,6 @@
                     "rollingAvgSteps": 13571,
                     "hazardRatio": 1.0,
                     "hrColor": "#ffffff",
-                    "hasData": true
-                }
-            ],
-            "colorStops": [
-                {
-                    "score": 2,
-                    "color": "#d32f2f"
-                },
-                {
-                    "score": 1,
-                    "color": "#f57c00"
-                },
-                {
-                    "score": 0,
-                    "color": "#ffffff"
-                },
-                {
-                    "score": -1,
-                    "color": "#7cb342"
-                },
-                {
-                    "score": -2,
-                    "color": "#388e3c"
-                }
-            ]
-        },
-        "strength": {
-            "latestScore": -0.3495484406001992,
-            "averageScore": -0.34310928088683634,
-            "daily": [
-                {
-                    "label": "Oct 04",
-                    "dailyDuration": 0.0,
-                    "weeklySum": 213.5129313151042,
-                    "hrScore": 0.9650451559399801,
-                    "hrColor": "#7bbc7e",
-                    "hasData": true
-                },
-                {
-                    "label": "Oct 03",
-                    "dailyDuration": 0.0,
-                    "weeklySum": 213.5129313151042,
-                    "hrScore": 0.9650451559399801,
-                    "hrColor": "#7bbc7e",
-                    "hasData": true
-                },
-                {
-                    "label": "Oct 02",
-                    "dailyDuration": 42.10764973958333,
-                    "weeklySum": 267.9152465820313,
-                    "hrScore": 0.96,
-                    "hrColor": "#68b36b",
-                    "hasData": true
-                },
-                {
-                    "label": "Oct 01",
-                    "dailyDuration": 0.0,
-                    "weeklySum": 225.80759684244794,
-                    "hrScore": 0.9627033148871528,
-                    "hrColor": "#72b875",
-                    "hasData": true
-                },
-                {
-                    "label": "Sep 30",
-                    "dailyDuration": 124.25979817708334,
-                    "weeklySum": 262.4054321289063,
-                    "hrScore": 0.96,
-                    "hrColor": "#68b36b",
-                    "hasData": true
-                },
-                {
-                    "label": "Sep 29",
-                    "dailyDuration": 47.1454833984375,
-                    "weeklySum": 173.82956542968753,
-                    "hrScore": 0.9726038922991072,
-                    "hrColor": "#97ca9a",
-                    "hasData": true
-                },
-                {
-                    "label": "Sep 28",
-                    "dailyDuration": 0.0,
-                    "weeklySum": 164.26358235677085,
-                    "hrScore": 0.974425984312996,
-                    "hrColor": "#9ecea0",
-                    "hasData": true
-                }
-            ],
-            "colorStops": [
-                {
-                    "score": 2,
-                    "color": "#d32f2f"
-                },
-                {
-                    "score": 1,
-                    "color": "#f57c00"
-                },
-                {
-                    "score": 0,
-                    "color": "#ffffff"
-                },
-                {
-                    "score": -1,
-                    "color": "#7cb342"
-                },
-                {
-                    "score": -2,
-                    "color": "#388e3c"
-                }
-            ]
-        },
-        "bodyComp": {
-            "latestScore": -2.288022719556361,
-            "averageScore": -2.278432536875661,
-            "daily": [
-                {
-                    "label": "Oct 03",
-                    "weight": 91.73,
-                    "bodyFat": 18.5,
-                    "ffmi": 21.152090878225444,
-                    "fmi": 4.8013948619284745,
-                    "hrScore": 0.7711977280443639,
-                    "hrColor": "#43a047",
-                    "hasData": true
-                },
-                {
-                    "label": "Oct 02",
-                    "weight": 92.29,
-                    "bodyFat": 18.4,
-                    "ffmi": 21.30733363512902,
-                    "fmi": 4.804594839293799,
-                    "hrScore": 0.7673166591217745,
-                    "hrColor": "#43a047",
-                    "hasData": true
-                },
-                {
-                    "label": "Oct 01",
-                    "weight": 91.3,
-                    "bodyFat": 18.4,
-                    "ffmi": 21.078768673607968,
-                    "fmi": 4.753055681303757,
-                    "hrScore": 0.7730307831598008,
-                    "hrColor": "#43a047",
-                    "hasData": true
-                },
-                {
-                    "label": "Sep 30",
-                    "weight": 91.41,
-                    "bodyFat": 18.7,
-                    "ffmi": 21.026575939339068,
-                    "fmi": 4.836371095518334,
-                    "hrScore": 0.7743356015165233,
-                    "hrColor": "#43a047",
-                    "hasData": true
-                },
-                {
-                    "label": "Sep 29",
-                    "weight": 91.169,
-                    "bodyFat": 18.9,
-                    "ffmi": 20.919550418741512,
-                    "fmi": 4.875209653689452,
-                    "hrScore": 0.7770112395314622,
-                    "hrColor": "#43a047",
-                    "hasData": true
-                },
-                {
-                    "label": "Sep 28",
-                    "weight": 92.269,
-                    "bodyFat": 18.8,
-                    "ffmi": 21.19806133997284,
-                    "fmi": 4.907925531914895,
-                    "hrScore": 0.770048466500679,
-                    "hrColor": "#43a047",
-                    "hasData": true
-                }
-            ],
-            "colorStops": [
-                {
-                    "score": 2,
-                    "color": "#d32f2f"
-                },
-                {
-                    "score": 1,
-                    "color": "#f57c00"
-                },
-                {
-                    "score": 0,
-                    "color": "#ffffff"
-                },
-                {
-                    "score": -1,
-                    "color": "#7cb342"
-                },
-                {
-                    "score": -2,
-                    "color": "#388e3c"
-                }
-            ]
-        },
-        "rhr": {
-            "latestScore": -1.9399999999999995,
-            "averageScore": -1.710571428571429,
-            "daily": [
-                {
-                    "label": "Oct 04",
-                    "rhr": 45,
-                    "hrScore": 0.806,
-                    "hrColor": "#43a047",
-                    "hasData": true
-                },
-                {
-                    "label": "Oct 03",
-                    "rhr": 46,
-                    "hrScore": 0.8133,
-                    "hrColor": "#43a047",
-                    "hasData": true
-                },
-                {
-                    "label": "Oct 02",
-                    "rhr": 49,
-                    "hrScore": 0.8352,
-                    "hrColor": "#43a047",
-                    "hasData": true
-                },
-                {
-                    "label": "Oct 01",
-                    "rhr": 50,
-                    "hrScore": 0.8425,
-                    "hrColor": "#43a047",
-                    "hasData": true
-                },
-                {
-                    "label": "Sep 30",
-                    "rhr": 50,
-                    "hrScore": 0.8425,
-                    "hrColor": "#43a047",
-                    "hasData": true
-                },
-                {
-                    "label": "Sep 29",
-                    "rhr": 51,
-                    "hrScore": 0.8498,
-                    "hrColor": "#43a047",
-                    "hasData": true
-                },
-                {
-                    "label": "Sep 28",
-                    "rhr": 46,
-                    "hrScore": 0.8133,
-                    "hrColor": "#43a047",
                     "hasData": true
                 }
             ],
@@ -1535,12 +1233,96 @@
                     "color": "#388e3c"
                 }
             ]
+        },
+        "strength": {
+            "latestScore": -0.3495484406001992,
+            "averageScore": -0.34310928088683634,
+            "daily": [
+                {
+                    "label": "Oct 04",
+                    "dailyDuration": 0.0,
+                    "weeklySum": 213.5129313151042,
+                    "hrScore": 0.9650451559399801,
+                    "hrColor": "#7bbc7e",
+                    "hasData": true
+                },
+                {
+                    "label": "Oct 03",
+                    "dailyDuration": 0.0,
+                    "weeklySum": 213.5129313151042,
+                    "hrScore": 0.9650451559399801,
+                    "hrColor": "#7bbc7e",
+                    "hasData": true
+                },
+                {
+                    "label": "Oct 02",
+                    "dailyDuration": 42.10764973958333,
+                    "weeklySum": 267.9152465820313,
+                    "hrScore": 0.96,
+                    "hrColor": "#68b36b",
+                    "hasData": true
+                },
+                {
+                    "label": "Oct 01",
+                    "dailyDuration": 0.0,
+                    "weeklySum": 225.80759684244794,
+                    "hrScore": 0.9627033148871528,
+                    "hrColor": "#72b875",
+                    "hasData": true
+                },
+                {
+                    "label": "Sep 30",
+                    "dailyDuration": 124.25979817708334,
+                    "weeklySum": 262.4054321289063,
+                    "hrScore": 0.96,
+                    "hrColor": "#68b36b",
+                    "hasData": true
+                },
+                {
+                    "label": "Sep 29",
+                    "dailyDuration": 47.1454833984375,
+                    "weeklySum": 173.82956542968753,
+                    "hrScore": 0.9726038922991072,
+                    "hrColor": "#97ca9a",
+                    "hasData": true
+                },
+                {
+                    "label": "Sep 28",
+                    "dailyDuration": 0.0,
+                    "weeklySum": 164.26358235677085,
+                    "hrScore": 0.974425984312996,
+                    "hrColor": "#9ecea0",
+                    "hasData": true
+                }
+            ],
+            "colorStops": [
+                {
+                    "score": 2,
+                    "color": "#d32f2f"
+                },
+                {
+                    "score": 1,
+                    "color": "#f57c00"
+                },
+                {
+                    "score": 0,
+                    "color": "#ffffff"
+                },
+                {
+                    "score": -1,
+                    "color": "#7cb342"
+                },
+                {
+                    "score": -2,
+                    "color": "#388e3c"
+                }
+            ]
         }
     },
-    "weekly": {
+    "healthspan": {
         "sleep": {
             "latestScore": -0.257533269488881,
-            "averageScore": -0.4359975250045023,
+            "averageScore": -0.1862572302419796,
             "daily": [
                 {
                     "label": "Week of Sep 22",
@@ -1622,15 +1404,223 @@
                 },
                 {
                     "label": "Week of Aug 11",
-                    "consistencyScore": 0.9548702086365841,
-                    "durationScore": 0.93,
-                    "consistencyColor": "#55a958",
-                    "durationColor": "#43a047",
+                    "consistencyScore": 0.9795926610946181,
+                    "durationScore": 0.9657142857142859,
+                    "consistencyColor": "#b2d8b3",
+                    "durationColor": "#7ebd80",
                     "sleepTime": "23:02",
                     "wakeTime": "07:02",
-                    "sleepDuration": 8.0,
-                    "timeInBed": 8.083333333333334,
+                    "sleepDuration": 7.734801587301588,
+                    "timeInBed": 8.251468253968254,
+                    "awakeCount": 1,
+                    "hasData": true
+                },
+                {
+                    "label": "Week of Aug 04",
+                    "consistencyScore": 0.9610753727783521,
+                    "durationScore": 0.9496491228070176,
+                    "consistencyColor": "#6cb56f",
+                    "durationColor": "#43a047",
+                    "sleepTime": "00:10",
+                    "wakeTime": "07:00",
+                    "sleepDuration": 7.726626984126985,
+                    "timeInBed": 7.948055555555555,
                     "awakeCount": 0,
+                    "hasData": true
+                },
+                {
+                    "label": "Week of Jul 28",
+                    "consistencyScore": 1.0833987870086286,
+                    "durationScore": 0.9400000000000001,
+                    "consistencyColor": "#e53935",
+                    "durationColor": "#43a047",
+                    "sleepTime": "23:43",
+                    "wakeTime": "06:59",
+                    "sleepDuration": 7.8189682539682535,
+                    "timeInBed": 8.068968253968253,
+                    "awakeCount": 0,
+                    "hasData": true
+                },
+                {
+                    "label": "Week of Jul 21",
+                    "consistencyScore": 1.0872610095719577,
+                    "durationScore": 1.0071428571428573,
+                    "consistencyColor": "#e53935",
+                    "durationColor": "#fbe2e2",
+                    "sleepTime": "22:39",
+                    "wakeTime": "02:02",
+                    "sleepDuration": 6.6274999999999995,
+                    "timeInBed": 6.991785714285714,
+                    "awakeCount": 1,
+                    "hasData": true
+                },
+                {
+                    "label": "Week of Jul 14",
+                    "consistencyScore": 1.1223298005637854,
+                    "durationScore": 0.9983458646616541,
+                    "consistencyColor": "#e53935",
+                    "durationColor": "#f8fbf8",
+                    "sleepTime": "20:24",
+                    "wakeTime": "03:13",
+                    "sleepDuration": 6.608888888888889,
+                    "timeInBed": 7.061269841269841,
+                    "awakeCount": 1,
+                    "hasData": true
+                },
+                {
+                    "label": "Week of Jul 07",
+                    "consistencyScore": 0.983771771150855,
+                    "durationScore": 0.9461403508771931,
+                    "consistencyColor": "#c1e0c3",
+                    "durationColor": "#43a047",
+                    "sleepTime": "23:30",
+                    "wakeTime": "07:06",
+                    "sleepDuration": 7.397619047619047,
+                    "timeInBed": 7.8309523809523816,
+                    "awakeCount": 1,
+                    "hasData": true
+                },
+                {
+                    "label": "Week of Jun 30",
+                    "consistencyScore": 1.0138925995812498,
+                    "durationScore": 0.9583458646616542,
+                    "consistencyColor": "#f7c7c6",
+                    "durationColor": "#62af65",
+                    "sleepTime": "23:07",
+                    "wakeTime": "06:27",
+                    "sleepDuration": 7.400436507936507,
+                    "timeInBed": 7.748055555555555,
+                    "awakeCount": 1,
+                    "hasData": true
+                },
+                {
+                    "label": "Week of Jun 23",
+                    "consistencyScore": 1.003580227659558,
+                    "durationScore": 0.9400000000000001,
+                    "consistencyColor": "#fdf0f0",
+                    "durationColor": "#43a047",
+                    "sleepTime": "23:17",
+                    "wakeTime": "06:33",
+                    "sleepDuration": 7.7,
+                    "timeInBed": 8.342857142857143,
+                    "awakeCount": 2,
+                    "hasData": true
+                },
+                {
+                    "label": "Week of Jun 16",
+                    "consistencyScore": 1.0981836650105865,
+                    "durationScore": 0.9533333333333335,
+                    "consistencyColor": "#e53935",
+                    "durationColor": "#4fa653",
+                    "sleepTime": "23:11",
+                    "wakeTime": "06:47",
+                    "sleepDuration": 7.528703703703704,
+                    "timeInBed": 7.812037037037037,
+                    "awakeCount": 0,
+                    "hasData": true
+                },
+                {
+                    "label": "Week of Jun 09",
+                    "consistencyScore": 1.020672108991353,
+                    "durationScore": 0.9827870718462824,
+                    "consistencyColor": "#f4adab",
+                    "durationColor": "#bedebf",
+                    "sleepTime": "23:26",
+                    "wakeTime": "06:31",
+                    "sleepDuration": 6.791984126984127,
+                    "timeInBed": 7.268174603174603,
+                    "awakeCount": 1,
+                    "hasData": true
+                },
+                {
+                    "label": "Week of Jun 02",
+                    "consistencyScore": 0.9660156803937193,
+                    "durationScore": 0.9808814484126984,
+                    "consistencyColor": "#7fbe81",
+                    "durationColor": "#b7dab8",
+                    "sleepTime": "00:05",
+                    "wakeTime": "06:49",
+                    "sleepDuration": 7.215753968253969,
+                    "timeInBed": 7.689563492063492,
+                    "awakeCount": 1,
+                    "hasData": true
+                },
+                {
+                    "label": "Week of May 26",
+                    "consistencyScore": 0.9631798087248085,
+                    "durationScore": 0.9365789473684211,
+                    "consistencyColor": "#74b977",
+                    "durationColor": "#43a047",
+                    "sleepTime": "00:04",
+                    "wakeTime": "07:01",
+                    "sleepDuration": 7.858174603174604,
+                    "timeInBed": 8.251031746031746,
+                    "awakeCount": 1,
+                    "hasData": true
+                },
+                {
+                    "label": "Week of May 19",
+                    "consistencyScore": 0.9618590405663402,
+                    "durationScore": 0.9412280701754386,
+                    "consistencyColor": "#6fb672",
+                    "durationColor": "#43a047",
+                    "sleepTime": "23:50",
+                    "wakeTime": "08:06",
+                    "sleepDuration": 7.7075000000000005,
+                    "timeInBed": 8.069404761904762,
+                    "awakeCount": 1,
+                    "hasData": true
+                },
+                {
+                    "label": "Week of May 12",
+                    "consistencyScore": 0.9725232320775362,
+                    "durationScore": 0.9365789473684211,
+                    "consistencyColor": "#97ca99",
+                    "durationColor": "#43a047",
+                    "sleepTime": "23:16",
+                    "wakeTime": "06:23",
+                    "sleepDuration": 7.72234126984127,
+                    "timeInBed": 7.910436507936508,
+                    "awakeCount": 0,
+                    "hasData": true
+                },
+                {
+                    "label": "Week of May 05",
+                    "consistencyScore": 1.0043492619544214,
+                    "durationScore": 0.9514035087719298,
+                    "consistencyColor": "#fceded",
+                    "durationColor": "#48a24c",
+                    "sleepTime": "22:33",
+                    "wakeTime": "06:34",
+                    "sleepDuration": 7.432142857142857,
+                    "timeInBed": 7.632142857142857,
+                    "awakeCount": 0,
+                    "hasData": true
+                },
+                {
+                    "label": "Week of Apr 28",
+                    "consistencyScore": 1.1108410950179224,
+                    "durationScore": 0.9443869047619048,
+                    "consistencyColor": "#e53935",
+                    "durationColor": "#43a047",
+                    "sleepTime": "00:45",
+                    "wakeTime": "09:21",
+                    "sleepDuration": 7.891071428571428,
+                    "timeInBed": 8.241071428571429,
+                    "awakeCount": 1,
+                    "hasData": true
+                },
+                {
+                    "label": "Week of Apr 21",
+                    "consistencyScore": 1.0623875950185993,
+                    "durationScore": 1.0296805555555555,
+                    "consistencyColor": "#e53935",
+                    "durationColor": "#ef8987",
+                    "sleepTime": "04:50",
+                    "wakeTime": "07:49",
+                    "sleepDuration": 5.433333333333334,
+                    "timeInBed": 6.027777777777778,
+                    "awakeCount": 2,
                     "hasData": true
                 }
             ],
@@ -1659,7 +1649,7 @@
         },
         "vo2": {
             "latestScore": -4.6,
-            "averageScore": -4.6,
+            "averageScore": -4.600000000000001,
             "daily": [
                 {
                     "date": "Week of Sep 22",
@@ -1687,7 +1677,71 @@
                 },
                 {
                     "date": "Week of Aug 11",
-                    "vo2": 53.7
+                    "vo2": 53.728571428571435
+                },
+                {
+                    "date": "Week of Aug 04",
+                    "vo2": 53.885714285714286
+                },
+                {
+                    "date": "Week of Jul 28",
+                    "vo2": 54.07142857142857
+                },
+                {
+                    "date": "Week of Jul 21",
+                    "vo2": 54.1
+                },
+                {
+                    "date": "Week of Jul 14",
+                    "vo2": 54.37142857142857
+                },
+                {
+                    "date": "Week of Jul 07",
+                    "vo2": 54.58571428571429
+                },
+                {
+                    "date": "Week of Jun 30",
+                    "vo2": 54.81428571428571
+                },
+                {
+                    "date": "Week of Jun 23",
+                    "vo2": 55.114285714285714
+                },
+                {
+                    "date": "Week of Jun 16",
+                    "vo2": 56.885714285714286
+                },
+                {
+                    "date": "Week of Jun 09",
+                    "vo2": 57.0
+                },
+                {
+                    "date": "Week of Jun 02",
+                    "vo2": 57.0
+                },
+                {
+                    "date": "Week of May 26",
+                    "vo2": 57.028571428571425
+                },
+                {
+                    "date": "Week of May 19",
+                    "vo2": 57.1
+                },
+                {
+                    "date": "Week of May 12",
+                    "vo2": 57.01428571428572
+                },
+                {
+                    "date": "Week of May 05",
+                    "vo2": 57.24285714285714
+                },
+                {
+                    "date": "Week of Apr 28",
+                    "vo2": 57.3
+                },
+                {
+                    "date": "Week of Apr 21",
+                    "vo2": 56.29999999999999
                 }
             ],
             "zones": [
@@ -1795,268 +1849,9 @@
                 }
             ]
         },
-        "strength": {
-            "latestScore": -0.16689964989902273,
-            "averageScore": -0.18291703125632774,
-            "daily": [
-                {
-                    "label": "Week of Sep 22",
-                    "dailyDuration": 23.46622605096726,
-                    "weeklySum": 117.62231619698663,
-                    "hrScore": 0.9833100350100977,
-                    "hrColor": "#c0dfc1",
-                    "hasData": true
-                },
-                {
-                    "label": "Week of Sep 15",
-                    "dailyDuration": 0.0,
-                    "weeklySum": 29.518938337053587,
-                    "hrScore": 1.0063995604915144,
-                    "hrColor": "#fbe5e5",
-                    "hasData": true
-                },
-                {
-                    "label": "Week of Sep 08",
-                    "dailyDuration": 17.047952415829613,
-                    "weeklySum": 127.73584827241447,
-                    "hrScore": 0.9813836479481115,
-                    "hrColor": "#b9dbba",
-                    "hasData": true
-                },
-                {
-                    "label": "Week of Sep 01",
-                    "dailyDuration": 12.868347749255951,
-                    "weeklySum": 86.03494698660718,
-                    "hrScore": 0.9893266767644558,
-                    "hrColor": "#d6ead7",
-                    "hasData": true
-                },
-                {
-                    "label": "Week of Aug 25",
-                    "dailyDuration": 12.913033040364581,
-                    "weeklySum": 122.8364240373884,
-                    "hrScore": 0.9823168716119259,
-                    "hrColor": "#bcddbd",
-                    "hasData": true
-                },
-                {
-                    "label": "Week of Aug 18",
-                    "dailyDuration": 33.003515043712795,
-                    "weeklySum": 221.8411156063988,
-                    "hrScore": 0.9634588351225907,
-                    "hrColor": "#75b978",
-                    "hasData": true
-                },
-                {
-                    "label": "Week of Aug 11",
-                    "dailyDuration": 0.0,
-                    "weeklySum": 209.74713134765628,
-                    "hrScore": 0.965762451171875,
-                    "hrColor": "#7ebd81",
-                    "hasData": true
-                }
-            ],
-            "colorStops": [
-                {
-                    "score": 2,
-                    "color": "#d32f2f"
-                },
-                {
-                    "score": 1,
-                    "color": "#f57c00"
-                },
-                {
-                    "score": 0,
-                    "color": "#ffffff"
-                },
-                {
-                    "score": -1,
-                    "color": "#7cb342"
-                },
-                {
-                    "score": -2,
-                    "color": "#388e3c"
-                }
-            ]
-        },
-        "bodyComp": {
-            "latestScore": -2.27973618476363,
-            "averageScore": -2.4242486745433798,
-            "daily": [
-                {
-                    "label": "Week of Sep 22",
-                    "weight": 91.81228571428572,
-                    "bodyFat": 18.7,
-                    "ffmi": 21.118944739054516,
-                    "fmi": 4.85782238246136,
-                    "hrScore": 0.772026381523637,
-                    "hrColor": "#43a047",
-                    "hasData": true
-                },
-                {
-                    "label": "Week of Sep 15",
-                    "weight": 91.837,
-                    "bodyFat": 19.057142857142857,
-                    "ffmi": 21.03201440535472,
-                    "fmi": 4.95174521438272,
-                    "hrScore": 0.7741996398661319,
-                    "hrColor": "#43a047",
-                    "hasData": true
-                },
-                {
-                    "label": "Week of Sep 08",
-                    "weight": 91.55971428571429,
-                    "bodyFat": 19.0,
-                    "ffmi": 20.98307140431999,
-                    "fmi": 4.922234810515425,
-                    "hrScore": 0.7754232148920002,
-                    "hrColor": "#43a047",
-                    "hasData": true
-                },
-                {
-                    "label": "Week of Sep 01",
-                    "weight": 91.59657142857144,
-                    "bodyFat": 11.028571428571428,
-                    "ffmi": 23.059770985578478,
-                    "fmi": 2.855963347991981,
-                    "hrScore": 0.7613766915378646,
-                    "hrColor": "#43a047",
-                    "hasData": true
-                },
-                {
-                    "label": "Week of Aug 25",
-                    "weight": 91.47142857142856,
-                    "bodyFat": 0.0,
-                    "ffmi": 25.880327232749146,
-                    "fmi": 0.0,
-                    "hrScore": 0.74,
-                    "hrColor": "#43a047",
-                    "hasData": true
-                },
-                {
-                    "label": "Week of Aug 18",
-                    "weight": 91.31414285714285,
-                    "bodyFat": 0.0,
-                    "ffmi": 25.835825842333314,
-                    "fmi": 0.0,
-                    "hrScore": 0.74,
-                    "hrColor": "#43a047",
-                    "hasData": true
-                },
-                {
-                    "label": "Week of Aug 11",
-                    "weight": 90.199,
-                    "bodyFat": 0.0,
-                    "ffmi": 25.520314622000907,
-                    "fmi": 0.0,
-                    "hrScore": 0.74,
-                    "hrColor": "#43a047",
-                    "hasData": true
-                }
-            ],
-            "colorStops": [
-                {
-                    "score": 2,
-                    "color": "#d32f2f"
-                },
-                {
-                    "score": 1,
-                    "color": "#f57c00"
-                },
-                {
-                    "score": 0,
-                    "color": "#ffffff"
-                },
-                {
-                    "score": -1,
-                    "color": "#7cb342"
-                },
-                {
-                    "score": -2,
-                    "color": "#388e3c"
-                }
-            ]
-        },
-        "rhr": {
-            "latestScore": -1.7627142857142863,
-            "averageScore": -1.7701632653061228,
-            "daily": [
-                {
-                    "label": "Week of Sep 22",
-                    "rhr": 47,
-                    "hrScore": 0.8237285714285714,
-                    "hrColor": "#43a047",
-                    "hasData": true
-                },
-                {
-                    "label": "Week of Sep 15",
-                    "rhr": 49,
-                    "hrScore": 0.8352,
-                    "hrColor": "#43a047",
-                    "hasData": true
-                },
-                {
-                    "label": "Week of Sep 08",
-                    "rhr": 47,
-                    "hrScore": 0.8237285714285715,
-                    "hrColor": "#43a047",
-                    "hasData": true
-                },
-                {
-                    "label": "Week of Sep 01",
-                    "rhr": 48,
-                    "hrScore": 0.8299857142857142,
-                    "hrColor": "#43a047",
-                    "hasData": true
-                },
-                {
-                    "label": "Week of Aug 25",
-                    "rhr": 47,
-                    "hrScore": 0.8216428571428571,
-                    "hrColor": "#43a047",
-                    "hasData": true
-                },
-                {
-                    "label": "Week of Aug 18",
-                    "rhr": 47,
-                    "hrScore": 0.8206,
-                    "hrColor": "#43a047",
-                    "hasData": true
-                },
-                {
-                    "label": "Week of Aug 11",
-                    "rhr": 44,
-                    "hrScore": 0.806,
-                    "hrColor": "#43a047",
-                    "hasData": true
-                }
-            ],
-            "colorStops": [
-                {
-                    "score": 2,
-                    "color": "#d32f2f"
-                },
-                {
-                    "score": 1,
-                    "color": "#f57c00"
-                },
-                {
-                    "score": 0,
-                    "color": "#ffffff"
-                },
-                {
-                    "score": -1,
-                    "color": "#7cb342"
-                },
-                {
-                    "score": -2,
-                    "color": "#388e3c"
-                }
-            ]
-        },
         "heartRate": {
             "latestScore": 0.13834586466165422,
-            "averageScore": 0.0919608094110358,
+            "averageScore": -0.1402549166700262,
             "daily": [
                 {
                     "label": "Week of Sep 22",
@@ -2138,467 +1933,223 @@
                 },
                 {
                     "label": "Week of Aug 11",
-                    "mpaTime": 2.0,
-                    "vpaTime": 0.0,
-                    "adjVpaTime": 1.0,
-                    "rolling7Day": 196.0,
-                    "hazardRatio": 0.9748872180451128,
-                    "restingHR": 44.0,
+                    "mpaTime": 276.0,
+                    "vpaTime": 58.0,
+                    "adjVpaTime": 196.0,
+                    "rolling7Day": 232.57142857142858,
+                    "hazardRatio": 0.9666478089897869,
+                    "restingHR": 46.714285714285715,
                     "maxHR": 195.0,
-                    "hrReserve": 151.0,
+                    "hrReserve": 148.28571428571428,
                     "zoneTimes": {},
                     "hasData": true
-                }
-            ],
-            "colorStops": [
-                {
-                    "score": 2,
-                    "color": "#d32f2f"
                 },
                 {
-                    "score": 1,
-                    "color": "#f57c00"
-                },
-                {
-                    "score": 0,
-                    "color": "#ffffff"
-                },
-                {
-                    "score": -1,
-                    "color": "#7cb342"
-                },
-                {
-                    "score": -2,
-                    "color": "#388e3c"
-                }
-            ]
-        }
-    },
-    "monthly": {
-        "sleep": {
-            "latestScore": -0.3353283147898656,
-            "averageScore": -0.39507047690747643,
-            "daily": [
-                {
-                    "label": "Sep 2025",
-                    "consistencyScore": 0.9654826566322896,
-                    "durationScore": 1.0018833333333332,
-                    "consistencyColor": "#7dbd7f",
-                    "durationColor": "#fef7f7",
-                    "sleepTime": "00:06",
-                    "wakeTime": "09:11",
-                    "sleepDuration": 7.140000000000001,
-                    "timeInBed": 7.333333333333334,
-                    "awakeCount": 0,
+                    "label": "Week of Aug 04",
+                    "mpaTime": 280.0,
+                    "vpaTime": 32.0,
+                    "adjVpaTime": 172.0,
+                    "rolling7Day": 149.57142857142858,
+                    "hazardRatio": 0.9867852404119543,
+                    "restingHR": 46.57142857142857,
+                    "maxHR": 195.0,
+                    "hrReserve": 148.42857142857142,
+                    "zoneTimes": {},
                     "hasData": true
                 },
                 {
-                    "label": "Aug 2025",
-                    "consistencyScore": 0.9755003680075366,
-                    "durationScore": 0.9523584064327486,
-                    "consistencyColor": "#a2d0a4",
-                    "durationColor": "#4ba44f",
-                    "sleepTime": "00:06",
-                    "wakeTime": "06:55",
-                    "sleepDuration": 7.594592592592592,
-                    "timeInBed": 7.905703703703704,
-                    "awakeCount": 1,
+                    "label": "Week of Jul 28",
+                    "mpaTime": 174.0,
+                    "vpaTime": 6.0,
+                    "adjVpaTime": 93.0,
+                    "rolling7Day": 83.85714285714286,
+                    "hazardRatio": 1.0189248409644232,
+                    "restingHR": 49.42857142857143,
+                    "maxHR": 195.0,
+                    "hrReserve": 145.57142857142858,
+                    "zoneTimes": {},
                     "hasData": true
                 },
                 {
-                    "label": "Jul 2025",
-                    "consistencyScore": 1.0690281419413712,
-                    "durationScore": 0.9751556310130165,
-                    "consistencyColor": "#e53935",
-                    "durationColor": "#a1cfa3",
-                    "sleepTime": "23:41",
-                    "wakeTime": "07:54",
-                    "sleepDuration": 7.129354838709677,
-                    "timeInBed": 7.515913978494624,
-                    "awakeCount": 1,
+                    "label": "Week of Jul 21",
+                    "mpaTime": 104.0,
+                    "vpaTime": 44.0,
+                    "adjVpaTime": 96.0,
+                    "rolling7Day": 75.71428571428571,
+                    "hazardRatio": 1.0275237571664182,
+                    "restingHR": 49.142857142857146,
+                    "maxHR": 195.0,
+                    "hrReserve": 145.85714285714286,
+                    "zoneTimes": {},
                     "hasData": true
                 },
                 {
-                    "label": "Jun 2025",
-                    "consistencyScore": 1.0163006771771979,
-                    "durationScore": 0.9638528370135109,
-                    "consistencyColor": "#f6bebd",
-                    "durationColor": "#77ba79",
-                    "sleepTime": "23:00",
-                    "wakeTime": "06:26",
-                    "sleepDuration": 7.293438697318008,
-                    "timeInBed": 7.751484674329502,
-                    "awakeCount": 1,
+                    "label": "Week of Jul 14",
+                    "mpaTime": 188.0,
+                    "vpaTime": 20.0,
+                    "adjVpaTime": 114.0,
+                    "rolling7Day": 126.14285714285714,
+                    "hazardRatio": 0.993929449792706,
+                    "restingHR": 46.0,
+                    "maxHR": 195.0,
+                    "hrReserve": 149.0,
+                    "zoneTimes": {},
                     "hasData": true
                 },
                 {
-                    "label": "May 2025",
-                    "consistencyScore": 0.9832050699700726,
-                    "durationScore": 0.9421026457272214,
-                    "consistencyColor": "#bfdfc1",
-                    "durationColor": "#43a047",
-                    "sleepTime": "01:19",
-                    "wakeTime": "09:03",
-                    "sleepDuration": 7.71239247311828,
-                    "timeInBed": 8.024758064516128,
-                    "awakeCount": 1,
+                    "label": "Week of Jul 07",
+                    "mpaTime": 176.0,
+                    "vpaTime": 42.0,
+                    "adjVpaTime": 130.0,
+                    "rolling7Day": 114.57142857142857,
+                    "hazardRatio": 0.9991062731044212,
+                    "restingHR": 46.285714285714285,
+                    "maxHR": 195.0,
+                    "hrReserve": 148.71428571428572,
+                    "zoneTimes": {},
                     "hasData": true
                 },
                 {
-                    "label": "Apr 2025",
-                    "consistencyScore": 1.0041863565453928,
-                    "durationScore": 0.9532257066276804,
-                    "consistencyColor": "#fceeee",
-                    "durationColor": "#4fa652",
-                    "sleepTime": "23:06",
-                    "wakeTime": "07:30",
-                    "sleepDuration": 7.4635,
-                    "timeInBed": 7.775166666666666,
-                    "awakeCount": 0,
+                    "label": "Week of Jun 30",
+                    "mpaTime": 130.0,
+                    "vpaTime": 20.0,
+                    "adjVpaTime": 85.0,
+                    "rolling7Day": 113.14285714285714,
+                    "hazardRatio": 0.999722470394946,
+                    "restingHR": 45.57142857142857,
+                    "maxHR": 195.0,
+                    "hrReserve": 149.42857142857142,
+                    "zoneTimes": {},
                     "hasData": true
                 },
                 {
-                    "label": "Mar 2025",
-                    "consistencyScore": 1.0148690514196324,
-                    "durationScore": 0.9621792350499906,
-                    "consistencyColor": "#f7c4c2",
-                    "durationColor": "#70b773",
-                    "sleepTime": "22:45",
-                    "wakeTime": "07:00",
-                    "sleepDuration": 7.477267025089606,
-                    "timeInBed": 7.991245519713262,
-                    "awakeCount": 1,
+                    "label": "Week of Jun 23",
+                    "mpaTime": 282.0,
+                    "vpaTime": 42.0,
+                    "adjVpaTime": 183.0,
+                    "rolling7Day": 149.42857142857142,
+                    "hazardRatio": 0.9898655851912826,
+                    "restingHR": 49.42857142857143,
+                    "maxHR": 195.0,
+                    "hrReserve": 145.57142857142858,
+                    "zoneTimes": {},
                     "hasData": true
                 },
                 {
-                    "label": "Feb 2025",
-                    "consistencyScore": 0.9603569865548615,
-                    "durationScore": 0.9411959064327485,
-                    "consistencyColor": "#69b36d",
-                    "durationColor": "#43a047",
-                    "sleepTime": "01:32",
-                    "wakeTime": "09:44",
-                    "sleepDuration": 7.934675925925926,
-                    "timeInBed": 8.39787037037037,
-                    "awakeCount": 1,
-                    "hasData": true
-                }
-            ],
-            "colorStops": [
-                {
-                    "score": 2,
-                    "color": "#d32f2f"
-                },
-                {
-                    "score": 1,
-                    "color": "#f57c00"
-                },
-                {
-                    "score": 0,
-                    "color": "#ffffff"
-                },
-                {
-                    "score": -1,
-                    "color": "#7cb342"
-                },
-                {
-                    "score": -2,
-                    "color": "#388e3c"
-                }
-            ]
-        },
-        "vo2": {
-            "latestScore": -4.6,
-            "averageScore": -4.6,
-            "daily": [
-                {
-                    "date": "Sep 2025",
-                    "vo2": 54.239999999999995
-                },
-                {
-                    "date": "Aug 2025",
-                    "vo2": 53.900000000000006
-                },
-                {
-                    "date": "Jul 2025",
-                    "vo2": 54.40967741935484
-                },
-                {
-                    "date": "Jun 2025",
-                    "vo2": 56.46333333333334
-                },
-                {
-                    "date": "May 2025",
-                    "vo2": 57.12580645161291
-                },
-                {
-                    "date": "Apr 2025",
-                    "vo2": 55.99
-                },
-                {
-                    "date": "Mar 2025",
-                    "vo2": 56.18387096774194
-                },
-                {
-                    "date": "Feb 2025",
-                    "vo2": 56.30416666666667
-                }
-            ],
-            "zones": [
-                {
-                    "value": 36.05,
-                    "color": "#e53935"
-                },
-                {
-                    "value": 38.85,
-                    "color": "#e53935"
-                },
-                {
-                    "value": 44.8,
-                    "color": "#ffffff"
-                },
-                {
-                    "value": 51.28,
-                    "color": "#43a047"
-                },
-                {
-                    "value": 54.95,
-                    "color": "#43a047"
-                }
-            ],
-            "colorStops": [
-                {
-                    "score": 2,
-                    "color": "#d32f2f"
-                },
-                {
-                    "score": 1,
-                    "color": "#f57c00"
-                },
-                {
-                    "score": 0,
-                    "color": "#ffffff"
-                },
-                {
-                    "score": -1,
-                    "color": "#7cb342"
-                },
-                {
-                    "score": -2,
-                    "color": "#388e3c"
-                }
-            ]
-        },
-        "steps": {
-            "latestScore": 3.0000000000000004,
-            "averageScore": 3.0000000000000004,
-            "daily": [
-                {
-                    "label": "Sep 2025",
-                    "dailySteps": 14611,
-                    "rollingAvgSteps": 12368,
-                    "hazardRatio": 1.3,
-                    "hrColor": "#e53935",
-                    "hasData": true
-                }
-            ],
-            "colorStops": [
-                {
-                    "score": 2,
-                    "color": "#d32f2f"
-                },
-                {
-                    "score": 1,
-                    "color": "#f57c00"
-                },
-                {
-                    "score": 0,
-                    "color": "#ffffff"
-                },
-                {
-                    "score": -1,
-                    "color": "#7cb342"
-                },
-                {
-                    "score": -2,
-                    "color": "#388e3c"
-                }
-            ]
-        },
-        "strength": {
-            "latestScore": -0.1036524801587313,
-            "averageScore": -0.10925081115529922,
-            "daily": [
-                {
-                    "label": "Sep 2025",
-                    "dailyDuration": 18.01568684895833,
-                    "weeklySum": 84.41755208333336,
-                    "hrScore": 0.9896347519841269,
-                    "hrColor": "#d8ebd8",
+                    "label": "Week of Jun 16",
+                    "mpaTime": 72.0,
+                    "vpaTime": 0.0,
+                    "adjVpaTime": 36.0,
+                    "rolling7Day": 17.428571428571427,
+                    "hazardRatio": 1.1556380952380951,
+                    "restingHR": 49.0,
+                    "maxHR": 195.0,
+                    "hrReserve": 146.0,
+                    "zoneTimes": {},
                     "hasData": true
                 },
                 {
-                    "label": "Aug 2025",
-                    "dailyDuration": 24.237059759324595,
-                    "weeklySum": 186.0499379147766,
-                    "hrScore": 0.970557108079917,
-                    "hrColor": "#90c792",
+                    "label": "Week of Jun 09",
+                    "mpaTime": 36.0,
+                    "vpaTime": 0.0,
+                    "adjVpaTime": 18.0,
+                    "rolling7Day": 52.57142857142857,
+                    "hazardRatio": 1.0618590120160214,
+                    "restingHR": 47.142857142857146,
+                    "maxHR": 195.0,
+                    "hrReserve": 147.85714285714286,
+                    "zoneTimes": {},
                     "hasData": true
                 },
                 {
-                    "label": "Jul 2025",
-                    "dailyDuration": 22.432217308782764,
-                    "weeklySum": 146.4851279638147,
-                    "hrScore": 0.977812356578321,
-                    "hrColor": "#abd4ad",
+                    "label": "Week of Jun 02",
+                    "mpaTime": 130.0,
+                    "vpaTime": 12.0,
+                    "adjVpaTime": 77.0,
+                    "rolling7Day": 39.857142857142854,
+                    "hazardRatio": 1.0776906097018248,
+                    "restingHR": 45.57142857142857,
+                    "maxHR": 195.0,
+                    "hrReserve": 149.42857142857142,
+                    "zoneTimes": {},
                     "hasData": true
                 },
                 {
-                    "label": "Jun 2025",
-                    "dailyDuration": 18.642835150824656,
-                    "weeklySum": 129.50860290527348,
-                    "hrScore": 0.9810459803989955,
-                    "hrColor": "#b7dab9",
+                    "label": "Week of May 26",
+                    "mpaTime": 0.0,
+                    "vpaTime": 0.0,
+                    "adjVpaTime": 0.0,
+                    "rolling7Day": 0.0,
+                    "hazardRatio": null,
+                    "restingHR": 46.714285714285715,
+                    "maxHR": 195.0,
+                    "hrReserve": 148.28571428571428,
+                    "zoneTimes": {},
                     "hasData": true
                 },
                 {
-                    "label": "May 2025",
-                    "dailyDuration": 14.577932247038811,
-                    "weeklySum": 89.50533053490426,
-                    "hrScore": 0.9916794326461894,
-                    "hrColor": "#dfefe0",
+                    "label": "Week of May 19",
+                    "mpaTime": 0.0,
+                    "vpaTime": 0.0,
+                    "adjVpaTime": 0.0,
+                    "rolling7Day": 0.0,
+                    "hazardRatio": null,
+                    "restingHR": 47.57142857142857,
+                    "maxHR": 195.0,
+                    "hrReserve": 147.42857142857142,
+                    "zoneTimes": {},
                     "hasData": true
                 },
                 {
-                    "label": "Apr 2025",
-                    "dailyDuration": 9.027952745225694,
-                    "weeklySum": 68.91549411349827,
-                    "hrScore": 0.9966101280898644,
-                    "hrColor": "#f2f8f2",
+                    "label": "Week of May 12",
+                    "mpaTime": 0.0,
+                    "vpaTime": 0.0,
+                    "adjVpaTime": 0.0,
+                    "rolling7Day": 0.0,
+                    "hazardRatio": null,
+                    "restingHR": 45.57142857142857,
+                    "maxHR": 195.0,
+                    "hrReserve": 149.42857142857142,
+                    "zoneTimes": {},
                     "hasData": true
                 },
                 {
-                    "label": "Mar 2025",
-                    "dailyDuration": 3.2601747246198753,
-                    "weeklySum": 20.376661829794617,
-                    "hrScore": 1.008666312203356,
-                    "hrColor": "#fadcdb",
+                    "label": "Week of May 05",
+                    "mpaTime": 0.0,
+                    "vpaTime": 0.0,
+                    "adjVpaTime": 0.0,
+                    "rolling7Day": 0.0,
+                    "hazardRatio": null,
+                    "restingHR": 47.714285714285715,
+                    "maxHR": 195.0,
+                    "hrReserve": 147.28571428571428,
+                    "zoneTimes": {},
                     "hasData": true
                 },
                 {
-                    "label": "Feb 2025",
-                    "dailyDuration": 6.781717342800564,
-                    "weeklySum": 50.51057646009659,
-                    "hrScore": 0.9965932810949901,
-                    "hrColor": "#f2f8f2",
-                    "hasData": true
-                }
-            ],
-            "colorStops": [
-                {
-                    "score": 2,
-                    "color": "#d32f2f"
-                },
-                {
-                    "score": 1,
-                    "color": "#f57c00"
-                },
-                {
-                    "score": 0,
-                    "color": "#ffffff"
-                },
-                {
-                    "score": -1,
-                    "color": "#7cb342"
-                },
-                {
-                    "score": -2,
-                    "color": "#388e3c"
-                }
-            ]
-        },
-        "bodyComp": {
-            "latestScore": -2.4225540119963784,
-            "averageScore": -2.577819251499547,
-            "daily": [
-                {
-                    "label": "Sep 2025",
-                    "weight": 91.4016,
-                    "bodyFat": 7.959999999999999,
-                    "ffmi": 23.810990153915803,
-                    "fmi": 2.049580239927569,
-                    "hrScore": 0.7577445988003622,
-                    "hrColor": "#43a047",
+                    "label": "Week of Apr 28",
+                    "mpaTime": 0.0,
+                    "vpaTime": 0.0,
+                    "adjVpaTime": 0.0,
+                    "rolling7Day": 0.0,
+                    "hazardRatio": null,
+                    "restingHR": 48.0,
+                    "maxHR": 195.0,
+                    "hrReserve": 147.0,
+                    "zoneTimes": {},
                     "hasData": true
                 },
                 {
-                    "label": "Aug 2025",
-                    "weight": 91.29296774193548,
-                    "bodyFat": 0.0,
-                    "ffmi": 25.82983469384775,
-                    "fmi": 0.0,
-                    "hrScore": 0.74,
-                    "hrColor": "#43a047",
-                    "hasData": true
-                },
-                {
-                    "label": "Jul 2025",
-                    "weight": 88.67735483870968,
-                    "bodyFat": 0.0,
-                    "ffmi": 25.089790300676125,
-                    "fmi": 0.0,
-                    "hrScore": 0.74,
-                    "hrColor": "#43a047",
-                    "hasData": true
-                },
-                {
-                    "label": "Jun 2025",
-                    "weight": 86.40946666666667,
-                    "bodyFat": 0.0,
-                    "ffmi": 24.448128866757205,
-                    "fmi": 0.0,
-                    "hrScore": 0.74,
-                    "hrColor": "#43a047",
-                    "hasData": true
-                },
-                {
-                    "label": "May 2025",
-                    "weight": 84.594,
-                    "bodyFat": 0.0,
-                    "ffmi": 23.93447261204165,
-                    "fmi": 0.0,
-                    "hrScore": 0.74,
-                    "hrColor": "#43a047",
-                    "hasData": true
-                },
-                {
-                    "label": "Apr 2025",
-                    "weight": 84.594,
-                    "bodyFat": 0.0,
-                    "ffmi": 23.93447261204165,
-                    "fmi": 0.0,
-                    "hrScore": 0.74,
-                    "hrColor": "#43a047",
-                    "hasData": true
-                },
-                {
-                    "label": "Mar 2025",
-                    "weight": 83.83329032258064,
-                    "bodyFat": 0.0,
-                    "ffmi": 23.719242395478908,
-                    "fmi": 0.0,
-                    "hrScore": 0.74,
-                    "hrColor": "#43a047",
-                    "hasData": true
-                },
-                {
-                    "label": "Feb 2025",
-                    "weight": 83.687,
-                    "bodyFat": 0.0,
-                    "ffmi": 23.677851969216842,
-                    "fmi": 0.0,
-                    "hrScore": 0.7399999999999999,
-                    "hrColor": "#43a047",
+                    "label": "Week of Apr 21",
+                    "mpaTime": 0.0,
+                    "vpaTime": 0.0,
+                    "adjVpaTime": 0.0,
+                    "rolling7Day": 0.0,
+                    "hazardRatio": null,
+                    "restingHR": 49.0,
+                    "maxHR": 195.0,
+                    "hrReserve": 146.0,
+                    "zoneTimes": {},
                     "hasData": true
                 }
             ],
@@ -2626,62 +2177,167 @@
             ]
         },
         "rhr": {
-            "latestScore": -1.6334000000000004,
-            "averageScore": -1.7400987231182796,
+            "latestScore": -1.7627142857142863,
+            "averageScore": -1.7500186335403711,
             "daily": [
                 {
-                    "label": "Sep 2025",
+                    "label": "Week of Sep 22",
+                    "rhr": 47,
+                    "hrScore": 0.8237285714285714,
+                    "hrColor": "#43a047",
+                    "hasData": true
+                },
+                {
+                    "label": "Week of Sep 15",
                     "rhr": 49,
-                    "hrScore": 0.83666,
+                    "hrScore": 0.8352,
                     "hrColor": "#43a047",
                     "hasData": true
                 },
                 {
-                    "label": "Aug 2025",
+                    "label": "Week of Sep 08",
                     "rhr": 47,
-                    "hrScore": 0.8220129032258066,
+                    "hrScore": 0.8237285714285715,
                     "hrColor": "#43a047",
                     "hasData": true
                 },
                 {
-                    "label": "Jul 2025",
-                    "rhr": 47,
-                    "hrScore": 0.8241322580645162,
+                    "label": "Week of Sep 01",
+                    "rhr": 48,
+                    "hrScore": 0.8299857142857142,
                     "hrColor": "#43a047",
                     "hasData": true
                 },
                 {
-                    "label": "Jun 2025",
+                    "label": "Week of Aug 25",
                     "rhr": 47,
-                    "hrScore": 0.8264400000000001,
+                    "hrScore": 0.8216428571428571,
                     "hrColor": "#43a047",
                     "hasData": true
                 },
                 {
-                    "label": "May 2025",
+                    "label": "Week of Aug 18",
                     "rhr": 47,
-                    "hrScore": 0.8227193548387097,
+                    "hrScore": 0.8206,
                     "hrColor": "#43a047",
                     "hasData": true
                 },
                 {
-                    "label": "Apr 2025",
-                    "rhr": 47,
-                    "hrScore": 0.8269266666666667,
+                    "label": "Week of Aug 11",
+                    "rhr": 46,
+                    "hrScore": 0.8195571428571429,
                     "hrColor": "#43a047",
                     "hasData": true
                 },
                 {
-                    "label": "Mar 2025",
-                    "rhr": 47,
-                    "hrScore": 0.8229548387096774,
+                    "label": "Week of Aug 04",
+                    "rhr": 46,
+                    "hrScore": 0.8206,
                     "hrColor": "#43a047",
                     "hasData": true
                 },
                 {
-                    "label": "Feb 2025",
+                    "label": "Week of Jul 28",
+                    "rhr": 49,
+                    "hrScore": 0.8383285714285715,
+                    "hrColor": "#43a047",
+                    "hasData": true
+                },
+                {
+                    "label": "Week of Jul 21",
+                    "rhr": 49,
+                    "hrScore": 0.8362428571428572,
+                    "hrColor": "#43a047",
+                    "hasData": true
+                },
+                {
+                    "label": "Week of Jul 14",
+                    "rhr": 46,
+                    "hrScore": 0.8174714285714286,
+                    "hrColor": "#43a047",
+                    "hasData": true
+                },
+                {
+                    "label": "Week of Jul 07",
+                    "rhr": 46,
+                    "hrScore": 0.8174714285714286,
+                    "hrColor": "#43a047",
+                    "hasData": true
+                },
+                {
+                    "label": "Week of Jun 30",
+                    "rhr": 45,
+                    "hrScore": 0.8133,
+                    "hrColor": "#43a047",
+                    "hasData": true
+                },
+                {
+                    "label": "Week of Jun 23",
+                    "rhr": 49,
+                    "hrScore": 0.8383285714285715,
+                    "hrColor": "#43a047",
+                    "hasData": true
+                },
+                {
+                    "label": "Week of Jun 16",
+                    "rhr": 49,
+                    "hrScore": 0.8352,
+                    "hrColor": "#43a047",
+                    "hasData": true
+                },
+                {
+                    "label": "Week of Jun 09",
                     "rhr": 47,
-                    "hrScore": 0.826075,
+                    "hrScore": 0.8237285714285715,
+                    "hrColor": "#43a047",
+                    "hasData": true
+                },
+                {
+                    "label": "Week of Jun 02",
+                    "rhr": 45,
+                    "hrScore": 0.8143428571428571,
+                    "hrColor": "#43a047",
+                    "hasData": true
+                },
+                {
+                    "label": "Week of May 26",
+                    "rhr": 46,
+                    "hrScore": 0.8195571428571429,
+                    "hrColor": "#43a047",
+                    "hasData": true
+                },
+                {
+                    "label": "Week of May 19",
+                    "rhr": 47,
+                    "hrScore": 0.8247714285714286,
+                    "hrColor": "#43a047",
+                    "hasData": true
+                },
+                {
+                    "label": "Week of May 12",
+                    "rhr": 45,
+                    "hrScore": 0.8122571428571429,
+                    "hrColor": "#43a047",
+                    "hasData": true
+                },
+                {
+                    "label": "Week of May 05",
+                    "rhr": 47,
+                    "hrScore": 0.8258142857142857,
+                    "hrColor": "#43a047",
+                    "hasData": true
+                },
+                {
+                    "label": "Week of Apr 28",
+                    "rhr": 48,
+                    "hrScore": 0.8279,
+                    "hrColor": "#43a047",
+                    "hasData": true
+                },
+                {
+                    "label": "Week of Apr 21",
+                    "rhr": 49,
+                    "hrScore": 0.8352,
                     "hrColor": "#43a047",
                     "hasData": true
                 }
@@ -2709,112 +2365,450 @@
                 }
             ]
         },
-        "heartRate": {
-            "latestScore": 0.3305938575251699,
-            "averageScore": -0.07070053869099979,
+        "strength": {
+            "latestScore": -0.16689964989902273,
+            "averageScore": -0.15553821926047373,
             "daily": [
                 {
-                    "label": "Sep 2025",
-                    "mpaTime": 324.0,
-                    "vpaTime": 40.0,
-                    "adjVpaTime": 202.0,
-                    "rolling7Day": 231.4,
-                    "hazardRatio": 0.966940614247483,
-                    "restingHR": 49.2,
-                    "maxHR": 195.0,
-                    "hrReserve": 145.8,
-                    "zoneTimes": {},
+                    "label": "Week of Sep 22",
+                    "dailyDuration": 23.46622605096726,
+                    "weeklySum": 117.62231619698663,
+                    "hrScore": 0.9833100350100977,
+                    "hrColor": "#c0dfc1",
                     "hasData": true
                 },
                 {
-                    "label": "Aug 2025",
-                    "mpaTime": 1170.0,
-                    "vpaTime": 174.0,
-                    "adjVpaTime": 759.0,
-                    "rolling7Day": 162.38709677419354,
-                    "hazardRatio": 0.984476799839555,
-                    "restingHR": 47.064516129032256,
-                    "maxHR": 195.0,
-                    "hrReserve": 147.93548387096774,
-                    "zoneTimes": {},
+                    "label": "Week of Sep 15",
+                    "dailyDuration": 0.0,
+                    "weeklySum": 29.518938337053587,
+                    "hrScore": 1.0063995604915144,
+                    "hrColor": "#fbe5e5",
                     "hasData": true
                 },
                 {
-                    "label": "Jul 2025",
-                    "mpaTime": 630.0,
-                    "vpaTime": 132.0,
-                    "adjVpaTime": 447.0,
-                    "rolling7Day": 101.64516129032258,
-                    "hazardRatio": 1.0086350014673848,
-                    "restingHR": 47.193548387096776,
-                    "maxHR": 195.0,
-                    "hrReserve": 147.80645161290323,
-                    "zoneTimes": {},
+                    "label": "Week of Sep 08",
+                    "dailyDuration": 17.047952415829613,
+                    "weeklySum": 127.73584827241447,
+                    "hrScore": 0.9813836479481115,
+                    "hrColor": "#b9dbba",
                     "hasData": true
                 },
                 {
-                    "label": "Jun 2025",
-                    "mpaTime": 546.0,
-                    "vpaTime": 54.0,
-                    "adjVpaTime": 327.0,
-                    "rolling7Day": 65.8,
-                    "hazardRatio": 1.0682277999219771,
-                    "restingHR": 47.56666666666667,
-                    "maxHR": 195.0,
-                    "hrReserve": 147.43333333333334,
-                    "zoneTimes": {},
+                    "label": "Week of Sep 01",
+                    "dailyDuration": 12.868347749255951,
+                    "weeklySum": 86.03494698660718,
+                    "hrScore": 0.9893266767644558,
+                    "hrColor": "#d6ead7",
                     "hasData": true
                 },
                 {
-                    "label": "May 2025",
-                    "mpaTime": 0.0,
-                    "vpaTime": 0.0,
-                    "adjVpaTime": 0.0,
-                    "rolling7Day": 0.0,
-                    "hazardRatio": null,
-                    "restingHR": 47.225806451612904,
-                    "maxHR": 195.0,
-                    "hrReserve": 147.7741935483871,
-                    "zoneTimes": {},
+                    "label": "Week of Aug 25",
+                    "dailyDuration": 12.913033040364581,
+                    "weeklySum": 122.8364240373884,
+                    "hrScore": 0.9823168716119259,
+                    "hrColor": "#bcddbd",
                     "hasData": true
                 },
                 {
-                    "label": "Apr 2025",
-                    "mpaTime": 0.0,
-                    "vpaTime": 0.0,
-                    "adjVpaTime": 0.0,
-                    "rolling7Day": 0.0,
-                    "hazardRatio": null,
-                    "restingHR": 47.8,
-                    "maxHR": 195.0,
-                    "hrReserve": 147.2,
-                    "zoneTimes": {},
+                    "label": "Week of Aug 18",
+                    "dailyDuration": 33.003515043712795,
+                    "weeklySum": 221.8411156063988,
+                    "hrScore": 0.9634588351225907,
+                    "hrColor": "#75b978",
                     "hasData": true
                 },
                 {
-                    "label": "Mar 2025",
-                    "mpaTime": 0.0,
-                    "vpaTime": 0.0,
-                    "adjVpaTime": 0.0,
-                    "rolling7Day": 0.0,
-                    "hazardRatio": null,
-                    "restingHR": 47.12903225806452,
-                    "maxHR": 195.0,
-                    "hrReserve": 147.8709677419355,
-                    "zoneTimes": {},
+                    "label": "Week of Aug 11",
+                    "dailyDuration": 29.963875906808035,
+                    "weeklySum": 189.11889590308783,
+                    "hrScore": 0.9696916388756023,
+                    "hrColor": "#8dc58f",
                     "hasData": true
                 },
                 {
-                    "label": "Feb 2025",
-                    "mpaTime": 0.0,
-                    "vpaTime": 0.0,
-                    "adjVpaTime": 0.0,
-                    "rolling7Day": 0.0,
-                    "hazardRatio": null,
-                    "restingHR": 47.75,
-                    "maxHR": 195.0,
-                    "hrReserve": 147.25,
-                    "zoneTimes": {},
+                    "label": "Week of Aug 04",
+                    "dailyDuration": 23.994455101376484,
+                    "weeklySum": 197.92142101469497,
+                    "hrScore": 0.9680149674257724,
+                    "hrColor": "#86c289",
+                    "hasData": true
+                },
+                {
+                    "label": "Week of Jul 28",
+                    "dailyDuration": 25.700404575892858,
+                    "weeklySum": 189.01534191313246,
+                    "hrScore": 0.9709553747475551,
+                    "hrColor": "#91c794",
+                    "hasData": true
+                },
+                {
+                    "label": "Week of Jul 21",
+                    "dailyDuration": 15.116369047619047,
+                    "weeklySum": 86.67280273437503,
+                    "hrScore": 0.9892051804315477,
+                    "hrColor": "#d6ead7",
+                    "hasData": true
+                },
+                {
+                    "label": "Week of Jul 14",
+                    "dailyDuration": 25.909171549479165,
+                    "weeklySum": 163.47173200334822,
+                    "hrScore": 0.9745768129517431,
+                    "hrColor": "#9fcea1",
+                    "hasData": true
+                },
+                {
+                    "label": "Week of Jul 07",
+                    "dailyDuration": 25.382624162946428,
+                    "weeklySum": 175.80017787388394,
+                    "hrScore": 0.9722285375478316,
+                    "hrColor": "#96ca98",
+                    "hasData": true
+                },
+                {
+                    "label": "Week of Jun 30",
+                    "dailyDuration": 20.09057123093378,
+                    "weeklySum": 147.89968319847472,
+                    "hrScore": 0.9775429174860049,
+                    "hrColor": "#aad4ac",
+                    "hasData": true
+                },
+                {
+                    "label": "Week of Jun 23",
+                    "dailyDuration": 22.582798258463544,
+                    "weeklySum": 156.52176746186757,
+                    "hrScore": 0.975900615721549,
+                    "hrColor": "#a4d1a6",
+                    "hasData": true
+                },
+                {
+                    "label": "Week of Jun 16",
+                    "dailyDuration": 18.281481061662948,
+                    "weeklySum": 105.10735735212056,
+                    "hrScore": 0.9856938366948341,
+                    "hrColor": "#c9e3ca",
+                    "hasData": true
+                },
+                {
+                    "label": "Week of Jun 09",
+                    "dailyDuration": 14.292454601469492,
+                    "weeklySum": 122.41958879743306,
+                    "hrScore": 0.9823962688004889,
+                    "hrColor": "#bcddbe",
+                    "hasData": true
+                },
+                {
+                    "label": "Week of Jun 02",
+                    "dailyDuration": 19.345338367280505,
+                    "weeklySum": 132.06040823800225,
+                    "hrScore": 0.9805599222403805,
+                    "hrColor": "#b5dab7",
+                    "hasData": true
+                },
+                {
+                    "label": "Week of May 26",
+                    "dailyDuration": 17.005445207868302,
+                    "weeklySum": 106.98483014787949,
+                    "hrScore": 0.9853362228289753,
+                    "hrColor": "#c7e3c9",
+                    "hasData": true
+                },
+                {
+                    "label": "Week of May 19",
+                    "dailyDuration": 17.74874965122768,
+                    "weeklySum": 144.84261038643976,
+                    "hrScore": 0.9781252170692495,
+                    "hrColor": "#acd5ae",
+                    "hasData": true
+                },
+                {
+                    "label": "Week of May 12",
+                    "dailyDuration": 25.982281203497024,
+                    "weeklySum": 142.4440633138021,
+                    "hrScore": 0.9785820831783234,
+                    "hrColor": "#aed6b0",
+                    "hasData": true
+                },
+                {
+                    "label": "Week of May 05",
+                    "dailyDuration": 3.822938174293155,
+                    "weeklySum": 19.114690871465797,
+                    "hrScore": 1.007256872752356,
+                    "hrColor": "#fbe2e1",
+                    "hasData": true
+                },
+                {
+                    "label": "Week of Apr 28",
+                    "dailyDuration": 0.0,
+                    "weeklySum": 0.0,
+                    "hrScore": 1.02,
+                    "hrColor": "#f4afae",
+                    "hasData": true
+                },
+                {
+                    "label": "Week of Apr 21",
+                    "dailyDuration": 0.0,
+                    "weeklySum": 0.0,
+                    "hrScore": 1.02,
+                    "hrColor": "#f4afae",
+                    "hasData": true
+                }
+            ],
+            "colorStops": [
+                {
+                    "score": 2,
+                    "color": "#d32f2f"
+                },
+                {
+                    "score": 1,
+                    "color": "#f57c00"
+                },
+                {
+                    "score": 0,
+                    "color": "#ffffff"
+                },
+                {
+                    "score": -1,
+                    "color": "#7cb342"
+                },
+                {
+                    "score": -2,
+                    "color": "#388e3c"
+                }
+            ]
+        },
+        "bodyComp": {
+            "latestScore": -2.27973618476363,
+            "averageScore": -2.546510466165377,
+            "daily": [
+                {
+                    "label": "Week of Sep 22",
+                    "weight": 91.81228571428572,
+                    "bodyFat": 18.7,
+                    "ffmi": 21.118944739054516,
+                    "fmi": 4.85782238246136,
+                    "hrScore": 0.772026381523637,
+                    "hrColor": "#43a047",
+                    "hasData": true
+                },
+                {
+                    "label": "Week of Sep 15",
+                    "weight": 91.837,
+                    "bodyFat": 19.057142857142857,
+                    "ffmi": 21.03201440535472,
+                    "fmi": 4.95174521438272,
+                    "hrScore": 0.7741996398661319,
+                    "hrColor": "#43a047",
+                    "hasData": true
+                },
+                {
+                    "label": "Week of Sep 08",
+                    "weight": 91.55971428571429,
+                    "bodyFat": 19.0,
+                    "ffmi": 20.98307140431999,
+                    "fmi": 4.922234810515425,
+                    "hrScore": 0.7754232148920002,
+                    "hrColor": "#43a047",
+                    "hasData": true
+                },
+                {
+                    "label": "Week of Sep 01",
+                    "weight": 91.59657142857144,
+                    "bodyFat": 11.028571428571428,
+                    "ffmi": 23.059770985578478,
+                    "fmi": 2.855963347991981,
+                    "hrScore": 0.7613766915378646,
+                    "hrColor": "#43a047",
+                    "hasData": true
+                },
+                {
+                    "label": "Week of Aug 25",
+                    "weight": 91.47142857142856,
+                    "bodyFat": 0.0,
+                    "ffmi": 25.880327232749146,
+                    "fmi": 0.0,
+                    "hrScore": 0.74,
+                    "hrColor": "#43a047",
+                    "hasData": true
+                },
+                {
+                    "label": "Week of Aug 18",
+                    "weight": 91.31414285714285,
+                    "bodyFat": 0.0,
+                    "ffmi": 25.835825842333314,
+                    "fmi": 0.0,
+                    "hrScore": 0.74,
+                    "hrColor": "#43a047",
+                    "hasData": true
+                },
+                {
+                    "label": "Week of Aug 11",
+                    "weight": 90.45614285714285,
+                    "bodyFat": 0.0,
+                    "ffmi": 25.593068938757035,
+                    "fmi": 0.0,
+                    "hrScore": 0.74,
+                    "hrColor": "#43a047",
+                    "hasData": true
+                },
+                {
+                    "label": "Week of Aug 04",
+                    "weight": 91.32757142857143,
+                    "bodyFat": 0.0,
+                    "ffmi": 25.839625234430578,
+                    "fmi": 0.0,
+                    "hrScore": 0.74,
+                    "hrColor": "#43a047",
+                    "hasData": true
+                },
+                {
+                    "label": "Week of Jul 28",
+                    "weight": 91.47071428571428,
+                    "bodyFat": 0.0,
+                    "ffmi": 25.880125137424823,
+                    "fmi": 0.0,
+                    "hrScore": 0.74,
+                    "hrColor": "#43a047",
+                    "hasData": true
+                },
+                {
+                    "label": "Week of Jul 21",
+                    "weight": 88.4,
+                    "bodyFat": 0.0,
+                    "ffmi": 25.01131733816207,
+                    "fmi": 0.0,
+                    "hrScore": 0.74,
+                    "hrColor": "#43a047",
+                    "hasData": true
+                },
+                {
+                    "label": "Week of Jul 14",
+                    "weight": 88.4,
+                    "bodyFat": 0.0,
+                    "ffmi": 25.01131733816207,
+                    "fmi": 0.0,
+                    "hrScore": 0.74,
+                    "hrColor": "#43a047",
+                    "hasData": true
+                },
+                {
+                    "label": "Week of Jul 07",
+                    "weight": 88.4,
+                    "bodyFat": 0.0,
+                    "ffmi": 25.01131733816207,
+                    "fmi": 0.0,
+                    "hrScore": 0.74,
+                    "hrColor": "#43a047",
+                    "hasData": true
+                },
+                {
+                    "label": "Week of Jun 30",
+                    "weight": 88.4,
+                    "bodyFat": 0.0,
+                    "ffmi": 25.01131733816207,
+                    "fmi": 0.0,
+                    "hrScore": 0.74,
+                    "hrColor": "#43a047",
+                    "hasData": true
+                },
+                {
+                    "label": "Week of Jun 23",
+                    "weight": 89.17114285714285,
+                    "bodyFat": 0.0,
+                    "ffmi": 25.22949945030072,
+                    "fmi": 0.0,
+                    "hrScore": 0.74,
+                    "hrColor": "#43a047",
+                    "hasData": true
+                },
+                {
+                    "label": "Week of Jun 16",
+                    "weight": 87.25371428571428,
+                    "bodyFat": 0.0,
+                    "ffmi": 24.686994761689196,
+                    "fmi": 0.0,
+                    "hrScore": 0.74,
+                    "hrColor": "#43a047",
+                    "hasData": true
+                },
+                {
+                    "label": "Week of Jun 09",
+                    "weight": 84.59399999999998,
+                    "bodyFat": 0.0,
+                    "ffmi": 23.93447261204165,
+                    "fmi": 0.0,
+                    "hrScore": 0.74,
+                    "hrColor": "#43a047",
+                    "hasData": true
+                },
+                {
+                    "label": "Week of Jun 02",
+                    "weight": 84.59399999999998,
+                    "bodyFat": 0.0,
+                    "ffmi": 23.93447261204165,
+                    "fmi": 0.0,
+                    "hrScore": 0.74,
+                    "hrColor": "#43a047",
+                    "hasData": true
+                },
+                {
+                    "label": "Week of May 26",
+                    "weight": 84.59399999999998,
+                    "bodyFat": 0.0,
+                    "ffmi": 23.93447261204165,
+                    "fmi": 0.0,
+                    "hrScore": 0.74,
+                    "hrColor": "#43a047",
+                    "hasData": true
+                },
+                {
+                    "label": "Week of May 19",
+                    "weight": 84.59399999999998,
+                    "bodyFat": 0.0,
+                    "ffmi": 23.93447261204165,
+                    "fmi": 0.0,
+                    "hrScore": 0.74,
+                    "hrColor": "#43a047",
+                    "hasData": true
+                },
+                {
+                    "label": "Week of May 12",
+                    "weight": 84.59399999999998,
+                    "bodyFat": 0.0,
+                    "ffmi": 23.93447261204165,
+                    "fmi": 0.0,
+                    "hrScore": 0.74,
+                    "hrColor": "#43a047",
+                    "hasData": true
+                },
+                {
+                    "label": "Week of May 05",
+                    "weight": 84.59399999999998,
+                    "bodyFat": 0.0,
+                    "ffmi": 23.93447261204165,
+                    "fmi": 0.0,
+                    "hrScore": 0.74,
+                    "hrColor": "#43a047",
+                    "hasData": true
+                },
+                {
+                    "label": "Week of Apr 28",
+                    "weight": 84.59399999999998,
+                    "bodyFat": 0.0,
+                    "ffmi": 23.93447261204165,
+                    "fmi": 0.0,
+                    "hrScore": 0.74,
+                    "hrColor": "#43a047",
+                    "hasData": true
+                },
+                {
+                    "label": "Week of Apr 21",
+                    "weight": 84.594,
+                    "bodyFat": 0.0,
+                    "ffmi": 23.93447261204165,
+                    "fmi": 0.0,
+                    "hrScore": 0.7399999999999999,
+                    "hrColor": "#43a047",
                     "hasData": true
                 }
             ],
@@ -3036,8 +3030,37 @@ function switchTab(tabName) {
     });
     document.getElementById(tabName + '-content').classList.add('active');
     
+    // Destroy existing charts before creating new ones
+    destroyAllCharts();
+    
     // Re-initialize charts with the new data
     initializeChartsForTab(tabName);
+}
+
+// Function to destroy all existing charts
+function destroyAllCharts() {
+    Chart.helpers.each(Chart.instances, function(instance) {
+        instance.destroy();
+    });
+}
+
+// Function to toggle group expansion
+function toggleGroup(groupId) {
+    const content = document.getElementById(groupId + '-content');
+    const header = document.querySelector(`[onclick="toggleGroup('${groupId}')"]`);
+    const arrow = header.querySelector('.expand-arrow');
+    
+    if (content.classList.contains('collapsed')) {
+        content.classList.remove('collapsed');
+        content.classList.add('expanded');
+        header.classList.add('expanded');
+        arrow.textContent = '▲';
+    } else {
+        content.classList.remove('expanded');
+        content.classList.add('collapsed');
+        header.classList.remove('expanded');
+        arrow.textContent = '▼';
+    }
 }
 
 // Initialize charts for specific tab
@@ -3045,299 +3068,159 @@ function initializeChartsForTab(tabName) {
     const data = chartData[tabName];
     if (!data) return;
     
-    if (data.sleep) {
-        createSleepCharts(data.sleep);
-        updateSleepSummary(data.sleep);
-    }
-    if (data.vo2) {
-        createVO2Charts(data.vo2);
-        updateVO2Summary(data.vo2);
-    }
-    if (data.steps) {
-        createStepsCharts(data.steps);
-        updateStepsSummary(data.steps);
-    }
-    if (data.strength) {
-        createStrengthCharts(data.strength);
-        updateStrengthSummary(data.strength);
-    }
-    if (data.bodyComp) {
-        createBodyCompCharts(data.bodyComp);
-        updateBodyCompSummary(data.bodyComp);
-    }
-    if (data.rhr) {
-        createRHRCharts(data.rhr);
-        updateRHRSummary(data.rhr);
-    }
-    if (data.heartRate) {
-        createHeartRateCharts(data.heartRate);
-        updateHeartRateSummary(data.heartRate);
+    if (tabName === 'daily-controls') {
+        // Daily Controls charts
+        if (data.sleep) {
+            createSleepCharts(data.sleep);
+            updateSleepSummary(data.sleep);
+        }
+        if (data.steps) {
+            createStepsCharts(data.steps);
+        }
+        if (data.heartRate) {
+            createHeartRateCharts(data.heartRate);
+        }
+        if (data.strength) {
+            createStrengthCharts(data.strength);
+        }
+        
+        // Update category summaries
+        if (data.steps && data.heartRate) {
+            // Combine aerobic metrics for category summary
+            const aerobicData = {
+                latestScore: (data.steps.latestScore + data.heartRate.latestScore) / 2,
+                averageScore: (data.steps.averageScore + data.heartRate.averageScore) / 2
+            };
+            updateAerobicSummary(aerobicData);
+        }
+        if (data.strength) {
+            updateAnaerobicSummary(data.strength);
+        }
+        
+        // Update group tickers
+        updateGroupTickers('daily-controls', data);
+    } else if (tabName === 'healthspan') {
+        // HealthSpan charts (weekly aggregated)
+        if (data.sleep) {
+            createHealthSpanSleepCharts(data.sleep);
+            updateHealthSpanSleepSummary(data.sleep);
+        }
+        if (data.vo2) {
+            createHealthSpanVO2Charts(data.vo2);
+            updateHealthSpanVO2Summary(data.vo2);
+        }
+        if (data.steps) {
+            createHealthSpanStepsCharts(data.steps);
+            updateHealthSpanStepsSummary(data.steps);
+        }
+        if (data.heartRate) {
+            createHealthSpanHeartRateCharts(data.heartRate);
+            updateHealthSpanHeartRateSummary(data.heartRate);
+        }
+        if (data.rhr) {
+            createHealthSpanRHRCharts(data.rhr);
+            updateHealthSpanRHRSummary(data.rhr);
+        }
+        if (data.strength) {
+            createHealthSpanStrengthCharts(data.strength);
+            updateHealthSpanStrengthSummary(data.strength);
+        }
+        if (data.bodyComp) {
+            createHealthSpanBodyCompCharts(data.bodyComp);
+            updateHealthSpanBodyCompSummary(data.bodyComp);
+        }
+        
+        // Update group tickers
+        updateGroupTickers('healthspan', data);
     }
 }
 
-// Override the original initializeCharts to work with tabbed data
+// Update group tickers based on HR values
+function updateGroupTickers(tabName, data) {
+    if (tabName === 'daily-controls') {
+        // Calculate sleep group ticker (HR values multiplied)
+        let sleepTicker = 0;
+        if (data.sleep) {
+            sleepTicker = (data.sleep.latestScore || 0) + (data.sleep.averageScore || 0);
+        }
+        document.getElementById('sleep-group-ticker').textContent = Math.round(sleepTicker);
+        
+        // Calculate aerobic group ticker
+        let aerobicTicker = 0;
+        if (data.steps) {
+            aerobicTicker += (data.steps.latestScore || 0) + (data.steps.averageScore || 0);
+        }
+        if (data.heartRate) {
+            aerobicTicker += (data.heartRate.latestScore || 0) + (data.heartRate.averageScore || 0);
+        }
+        document.getElementById('aerobic-group-ticker').textContent = Math.round(aerobicTicker);
+        
+        // Calculate anaerobic group ticker
+        let anaerobicTicker = 0;
+        if (data.strength) {
+            anaerobicTicker += (data.strength.latestScore || 0) + (data.strength.averageScore || 0);
+        }
+        document.getElementById('anaerobic-group-ticker').textContent = Math.round(anaerobicTicker);
+        
+    } else if (tabName === 'healthspan') {
+        // Calculate healthspan group tickers (weekly data)
+        let sleepTicker = 0;
+        if (data.sleep) {
+            sleepTicker = (data.sleep.latestScore || 0) + (data.sleep.averageScore || 0);
+        }
+        document.getElementById('healthspan-sleep-group-ticker').textContent = Math.round(sleepTicker);
+        
+        let aerobicTicker = 0;
+        if (data.vo2) {
+            aerobicTicker += (data.vo2.latestScore || 0) + (data.vo2.averageScore || 0);
+        }
+        if (data.steps) {
+            aerobicTicker += (data.steps.latestScore || 0) + (data.steps.averageScore || 0);
+        }
+        if (data.heartRate) {
+            aerobicTicker += (data.heartRate.latestScore || 0) + (data.heartRate.averageScore || 0);
+        }
+        if (data.rhr) {
+            aerobicTicker += (data.rhr.latestScore || 0) + (data.rhr.averageScore || 0);
+        }
+        document.getElementById('healthspan-aerobic-group-ticker').textContent = Math.round(aerobicTicker);
+        
+        let anaerobicTicker = 0;
+        if (data.strength) {
+            anaerobicTicker += (data.strength.latestScore || 0) + (data.strength.averageScore || 0);
+        }
+        if (data.bodyComp) {
+            anaerobicTicker += (data.bodyComp.latestScore || 0) + (data.bodyComp.averageScore || 0);
+        }
+        document.getElementById('healthspan-anaerobic-group-ticker').textContent = Math.round(anaerobicTicker);
+    }
+}
+
+// Override the original initializeCharts to work with new structure
 function initializeCharts() {
-    console.log('initializeCharts called for unified report');
+    console.log('initializeCharts called for new unified report');
     console.log('chartData:', chartData);
     
-    // Initialize with daily data by default
-    initializeChartsForTab('daily');
+    // Destroy any existing charts first
+    destroyAllCharts();
+    
+    // Initialize with daily-controls data by default
+    initializeChartsForTab('daily-controls');
 }
 
-// Chart creation functions (same as original)
-function createSleepCharts(data) {
-    // Sleep windows chart - shows actual sleep periods
-    const sleepWindowsCtx = document.getElementById('sleep-windows-chart');
-    if (sleepWindowsCtx && data.daily) {
-        // Process sleep data to create proper sleep window visualization
-        // Reverse data to show most recent on the right
-        const sleepWindows = data.daily.slice().reverse().map((d, index) => {
-            if (!d.sleepTime || !d.wakeTime) {
-                return { 
-                    y: index, 
-                    x: 12 * 60, // Default to midday if no data
-                    width: 0, 
-                    color: '#666',
-                    sleepTime: d.sleepTime,
-                    wakeTime: d.wakeTime
-                };
-            }
-            
-            // Convert time strings to minutes from midnight
-            let sleepMinutes = timeToMinutes(d.sleepTime);
-            let wakeMinutes = timeToMinutes(d.wakeTime);
-            
-            // Convert to minutes relative to midday-at-boundaries layout
-            // Left boundary (12:00 PM) = -720, Center (12:00 AM) = 0, Right boundary (12:00 PM) = +720
-            // Previous day 12:00 PM to 11:59 PM: -720 to 0
-            // Next day 12:00 AM to 11:59 AM: 0 to +720
-            
-            let sleepRelativeToMidday, wakeRelativeToMidday;
-            
-            if (sleepMinutes >= 12 * 60) {
-                // Sleep time is 12:00 PM or later (previous day)
-                sleepRelativeToMidday = sleepMinutes - (12 * 60) - (12 * 60); // Convert to -720 to 0 range
-            } else {
-                // Sleep time is before 12:00 PM (next day)
-                sleepRelativeToMidday = sleepMinutes; // Convert to 0 to +720 range
-            }
-            
-            if (wakeMinutes >= 12 * 60) {
-                // Wake time is 12:00 PM or later (previous day)
-                wakeRelativeToMidday = wakeMinutes - (12 * 60) - (12 * 60); // Convert to -720 to 0 range
-            } else {
-                // Wake time is before 12:00 PM (next day)
-                wakeRelativeToMidday = wakeMinutes; // Convert to 0 to +720 range
-            }
-            
-            // Handle sleep periods that cross midnight (sleep in previous day, wake in next day)
-            if (sleepMinutes >= 12 * 60 && wakeMinutes < 12 * 60) {
-                // Sleep time is in previous day, wake time is in next day
-                // This is normal overnight sleep
-                // sleepRelativeToMidday is already correct (negative)
-                // wakeRelativeToMidday is already correct (positive)
-            }
-            
-            // Calculate duration
-            const duration = wakeRelativeToMidday - sleepRelativeToMidday;
-            
-            return {
-                y: index, // Vertical position (day index)
-                x: sleepRelativeToMidday, // Start position relative to midday
-                width: duration, // Duration in minutes
-                color: d.consistencyColor,
-                sleepTime: d.sleepTime,
-                wakeTime: d.wakeTime
-            };
-        });
-        
-        // Create horizontal bar chart with proper time axis
-        new Chart(sleepWindowsCtx, {
-            type: 'bar',
-            data: {
-                labels: sleepWindows.map((w, i) => data.daily.slice().reverse()[i].label),
-                datasets: [{
-                    label: 'Sleep Periods',
-                    data: sleepWindows.map(w => ({
-                        x: [w.x, w.x + w.width], // [start, end] times
-                        y: sleepWindows.indexOf(w) // Day index
-                    })),
-                    backgroundColor: sleepWindows.map(w => w.color),
-                    borderColor: sleepWindows.map(w => w.color),
-                    borderWidth: 2,
-                    barThickness: 25
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                indexAxis: 'y', // This makes bars horizontal
-                plugins: {
-                    legend: { display: false },
-                    datalabels: { display: false },
-                    tooltip: {
-                        callbacks: {
-                            title: function(context) {
-                                return context[0].label;
-                            },
-                            label: function(context) {
-                                const window = sleepWindows[context.dataIndex];
-                                const duration = Math.round(window.width / 60 * 10) / 10;
-                                return [
-                                    `Sleep: ${window.sleepTime}`,
-                                    `Wake: ${window.wakeTime}`,
-                                    `Duration: ${duration}h`
-                                ];
-                            }
-                        }
-                    }
-                },
-                scales: {
-                    x: {
-                        display: true,
-                        title: {
-                            display: true,
-                            text: 'Time of Day (Midday to Midday)'
-                        },
-                        min: -12 * 60, // 12 hours before midday (12:00 previous day)
-                        max: 12 * 60,  // 12 hours after midday (12:00 next day)
-                        type: 'linear',
-                        ticks: {
-                            // Force specific tick positions for midday-to-midday display
-                            // Show: 12:00, 15:00, 18:00, 21:00, 00:00, 03:00, 06:00, 09:00, 12:00
-                            stepSize: 180, // Every 3 hours
-                            callback: function(value) {
-                                // For midday-to-midday display with midnight at center:
-                                // We want: 12:00 (left) → 15:00 → 18:00 → 21:00 → 00:00 (center) → 03:00 → 06:00 → 09:00 → 12:00 (right)
-                                // Chart range: -720 to +720 minutes
-                                // -720 = 12:00, -540 = 15:00, -360 = 18:00, -180 = 21:00, 0 = 00:00, +180 = 03:00, +360 = 06:00, +540 = 09:00, +720 = 12:00
-                                
-                                // Convert chart position to actual time
-                                // -720 to 0: previous day 12:00 to midnight
-                                // 0 to +720: midnight to next day 12:00
-                                let actualMinutes;
-                                if (value <= 0) {
-                                    // Previous day: 12:00 PM to 11:59 PM
-                                    actualMinutes = value + (12 * 60) + (12 * 60); // Add 12 hours to get to 12:00 PM
-                                } else {
-                                    // Next day: 12:00 AM to 11:59 AM  
-                                    actualMinutes = value;
-                                }
-                                
-                                let hours = Math.floor(actualMinutes / 60);
-                                const minutes = actualMinutes % 60;
-                                
-                                // Handle 24-hour rollover
-                                if (hours >= 24) hours -= 24;
-                                if (hours < 0) hours += 24;
-                                
-                                return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
-                            }
-                        }
-                    },
-                    y: {
-                        display: true,
-                        title: {
-                            display: true,
-                            text: 'Date'
-                        },
-                        type: 'category'
-                    }
-                }
-            }
-        });
-    }
-
-    // Sleep duration chart
-    const sleepDurationCtx = document.getElementById('sleep-duration-chart');
-    if (sleepDurationCtx && data.daily) {
-        // Reverse data to show most recent on the right
-        const reversedDaily = data.daily.slice().reverse();
-        
-        new Chart(sleepDurationCtx, {
-            type: 'bar',
-            data: {
-                labels: reversedDaily.map(d => d.label),
-                datasets: [{
-                    label: 'Sleep Duration (hours)',
-                    data: reversedDaily.map(d => d.sleepDuration),
-                    backgroundColor: '#4CAF50',
-                    borderColor: '#4CAF50',
-                    borderWidth: 1,
-                    borderRadius: 4,
-                    borderSkipped: false
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: false },
-                    datalabels: { display: false }
-                },
-                scales: {
-                    x: {
-                        display: true,
-                        title: {
-                            display: true,
-                            text: 'Date'
-                        },
-                        offset: true,
-                        grid: {
-                            display: false
-                        }
-                    },
-                    y: {
-                        display: true,
-                        title: {
-                            display: true,
-                            text: 'Hours'
-                        },
-                        beginAtZero: true,
-                        grid: {
-                            display: true
-                        }
-                    }
-                }
-            }
-        });
-    }
-}
-
-function createVO2Charts(data) {
-    const vo2Ctx = document.getElementById('vo2-max-chart');
-    if (vo2Ctx && data.daily) {
-        // Reverse data to show most recent on the right
-        const reversedDaily = data.daily.slice().reverse();
-        
-        new Chart(vo2Ctx, {
-            type: 'line',
-            data: {
-                labels: reversedDaily.map(d => d.date),
-                datasets: [{
-                    label: 'VO2 Max',
-                    data: reversedDaily.map(d => d.vo2),
-                    borderColor: '#FF9800',
-                    backgroundColor: 'rgba(255, 152, 0, 0.1)',
-                    fill: true
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: false },
-                    datalabels: { display: false }
-                }
-            }
-        });
-    }
-}
-
+// Chart creation functions for Daily Controls
 function createStepsCharts(data) {
     const stepsCtx = document.getElementById('steps-chart');
-    if (stepsCtx && data.daily) {
-        // Reverse data to show most recent on the right
+    if (!stepsCtx) {
+        console.warn('Steps chart canvas not found');
+        return;
+    }
+    if (!data || !data.daily) {
+        console.warn('Steps chart data not available');
+        return;
+    }
+    
+    try {
         const reversedDaily = data.daily.slice().reverse();
         
         new Chart(stepsCtx, {
@@ -3352,6 +3235,17 @@ function createStepsCharts(data) {
                     borderWidth: 1,
                     borderRadius: 4,
                     borderSkipped: false
+                }, {
+                    label: '7-Day Rolling Average',
+                    data: reversedDaily.map(d => d.rollingAvgSteps),
+                    type: 'line',
+                    borderColor: '#007bff',
+                    backgroundColor: 'rgba(0, 123, 255, 0.1)',
+                    borderWidth: 2,
+                    fill: false,
+                    tension: 0.4,
+                    pointRadius: 4,
+                    pointHoverRadius: 6
                 }]
             },
             options: {
@@ -3407,14 +3301,94 @@ function createStepsCharts(data) {
                 }
             }
         });
+    } catch (error) {
+        console.error('Error creating steps chart:', error);
+    }
+}
+
+function createHeartRateCharts(data) {
+    const activityCtx = document.getElementById('heart-rate-activity-chart');
+    if (activityCtx && data.daily) {
+        const reversedDaily = data.daily.slice().reverse();
+        
+        // Use pre-calculated combined rolling average from enricher data
+        const activityRollingAvg = reversedDaily.map(d => d.activityRollingAvg || 0);
+        
+        new Chart(activityCtx, {
+            type: 'bar',
+            data: {
+                labels: reversedDaily.map(d => d.label),
+                datasets: [
+                    {
+                        label: 'MPA Time (min)',
+                        data: reversedDaily.map(d => d.mpaTime),
+                        backgroundColor: '#4CAF50',
+                        stack: 'activity'
+                    },
+                    {
+                        label: 'VPA Time (min)',
+                        data: reversedDaily.map(d => d.vpaTime),
+                        backgroundColor: '#FF9800',
+                        stack: 'activity'
+                    },
+                    {
+                        label: 'Activity 7-Day Rolling Avg',
+                        data: activityRollingAvg,
+                        type: 'line',
+                        borderColor: '#007bff',
+                        backgroundColor: 'rgba(0, 123, 255, 0.1)',
+                        borderWidth: 2,
+                        fill: false,
+                        tension: 0.4,
+                        pointRadius: 4,
+                        pointHoverRadius: 6
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: true },
+                    datalabels: { display: false }
+                },
+                scales: {
+                    x: {
+                        display: true,
+                        title: {
+                            display: true,
+                            text: 'Date'
+                        },
+                        offset: true,
+                        grid: {
+                            display: false
+                        }
+                    },
+                    y: {
+                        display: true,
+                        title: {
+                            display: true,
+                            text: 'Minutes'
+                        },
+                        beginAtZero: true,
+                        stacked: true,
+                        grid: {
+                            display: true
+                        }
+                    }
+                }
+            }
+        });
     }
 }
 
 function createStrengthCharts(data) {
     const strengthCtx = document.getElementById('strength-chart');
     if (strengthCtx && data.daily) {
-        // Reverse data to show most recent on the right
         const reversedDaily = data.daily.slice().reverse();
+        
+        // Use pre-calculated rolling average from enricher data
+        const strengthRollingAvg = reversedDaily.map(d => d.strengthRollingAvg || 0);
         
         new Chart(strengthCtx, {
             type: 'bar',
@@ -3428,6 +3402,17 @@ function createStrengthCharts(data) {
                     borderWidth: 1,
                     borderRadius: 4,
                     borderSkipped: false
+                }, {
+                    label: '7-Day Rolling Average',
+                    data: strengthRollingAvg,
+                    type: 'line',
+                    borderColor: '#6f42c1',
+                    backgroundColor: 'rgba(111, 66, 193, 0.1)',
+                    borderWidth: 2,
+                    fill: false,
+                    tension: 0.4,
+                    pointRadius: 4,
+                    pointHoverRadius: 6
                 }]
             },
             options: {
@@ -3495,10 +3480,695 @@ function createStrengthCharts(data) {
     }
 }
 
-function createBodyCompCharts(data) {
-    const bodyCompCtx = document.getElementById('bodyComp-chart');
+// Summary update functions for Daily Controls
+function updateSleepSummary(data) {
+    updatePointer('sleep-category-last-pointer', data.latestScore);
+    updatePointer('sleep-category-avg-pointer', data.averageScore);
+}
+
+function updateAerobicSummary(data) {
+    updatePointer('aerobic-category-last-pointer', data.latestScore);
+    updatePointer('aerobic-category-avg-pointer', data.averageScore);
+}
+
+function updateAnaerobicSummary(data) {
+    updatePointer('anaerobic-category-last-pointer', data.latestScore);
+    updatePointer('anaerobic-category-avg-pointer', data.averageScore);
+}
+
+// Helper function to update pointer positions
+function updatePointer(pointerId, score) {
+    const pointer = document.getElementById(pointerId);
+    if (pointer) {
+        const position = Math.max(0, Math.min(100, (score + 2) * 25));
+        pointer.style.left = `${position}%`;
+        
+        const color = getColorForScore(score);
+        if (pointerId.includes('last')) {
+            pointer.style.borderTopColor = color;
+        } else {
+            pointer.style.borderBottomColor = color;
+        }
+    }
+}
+
+function createSleepCharts(data) {
+    // Sleep windows chart
+    const sleepWindowsCtx = document.getElementById('sleep-windows-chart');
+    if (sleepWindowsCtx && data.daily) {
+        // Process sleep data to create proper sleep window visualization
+        const sleepWindows = data.daily.slice().reverse().map((d, index) => {
+            if (!d.sleepTime || !d.wakeTime) {
+                return { 
+                    y: index, 
+                    x: 12 * 60,
+                    width: 0, 
+                    color: '#666',
+                    sleepTime: d.sleepTime,
+                    wakeTime: d.wakeTime
+                };
+            }
+            
+            let sleepMinutes = timeToMinutes(d.sleepTime);
+            let wakeMinutes = timeToMinutes(d.wakeTime);
+            
+            let sleepRelativeToMidday, wakeRelativeToMidday;
+            
+            if (sleepMinutes >= 12 * 60) {
+                sleepRelativeToMidday = sleepMinutes - (12 * 60) - (12 * 60);
+            } else {
+                sleepRelativeToMidday = sleepMinutes;
+            }
+            
+            if (wakeMinutes >= 12 * 60) {
+                wakeRelativeToMidday = wakeMinutes - (12 * 60) - (12 * 60);
+            } else {
+                wakeRelativeToMidday = wakeMinutes;
+            }
+            
+            if (sleepMinutes >= 12 * 60 && wakeMinutes < 12 * 60) {
+                // Normal overnight sleep
+            }
+            
+            const duration = wakeRelativeToMidday - sleepRelativeToMidday;
+            
+            return {
+                y: index,
+                x: sleepRelativeToMidday,
+                width: duration,
+                color: d.consistencyColor,
+                sleepTime: d.sleepTime,
+                wakeTime: d.wakeTime
+            };
+        });
+        
+        new Chart(sleepWindowsCtx, {
+            type: 'bar',
+            data: {
+                labels: sleepWindows.map((w, i) => data.daily.slice().reverse()[i].label),
+                datasets: [{
+                    label: 'Sleep Periods',
+                    data: sleepWindows.map(w => ({
+                        x: [w.x, w.x + w.width],
+                        y: sleepWindows.indexOf(w)
+                    })),
+                    backgroundColor: sleepWindows.map(w => w.color),
+                    borderColor: sleepWindows.map(w => w.color),
+                    borderWidth: 2,
+                    barThickness: 25
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                indexAxis: 'y',
+                plugins: {
+                    legend: { display: false },
+                    datalabels: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            title: function(context) {
+                                return context[0].label;
+                            },
+                            label: function(context) {
+                                const window = sleepWindows[context.dataIndex];
+                                const duration = Math.round(window.width / 60 * 10) / 10;
+                                return [
+                                    `Sleep: ${window.sleepTime}`,
+                                    `Wake: ${window.wakeTime}`,
+                                    `Duration: ${duration}h`
+                                ];
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        display: true,
+                        title: {
+                            display: true,
+                            text: 'Time of Day (Midday to Midday)'
+                        },
+                        min: -12 * 60,
+                        max: 12 * 60,
+                        type: 'linear',
+                        ticks: {
+                            stepSize: 180,
+                            callback: function(value) {
+                                let actualMinutes;
+                                if (value <= 0) {
+                                    actualMinutes = value + (12 * 60) + (12 * 60);
+                                } else {
+                                    actualMinutes = value;
+                                }
+                                
+                                let hours = Math.floor(actualMinutes / 60);
+                                const minutes = actualMinutes % 60;
+                                
+                                if (hours >= 24) hours -= 24;
+                                if (hours < 0) hours += 24;
+                                
+                                return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+                            }
+                        }
+                    },
+                    y: {
+                        display: true,
+                        title: {
+                            display: true,
+                            text: 'Date'
+                        },
+                        type: 'category'
+                    }
+                }
+            }
+        });
+    }
+
+    // Sleep duration chart
+    const sleepDurationCtx = document.getElementById('sleep-duration-chart');
+    if (sleepDurationCtx && data.daily) {
+        const reversedDaily = data.daily.slice().reverse();
+        
+        new Chart(sleepDurationCtx, {
+            type: 'bar',
+            data: {
+                labels: reversedDaily.map(d => d.label),
+                datasets: [{
+                    label: 'Sleep Duration (hours)',
+                    data: reversedDaily.map(d => d.sleepDuration),
+                    backgroundColor: '#4CAF50',
+                    borderColor: '#4CAF50',
+                    borderWidth: 1,
+                    borderRadius: 4,
+                    borderSkipped: false
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    datalabels: { display: false }
+                },
+                scales: {
+                    x: {
+                        display: true,
+                        title: {
+                            display: true,
+                            text: 'Date'
+                        },
+                        offset: true,
+                        grid: {
+                            display: false
+                        }
+                    },
+                    y: {
+                        display: true,
+                        title: {
+                            display: true,
+                            text: 'Hours'
+                        },
+                        beginAtZero: true,
+                        grid: {
+                            display: true
+                        }
+                    }
+                }
+            }
+        });
+    }
+}
+
+// HealthSpan chart creation functions (weekly aggregated data)
+function createHealthSpanSleepCharts(data) {
+    // Sleep windows chart for weekly data
+    const sleepWindowsCtx = document.getElementById('healthspan-sleep-windows-chart');
+    if (sleepWindowsCtx && data.daily) {
+        const sleepWindows = data.daily.slice().reverse().map((d, index) => {
+            if (!d.sleepTime || !d.wakeTime) {
+                return { 
+                    y: index, 
+                    x: 12 * 60,
+                    width: 0, 
+                    color: '#666',
+                    sleepTime: d.sleepTime,
+                    wakeTime: d.wakeTime
+                };
+            }
+            
+            let sleepMinutes = timeToMinutes(d.sleepTime);
+            let wakeMinutes = timeToMinutes(d.wakeTime);
+            
+            let sleepRelativeToMidday, wakeRelativeToMidday;
+            
+            if (sleepMinutes >= 12 * 60) {
+                sleepRelativeToMidday = sleepMinutes - (12 * 60) - (12 * 60);
+            } else {
+                sleepRelativeToMidday = sleepMinutes;
+            }
+            
+            if (wakeMinutes >= 12 * 60) {
+                wakeRelativeToMidday = wakeMinutes - (12 * 60) - (12 * 60);
+            } else {
+                wakeRelativeToMidday = wakeMinutes;
+            }
+            
+            if (sleepMinutes >= 12 * 60 && wakeMinutes < 12 * 60) {
+                // Normal overnight sleep
+            }
+            
+            const duration = wakeRelativeToMidday - sleepRelativeToMidday;
+            
+            return {
+                y: index,
+                x: sleepRelativeToMidday,
+                width: duration,
+                color: d.consistencyColor,
+                sleepTime: d.sleepTime,
+                wakeTime: d.wakeTime
+            };
+        });
+        
+        new Chart(sleepWindowsCtx, {
+            type: 'bar',
+            data: {
+                labels: sleepWindows.map((w, i) => data.daily.slice().reverse()[i].label),
+                datasets: [{
+                    label: 'Sleep Periods',
+                    data: sleepWindows.map(w => ({
+                        x: [w.x, w.x + w.width],
+                        y: sleepWindows.indexOf(w)
+                    })),
+                    backgroundColor: sleepWindows.map(w => w.color),
+                    borderColor: sleepWindows.map(w => w.color),
+                    borderWidth: 2,
+                    barThickness: 25
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                indexAxis: 'y',
+                plugins: {
+                    legend: { display: false },
+                    datalabels: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            title: function(context) {
+                                return context[0].label;
+                            },
+                            label: function(context) {
+                                const window = sleepWindows[context.dataIndex];
+                                const duration = Math.round(window.width / 60 * 10) / 10;
+                                return [
+                                    `Sleep: ${window.sleepTime}`,
+                                    `Wake: ${window.wakeTime}`,
+                                    `Duration: ${duration}h`
+                                ];
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        display: true,
+                        title: {
+                            display: true,
+                            text: 'Time of Day (Midday to Midday)'
+                        },
+                        min: -12 * 60,
+                        max: 12 * 60,
+                        type: 'linear',
+                        ticks: {
+                            stepSize: 180,
+                            callback: function(value) {
+                                let actualMinutes;
+                                if (value <= 0) {
+                                    actualMinutes = value + (12 * 60) + (12 * 60);
+                                } else {
+                                    actualMinutes = value;
+                                }
+                                
+                                let hours = Math.floor(actualMinutes / 60);
+                                const minutes = actualMinutes % 60;
+                                
+                                if (hours >= 24) hours -= 24;
+                                if (hours < 0) hours += 24;
+                                
+                                return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+                            }
+                        }
+                    },
+                    y: {
+                        display: true,
+                        title: {
+                            display: true,
+                            text: 'Week'
+                        },
+                        type: 'category'
+                    }
+                }
+            }
+        });
+    }
+
+    // Sleep duration chart for weekly data
+    const sleepDurationCtx = document.getElementById('healthspan-sleep-duration-chart');
+    if (sleepDurationCtx && data.daily) {
+        const reversedDaily = data.daily.slice().reverse();
+        
+        new Chart(sleepDurationCtx, {
+            type: 'bar',
+            data: {
+                labels: reversedDaily.map(d => d.label),
+                datasets: [{
+                    label: 'Sleep Duration (hours)',
+                    data: reversedDaily.map(d => d.sleepDuration),
+                    backgroundColor: '#4CAF50',
+                    borderColor: '#4CAF50',
+                    borderWidth: 1,
+                    borderRadius: 4,
+                    borderSkipped: false
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    datalabels: { display: false }
+                },
+                scales: {
+                    x: {
+                        display: true,
+                        title: {
+                            display: true,
+                            text: 'Week'
+                        },
+                        offset: true,
+                        grid: {
+                            display: false
+                        }
+                    },
+                    y: {
+                        display: true,
+                        title: {
+                            display: true,
+                            text: 'Hours'
+                        },
+                        beginAtZero: true,
+                        grid: {
+                            display: true
+                        }
+                    }
+                }
+            }
+        });
+    }
+}
+
+function createHealthSpanVO2Charts(data) {
+    const vo2Ctx = document.getElementById('healthspan-vo2-chart');
+    if (vo2Ctx && data.daily) {
+        const reversedDaily = data.daily.slice().reverse();
+        
+        new Chart(vo2Ctx, {
+            type: 'line',
+            data: {
+                labels: reversedDaily.map(d => d.date),
+                datasets: [{
+                    label: 'VO2 Max',
+                    data: reversedDaily.map(d => d.vo2),
+                    borderColor: '#FF9800',
+                    backgroundColor: 'rgba(255, 152, 0, 0.1)',
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    datalabels: { display: false }
+                }
+            }
+        });
+    }
+}
+
+function createHealthSpanStepsCharts(data) {
+    const stepsCtx = document.getElementById('healthspan-steps-chart');
+    if (stepsCtx && data.daily) {
+        const reversedDaily = data.daily.slice().reverse();
+        
+        new Chart(stepsCtx, {
+            type: 'bar',
+            data: {
+                labels: reversedDaily.map(d => d.label),
+                datasets: [{
+                    label: 'Weekly Steps',
+                    data: reversedDaily.map(d => d.dailySteps),
+                    backgroundColor: reversedDaily.map(d => d.hrColor),
+                    borderColor: reversedDaily.map(d => d.hrColor),
+                    borderWidth: 1,
+                    borderRadius: 4,
+                    borderSkipped: false
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                animation: false,
+                plugins: {
+                    legend: { display: false },
+                    datalabels: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            title: function(context) {
+                                return context[0].label;
+                            },
+                            label: function(context) {
+                                const value = context.parsed.y;
+                                return [
+                                    `Steps: ${value.toLocaleString()}`,
+                                    `Rolling Avg: ${data.daily[context.dataIndex].rollingAvgSteps.toLocaleString()}`
+                                ];
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        display: true,
+                        title: {
+                            display: true,
+                            text: 'Week'
+                        },
+                        offset: true,
+                        grid: {
+                            display: false
+                        }
+                    },
+                    y: {
+                        display: true,
+                        title: {
+                            display: true,
+                            text: 'Steps'
+                        },
+                        beginAtZero: true,
+                        grid: {
+                            display: true
+                        },
+                        ticks: {
+                            callback: function(value) {
+                                return value.toLocaleString();
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+}
+
+function createHealthSpanHeartRateCharts(data) {
+    const activityCtx = document.getElementById('healthspan-heart-rate-activity-chart');
+    if (activityCtx && data.daily) {
+        const reversedDaily = data.daily.slice().reverse();
+        
+        new Chart(activityCtx, {
+            type: 'bar',
+            data: {
+                labels: reversedDaily.map(d => d.label),
+                datasets: [
+                    {
+                        label: 'MPA Time (min)',
+                        data: reversedDaily.map(d => d.mpaTime),
+                        backgroundColor: '#4CAF50',
+                        stack: 'activity'
+                    },
+                    {
+                        label: 'VPA Time (min)',
+                        data: reversedDaily.map(d => d.vpaTime),
+                        backgroundColor: '#FF9800',
+                        stack: 'activity'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: true },
+                    datalabels: { display: false }
+                },
+                scales: {
+                    x: {
+                        display: true,
+                        title: {
+                            display: true,
+                            text: 'Week'
+                        },
+                        offset: true,
+                        grid: {
+                            display: false
+                        }
+                    },
+                    y: {
+                        display: true,
+                        title: {
+                            display: true,
+                            text: 'Minutes'
+                        },
+                        beginAtZero: true,
+                        stacked: true,
+                        grid: {
+                            display: true
+                        }
+                    }
+                }
+            }
+        });
+    }
+}
+
+function createHealthSpanRHRCharts(data) {
+    const rhrCtx = document.getElementById('healthspan-rhr-chart');
+    if (rhrCtx && data.daily) {
+        const reversedDaily = data.daily.slice().reverse();
+        
+        new Chart(rhrCtx, {
+            type: 'line',
+            data: {
+                labels: reversedDaily.map(d => d.label),
+                datasets: [{
+                    label: 'Resting Heart Rate (BPM)',
+                    data: reversedDaily.map(d => d.rhr),
+                    borderColor: '#E91E63',
+                    backgroundColor: 'rgba(233, 30, 99, 0.1)',
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    datalabels: { display: false }
+                }
+            }
+        });
+    }
+}
+
+function createHealthSpanStrengthCharts(data) {
+    const strengthCtx = document.getElementById('healthspan-strength-chart');
+    if (strengthCtx && data.daily) {
+        const reversedDaily = data.daily.slice().reverse();
+        
+        new Chart(strengthCtx, {
+            type: 'bar',
+            data: {
+                labels: reversedDaily.map(d => d.label),
+                datasets: [{
+                    label: 'Strength Training (minutes)',
+                    data: reversedDaily.map(d => d.dailyDuration),
+                    backgroundColor: reversedDaily.map(d => d.hrColor),
+                    borderColor: reversedDaily.map(d => d.hrColor),
+                    borderWidth: 1,
+                    borderRadius: 4,
+                    borderSkipped: false
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                animation: false,
+                layout: {
+                    padding: {
+                        left: 10,
+                        right: 10,
+                        top: 10,
+                        bottom: 10
+                    }
+                },
+                plugins: {
+                    legend: { display: false },
+                    datalabels: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            title: function(context) {
+                                return context[0].label;
+                            },
+                            label: function(context) {
+                                const value = context.parsed.y;
+                                const weeklySum = data.daily[context.dataIndex].weeklySum;
+                                return [
+                                    `Duration: ${Math.round(value * 10) / 10} min`,
+                                    `Weekly Total: ${Math.round(weeklySum * 10) / 10} min`
+                                ];
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        display: true,
+                        title: {
+                            display: true,
+                            text: 'Week'
+                        },
+                        offset: true,
+                        grid: {
+                            display: false
+                        }
+                    },
+                    y: {
+                        display: true,
+                        title: {
+                            display: true,
+                            text: 'Minutes'
+                        },
+                        beginAtZero: true,
+                        grid: {
+                            display: true
+                        },
+                        ticks: {
+                            callback: function(value) {
+                                return Math.round(value);
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+}
+
+function createHealthSpanBodyCompCharts(data) {
+    const bodyCompCtx = document.getElementById('healthspan-body-comp-chart');
     if (bodyCompCtx && data.daily) {
-        // Reverse data to show most recent on the right
         const reversedDaily = data.daily.slice().reverse();
         
         new Chart(bodyCompCtx, {
@@ -3534,7 +4204,7 @@ function createBodyCompCharts(data) {
                         display: true,
                         title: {
                             display: true,
-                            text: 'Date'
+                            text: 'Week'
                         },
                         offset: true,
                         grid: {
@@ -3565,125 +4235,60 @@ function createBodyCompCharts(data) {
     }
 }
 
-function createRHRCharts(data) {
-    const rhrCtx = document.getElementById('rhr-chart');
-    if (rhrCtx && data.daily) {
-        // Reverse data to show most recent on the right
-        const reversedDaily = data.daily.slice().reverse();
-        
-        new Chart(rhrCtx, {
-            type: 'line',
-            data: {
-                labels: reversedDaily.map(d => d.label),
-                datasets: [{
-                    label: 'Resting Heart Rate (BPM)',
-                    data: reversedDaily.map(d => d.rhr),
-                    borderColor: '#E91E63',
-                    backgroundColor: 'rgba(233, 30, 99, 0.1)',
-                    fill: true
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: false },
-                    datalabels: { display: false }
-                }
-            }
-        });
-    }
+// Summary update functions for HealthSpan
+function updateHealthSpanSleepSummary(data) {
+    // Update sleep window summary
+    updatePointer('healthspan-sleep-window-last-pointer', data.latestScore);
+    updatePointer('healthspan-sleep-window-avg-pointer', data.averageScore);
+    
+    // Update sleep duration summary
+    updatePointer('healthspan-sleep-duration-last-pointer', data.latestScore);
+    updatePointer('healthspan-sleep-duration-avg-pointer', data.averageScore);
 }
 
-function createHeartRateCharts(data) {
-    const activityCtx = document.getElementById('heart-rate-activity-chart');
-    if (activityCtx && data.daily) {
-        // Reverse data to show most recent on the right
-        const reversedDaily = data.daily.slice().reverse();
-        
-        new Chart(activityCtx, {
-            type: 'bar',
-            data: {
-                labels: reversedDaily.map(d => d.label),
-                datasets: [
-                    {
-                        label: 'MPA Time (min)',
-                        data: reversedDaily.map(d => d.mpaTime),
-                        backgroundColor: '#4CAF50',
-                        stack: 'activity'
-                    },
-                    {
-                        label: 'VPA Time (min)',
-                        data: reversedDaily.map(d => d.vpaTime),
-                        backgroundColor: '#FF9800',
-                        stack: 'activity'
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: true },
-                    datalabels: { display: false }
-                },
-                scales: {
-                    x: {
-                        display: true,
-                        title: {
-                            display: true,
-                            text: 'Date'
-                        },
-                        offset: true,
-                        grid: {
-                            display: false
-                        }
-                    },
-                    y: {
-                        display: true,
-                        title: {
-                            display: true,
-                            text: 'Minutes'
-                        },
-                        beginAtZero: true,
-                        stacked: true,
-                        grid: {
-                            display: true
-                        }
-                    }
-                }
-            }
-        });
-    }
-
-    const hrCtx = document.getElementById('heart-rate-hr-chart');
-    if (hrCtx && data.daily) {
-        // Use the same reversed data for consistency
-        const reversedDaily = data.daily.slice().reverse();
-        
-        new Chart(hrCtx, {
-            type: 'line',
-            data: {
-                labels: reversedDaily.map(d => d.label),
-                datasets: [{
-                    label: 'Hazard Ratio',
-                    data: reversedDaily.map(d => d.hazardRatio),
-                    borderColor: '#F44336',
-                    backgroundColor: 'rgba(244, 67, 54, 0.1)',
-                    fill: true
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: false },
-                    datalabels: { display: false }
-                }
-            }
-        });
-    }
+function updateHealthSpanVO2Summary(data) {
+    updatePointer('healthspan-vo2-last-pointer', data.latestScore);
+    updatePointer('healthspan-vo2-avg-pointer', data.averageScore);
 }
+
+function updateHealthSpanStepsSummary(data) {
+    updatePointer('healthspan-steps-last-pointer', data.latestScore);
+    updatePointer('healthspan-steps-avg-pointer', data.averageScore);
+}
+
+function updateHealthSpanHeartRateSummary(data) {
+    updatePointer('healthspan-heart-rate-activity-last-pointer', data.latestScore);
+    updatePointer('healthspan-heart-rate-activity-avg-pointer', data.averageScore);
+}
+
+function updateHealthSpanRHRSummary(data) {
+    updatePointer('healthspan-rhr-last-pointer', data.latestScore);
+    updatePointer('healthspan-rhr-avg-pointer', data.averageScore);
+}
+
+function updateHealthSpanStrengthSummary(data) {
+    updatePointer('healthspan-strength-time-last-pointer', data.latestScore);
+    updatePointer('healthspan-strength-time-avg-pointer', data.averageScore);
+}
+
+function updateHealthSpanBodyCompSummary(data) {
+    updatePointer('healthspan-body-comp-last-pointer', data.latestScore);
+    updatePointer('healthspan-body-comp-avg-pointer', data.averageScore);
+}
+
+// Add event listeners for tab switching
+document.addEventListener('DOMContentLoaded', function() {
+    // Add click handlers for navigation buttons
+    document.getElementById('daily-controls-nav').addEventListener('click', function(e) {
+        e.preventDefault();
+        switchTab('daily-controls');
+    });
+    
+    document.getElementById('healthspan-nav').addEventListener('click', function(e) {
+        e.preventDefault();
+        switchTab('healthspan');
+    });
+});
 
 
         // Event listeners for summary item clicks
