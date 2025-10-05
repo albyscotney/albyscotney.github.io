@@ -106,14 +106,14 @@
         }
         
         .group-ticker {
-            background-color: #007bff;
-            color: white;
             padding: 8px 16px;
             border-radius: 20px;
             font-weight: bold;
             font-size: 1.1em;
             min-width: 40px;
             text-align: center;
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
         }
         
         .metric-group .metric-wrapper {
@@ -3135,12 +3135,36 @@ function initializeChartsForTab(tabName) {
     }
 }
 
-// Helper function to get color based on score
+// Helper function to get color based on score (handles negative hazard ratios)
 function getColorForScore(score) {
-    if (score >= 4) return '#4CAF50'; // Green
-    if (score >= 3) return '#FFC107'; // Yellow
-    if (score >= 2) return '#FF9800'; // Orange
+    // For hazard ratios: negative values are good (lower risk), positive values are bad (higher risk)
+    // Convert to a 0-5 scale where 0 is worst and 5 is best
+    let normalizedScore;
+    if (score <= -3) {
+        normalizedScore = 5; // Excellent (very low risk)
+    } else if (score <= -1) {
+        normalizedScore = 4; // Good (low risk)
+    } else if (score <= 0) {
+        normalizedScore = 3; // Fair (neutral risk)
+    } else if (score <= 2) {
+        normalizedScore = 2; // Poor (higher risk)
+    } else {
+        normalizedScore = 1; // Very poor (high risk)
+    }
+    
+    if (normalizedScore >= 4) return '#4CAF50'; // Green
+    if (normalizedScore >= 3) return '#FFC107'; // Yellow
+    if (normalizedScore >= 2) return '#FF9800'; // Orange
     return '#F44336'; // Red
+}
+
+// Helper function to get text color based on background color
+function getTextColorForBackground(bgColor) {
+    // For dark backgrounds, use white text; for light backgrounds, use black
+    if (bgColor === '#FFC107' || bgColor === '#FF9800') {
+        return '#000000'; // Black text for yellow/orange backgrounds
+    }
+    return '#FFFFFF'; // White text for green/red backgrounds
 }
 
 // Update group tickers based on HR values
@@ -3153,7 +3177,9 @@ function updateGroupTickers(tabName, data) {
         }
         const sleepTickerEl = document.getElementById('sleep-group-ticker');
         sleepTickerEl.textContent = Math.round(sleepTicker);
-        sleepTickerEl.style.backgroundColor = getColorForScore(sleepTicker);
+        const sleepColor = getColorForScore(sleepTicker);
+        sleepTickerEl.style.backgroundColor = sleepColor;
+        sleepTickerEl.style.color = getTextColorForBackground(sleepColor);
         
         // Calculate aerobic group ticker (latest scores only)
         let aerobicTicker = 0;
@@ -3165,7 +3191,9 @@ function updateGroupTickers(tabName, data) {
         }
         const aerobicTickerEl = document.getElementById('aerobic-group-ticker');
         aerobicTickerEl.textContent = Math.round(aerobicTicker);
-        aerobicTickerEl.style.backgroundColor = getColorForScore(aerobicTicker / 2); // Average of the two metrics
+        const aerobicColor = getColorForScore(aerobicTicker / 2); // Average of the two metrics
+        aerobicTickerEl.style.backgroundColor = aerobicColor;
+        aerobicTickerEl.style.color = getTextColorForBackground(aerobicColor);
         
         // Calculate anaerobic group ticker (latest score only)
         let anaerobicTicker = 0;
@@ -3174,7 +3202,9 @@ function updateGroupTickers(tabName, data) {
         }
         const anaerobicTickerEl = document.getElementById('anaerobic-group-ticker');
         anaerobicTickerEl.textContent = Math.round(anaerobicTicker);
-        anaerobicTickerEl.style.backgroundColor = getColorForScore(anaerobicTicker);
+        const anaerobicColor = getColorForScore(anaerobicTicker);
+        anaerobicTickerEl.style.backgroundColor = anaerobicColor;
+        anaerobicTickerEl.style.color = getTextColorForBackground(anaerobicColor);
         
     } else if (tabName === 'healthspan') {
         // Calculate healthspan group tickers (weekly data) - keep two tickers
@@ -3184,7 +3214,9 @@ function updateGroupTickers(tabName, data) {
         }
         const sleepTickerEl = document.getElementById('healthspan-sleep-group-ticker');
         sleepTickerEl.textContent = Math.round(sleepTicker);
-        sleepTickerEl.style.backgroundColor = getColorForScore(sleepTicker / 2); // Average of latest and average
+        const sleepColor = getColorForScore(sleepTicker / 2); // Average of latest and average
+        sleepTickerEl.style.backgroundColor = sleepColor;
+        sleepTickerEl.style.color = getTextColorForBackground(sleepColor);
         
         let aerobicTicker = 0;
         if (data.vo2) {
@@ -3201,7 +3233,9 @@ function updateGroupTickers(tabName, data) {
         }
         const aerobicTickerEl = document.getElementById('healthspan-aerobic-group-ticker');
         aerobicTickerEl.textContent = Math.round(aerobicTicker);
-        aerobicTickerEl.style.backgroundColor = getColorForScore(aerobicTicker / 8); // Average of 4 metrics * 2 tickers
+        const aerobicColor = getColorForScore(aerobicTicker / 8); // Average of 4 metrics * 2 tickers
+        aerobicTickerEl.style.backgroundColor = aerobicColor;
+        aerobicTickerEl.style.color = getTextColorForBackground(aerobicColor);
         
         let anaerobicTicker = 0;
         if (data.strength) {
@@ -3212,7 +3246,9 @@ function updateGroupTickers(tabName, data) {
         }
         const anaerobicTickerEl = document.getElementById('healthspan-anaerobic-group-ticker');
         anaerobicTickerEl.textContent = Math.round(anaerobicTicker);
-        anaerobicTickerEl.style.backgroundColor = getColorForScore(anaerobicTicker / 4); // Average of 2 metrics * 2 tickers
+        const anaerobicColor = getColorForScore(anaerobicTicker / 4); // Average of 2 metrics * 2 tickers
+        anaerobicTickerEl.style.backgroundColor = anaerobicColor;
+        anaerobicTickerEl.style.color = getTextColorForBackground(anaerobicColor);
     }
 }
 
