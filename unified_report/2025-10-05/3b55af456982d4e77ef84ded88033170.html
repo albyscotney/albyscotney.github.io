@@ -3135,40 +3135,56 @@ function initializeChartsForTab(tabName) {
     }
 }
 
+// Helper function to get color based on score
+function getColorForScore(score) {
+    if (score >= 4) return '#4CAF50'; // Green
+    if (score >= 3) return '#FFC107'; // Yellow
+    if (score >= 2) return '#FF9800'; // Orange
+    return '#F44336'; // Red
+}
+
 // Update group tickers based on HR values
 function updateGroupTickers(tabName, data) {
     if (tabName === 'daily-controls') {
-        // Calculate sleep group ticker (HR values multiplied)
+        // Calculate sleep group ticker (latest score only)
         let sleepTicker = 0;
         if (data.sleep) {
-            sleepTicker = (data.sleep.latestScore || 0) + (data.sleep.averageScore || 0);
+            sleepTicker = data.sleep.latestScore || 0;
         }
-        document.getElementById('sleep-group-ticker').textContent = Math.round(sleepTicker);
+        const sleepTickerEl = document.getElementById('sleep-group-ticker');
+        sleepTickerEl.textContent = Math.round(sleepTicker);
+        sleepTickerEl.style.backgroundColor = getColorForScore(sleepTicker);
         
-        // Calculate aerobic group ticker
+        // Calculate aerobic group ticker (latest scores only)
         let aerobicTicker = 0;
         if (data.steps) {
-            aerobicTicker += (data.steps.latestScore || 0) + (data.steps.averageScore || 0);
+            aerobicTicker += data.steps.latestScore || 0;
         }
         if (data.heartRate) {
-            aerobicTicker += (data.heartRate.latestScore || 0) + (data.heartRate.averageScore || 0);
+            aerobicTicker += data.heartRate.latestScore || 0;
         }
-        document.getElementById('aerobic-group-ticker').textContent = Math.round(aerobicTicker);
+        const aerobicTickerEl = document.getElementById('aerobic-group-ticker');
+        aerobicTickerEl.textContent = Math.round(aerobicTicker);
+        aerobicTickerEl.style.backgroundColor = getColorForScore(aerobicTicker / 2); // Average of the two metrics
         
-        // Calculate anaerobic group ticker
+        // Calculate anaerobic group ticker (latest score only)
         let anaerobicTicker = 0;
         if (data.strength) {
-            anaerobicTicker += (data.strength.latestScore || 0) + (data.strength.averageScore || 0);
+            anaerobicTicker = data.strength.latestScore || 0;
         }
-        document.getElementById('anaerobic-group-ticker').textContent = Math.round(anaerobicTicker);
+        const anaerobicTickerEl = document.getElementById('anaerobic-group-ticker');
+        anaerobicTickerEl.textContent = Math.round(anaerobicTicker);
+        anaerobicTickerEl.style.backgroundColor = getColorForScore(anaerobicTicker);
         
     } else if (tabName === 'healthspan') {
-        // Calculate healthspan group tickers (weekly data)
+        // Calculate healthspan group tickers (weekly data) - keep two tickers
         let sleepTicker = 0;
         if (data.sleep) {
             sleepTicker = (data.sleep.latestScore || 0) + (data.sleep.averageScore || 0);
         }
-        document.getElementById('healthspan-sleep-group-ticker').textContent = Math.round(sleepTicker);
+        const sleepTickerEl = document.getElementById('healthspan-sleep-group-ticker');
+        sleepTickerEl.textContent = Math.round(sleepTicker);
+        sleepTickerEl.style.backgroundColor = getColorForScore(sleepTicker / 2); // Average of latest and average
         
         let aerobicTicker = 0;
         if (data.vo2) {
@@ -3183,7 +3199,9 @@ function updateGroupTickers(tabName, data) {
         if (data.rhr) {
             aerobicTicker += (data.rhr.latestScore || 0) + (data.rhr.averageScore || 0);
         }
-        document.getElementById('healthspan-aerobic-group-ticker').textContent = Math.round(aerobicTicker);
+        const aerobicTickerEl = document.getElementById('healthspan-aerobic-group-ticker');
+        aerobicTickerEl.textContent = Math.round(aerobicTicker);
+        aerobicTickerEl.style.backgroundColor = getColorForScore(aerobicTicker / 8); // Average of 4 metrics * 2 tickers
         
         let anaerobicTicker = 0;
         if (data.strength) {
@@ -3192,7 +3210,9 @@ function updateGroupTickers(tabName, data) {
         if (data.bodyComp) {
             anaerobicTicker += (data.bodyComp.latestScore || 0) + (data.bodyComp.averageScore || 0);
         }
-        document.getElementById('healthspan-anaerobic-group-ticker').textContent = Math.round(anaerobicTicker);
+        const anaerobicTickerEl = document.getElementById('healthspan-anaerobic-group-ticker');
+        anaerobicTickerEl.textContent = Math.round(anaerobicTicker);
+        anaerobicTickerEl.style.backgroundColor = getColorForScore(anaerobicTicker / 4); // Average of 2 metrics * 2 tickers
     }
 }
 
@@ -3417,7 +3437,7 @@ function createStrengthCharts(data) {
             },
             options: {
                 responsive: true,
-                maintainAspectRatio: true,
+                maintainAspectRatio: false,
                 animation: false,
                 layout: {
                     padding: {
@@ -3503,7 +3523,18 @@ function updatePointer(pointerId, score) {
         const position = Math.max(0, Math.min(100, (score + 2) * 25));
         pointer.style.left = `${position}%`;
         
-        const color = getColorForScore(score);
+        // Use gradient colors for scale pointers based on position
+        let color;
+        if (score >= 4) {
+            color = '#4CAF50'; // Green
+        } else if (score >= 3) {
+            color = '#FFC107'; // Yellow
+        } else if (score >= 2) {
+            color = '#FF9800'; // Orange
+        } else {
+            color = '#F44336'; // Red
+        }
+        
         if (pointerId.includes('last')) {
             pointer.style.borderTopColor = color;
         } else {
@@ -3575,7 +3606,7 @@ function createSleepCharts(data) {
                     backgroundColor: sleepWindows.map(w => w.color),
                     borderColor: sleepWindows.map(w => w.color),
                     borderWidth: 2,
-                    barThickness: 25
+                    barThickness: 8
                 }]
             },
             options: {
@@ -3763,7 +3794,7 @@ function createHealthSpanSleepCharts(data) {
                     backgroundColor: sleepWindows.map(w => w.color),
                     borderColor: sleepWindows.map(w => w.color),
                     borderWidth: 2,
-                    barThickness: 25
+                    barThickness: 8
                 }]
             },
             options: {
@@ -4103,7 +4134,7 @@ function createHealthSpanStrengthCharts(data) {
             },
             options: {
                 responsive: true,
-                maintainAspectRatio: true,
+                maintainAspectRatio: false,
                 animation: false,
                 layout: {
                     padding: {
