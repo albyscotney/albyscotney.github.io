@@ -1295,13 +1295,16 @@ function createSleepCharts(data) {
 function createVO2Charts(data) {
     const vo2Ctx = document.getElementById('vo2-max-chart');
     if (vo2Ctx && data.daily) {
+        // Reverse data to show most recent on the right
+        const reversedDaily = data.daily.slice().reverse();
+        
         new Chart(vo2Ctx, {
             type: 'line',
             data: {
-                labels: data.daily.map(d => d.date),
+                labels: reversedDaily.map(d => d.date),
                 datasets: [{
                     label: 'VO2 Max',
-                    data: data.daily.map(d => d.vo2),
+                    data: reversedDaily.map(d => d.vo2),
                     borderColor: '#FF9800',
                     backgroundColor: 'rgba(255, 152, 0, 0.1)',
                     fill: true
@@ -1483,21 +1486,24 @@ function createStrengthCharts(data) {
 function createBodyCompCharts(data) {
     const bodyCompCtx = document.getElementById('bodyComp-chart');
     if (bodyCompCtx && data.daily) {
+        // Reverse data to show most recent on the right
+        const reversedDaily = data.daily.slice().reverse();
+        
         new Chart(bodyCompCtx, {
             type: 'line',
             data: {
-                labels: data.daily.map(d => d.label),
+                labels: reversedDaily.map(d => d.label),
                 datasets: [
                     {
                         label: 'Weight (kg)',
-                        data: data.daily.map(d => d.weight),
+                        data: reversedDaily.map(d => d.weight),
                         borderColor: '#FF5722',
                         backgroundColor: 'rgba(255, 87, 34, 0.1)',
                         yAxisID: 'y'
                     },
                     {
                         label: 'Body Fat %',
-                        data: data.daily.map(d => d.bodyFat),
+                        data: reversedDaily.map(d => d.bodyFat),
                         borderColor: '#9C27B0',
                         backgroundColor: 'rgba(156, 39, 176, 0.1)',
                         yAxisID: 'y1'
@@ -1550,13 +1556,16 @@ function createBodyCompCharts(data) {
 function createRHRCharts(data) {
     const rhrCtx = document.getElementById('rhr-chart');
     if (rhrCtx && data.daily) {
+        // Reverse data to show most recent on the right
+        const reversedDaily = data.daily.slice().reverse();
+        
         new Chart(rhrCtx, {
             type: 'line',
             data: {
-                labels: data.daily.map(d => d.label),
+                labels: reversedDaily.map(d => d.label),
                 datasets: [{
                     label: 'Resting Heart Rate (BPM)',
-                    data: data.daily.map(d => d.rhr),
+                    data: reversedDaily.map(d => d.rhr),
                     borderColor: '#E91E63',
                     backgroundColor: 'rgba(233, 30, 99, 0.1)',
                     fill: true
@@ -1577,20 +1586,23 @@ function createRHRCharts(data) {
 function createHeartRateCharts(data) {
     const activityCtx = document.getElementById('heart-rate-activity-chart');
     if (activityCtx && data.daily) {
+        // Reverse data to show most recent on the right
+        const reversedDaily = data.daily.slice().reverse();
+        
         new Chart(activityCtx, {
             type: 'bar',
             data: {
-                labels: data.daily.map(d => d.label),
+                labels: reversedDaily.map(d => d.label),
                 datasets: [
                     {
                         label: 'MPA Time (min)',
-                        data: data.daily.map(d => d.mpaTime),
+                        data: reversedDaily.map(d => d.mpaTime),
                         backgroundColor: '#4CAF50',
                         stack: 'activity'
                     },
                     {
                         label: 'VPA Time (min)',
-                        data: data.daily.map(d => d.vpaTime),
+                        data: reversedDaily.map(d => d.vpaTime),
                         backgroundColor: '#FF9800',
                         stack: 'activity'
                     }
@@ -1634,13 +1646,16 @@ function createHeartRateCharts(data) {
 
     const hrCtx = document.getElementById('heart-rate-hr-chart');
     if (hrCtx && data.daily) {
+        // Use the same reversed data for consistency
+        const reversedDaily = data.daily.slice().reverse();
+        
         new Chart(hrCtx, {
             type: 'line',
             data: {
-                labels: data.daily.map(d => d.label),
+                labels: reversedDaily.map(d => d.label),
                 datasets: [{
                     label: 'Hazard Ratio',
-                    data: data.daily.map(d => d.hazardRatio),
+                    data: reversedDaily.map(d => d.hazardRatio),
                     borderColor: '#F44336',
                     backgroundColor: 'rgba(244, 67, 54, 0.1)',
                     fill: true
