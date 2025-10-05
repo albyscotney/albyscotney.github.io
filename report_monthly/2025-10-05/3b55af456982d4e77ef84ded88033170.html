@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Health Dashboard</title>
+    <title>Health Analysis</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.0.1/dist/chartjs-plugin-annotation.min.js"></script>
@@ -78,175 +78,177 @@
 </head>
 <body>
     <div class="container" id="main-container">
-        <h1>Health Analysis</h1>
+        
+<h1>Health Analysis</h1>
 
-        <!-- Navigation Buttons -->
-        <div class="navigation-container" style="margin-bottom: 30px; text-align: center;">
-            <div class="nav-buttons" style="display: inline-flex; gap: 10px; background-color: #1e1e1e; padding: 10px; border-radius: 8px; border: 1px solid #333;">
-                <a href="#" id="daily-nav" class="nav-button" style="padding: 8px 16px; background-color: #333; color: #fff; text-decoration: none; border-radius: 4px; transition: background-color 0.2s;">Daily</a>
-                <a href="#" id="weekly-nav" class="nav-button" style="padding: 8px 16px; background-color: #333; color: #fff; text-decoration: none; border-radius: 4px; transition: background-color 0.2s;">Weekly</a>
-                <a href="#" id="monthly-nav" class="nav-button" style="padding: 8px 16px; background-color: #333; color: #fff; text-decoration: none; border-radius: 4px; transition: background-color 0.2s;">Monthly</a>
-            </div>
-            <div class="date-nav" style="margin-top: 10px;">
-                <a href="#" id="prev-day" class="date-nav-button" style="padding: 6px 12px; background-color: #1e1e1e; color: #fff; text-decoration: none; border-radius: 4px; border: 1px solid #333; margin-right: 5px;">← Previous</a>
-                <span id="current-date" style="color: #aaa; margin: 0 10px;"></span>
-                <a href="#" id="next-day" class="date-nav-button" style="padding: 6px 12px; background-color: #1e1e1e; color: #fff; text-decoration: none; border-radius: 4px; border: 1px solid #333; margin-left: 5px;">Next →</a>
+<!-- Navigation Buttons -->
+<div class="navigation-container" style="margin-bottom: 30px; text-align: center;">
+    <div class="nav-buttons" style="display: inline-flex; gap: 10px; background-color: #1e1e1e; padding: 10px; border-radius: 8px; border: 1px solid #333;">
+        <a href="#" id="daily-nav" class="nav-button" style="padding: 8px 16px; background-color: #333; color: #fff; text-decoration: none; border-radius: 4px; transition: background-color 0.2s;">Daily</a>
+        <a href="#" id="weekly-nav" class="nav-button" style="padding: 8px 16px; background-color: #333; color: #fff; text-decoration: none; border-radius: 4px; transition: background-color 0.2s;">Weekly</a>
+        <a href="#" id="monthly-nav" class="nav-button" style="padding: 8px 16px; background-color: #333; color: #fff; text-decoration: none; border-radius: 4px; transition: background-color 0.2s;">Monthly</a>
+    </div>
+    <div class="date-nav" style="margin-top: 10px;">
+        <a href="#" id="prev-day" class="date-nav-button" style="padding: 6px 12px; background-color: #1e1e1e; color: #fff; text-decoration: none; border-radius: 4px; border: 1px solid #333; margin-right: 5px;">← Previous</a>
+        <span id="current-date" style="color: #aaa; margin: 0 10px;"></span>
+        <a href="#" id="next-day" class="date-nav-button" style="padding: 6px 12px; background-color: #1e1e1e; color: #fff; text-decoration: none; border-radius: 4px; border: 1px solid #333; margin-left: 5px;">Next →</a>
+    </div>
+</div>
+
+<div class="metric-wrapper">
+    <div id="sleep-summary" class="summary-item">
+        <h2>Sleep Score 😴</h2>
+        <div class="score-scale-container">
+            <div class="scale-wrapper">
+                <div class="score-scale-bar"></div>
+                <div id="sleep-last-pointer" class="scale-pointer pointer-last"><div class="pointer-label">Last</div></div>
+                <div id="sleep-avg-pointer" class="scale-pointer pointer-avg"><div class="pointer-label">Avg</div></div>
             </div>
         </div>
+    </div>
+    <div id="sleep-details" class="details-container">
+        <div class="chart-wrapper"><h3>Sleep Windows</h3><p class="chart-subtitle">Sleep periods showing time in bed. Color indicates sleep consistency.</p><div style="height: 300px; position: relative;"><canvas id="sleep-windows-chart"></canvas></div></div>
+        <div class="chart-wrapper"><h3>Sleep Duration</h3><p class="chart-subtitle">Total hours slept each day.</p><div style="height: 300px; position: relative;"><canvas id="sleep-duration-chart"></canvas></div></div>
+    </div>
+</div>
 
-        <div class="metric-wrapper">
-            <div id="sleep-summary" class="summary-item">
-                <h2>Sleep Score 😴</h2>
-                <div class="score-scale-container">
-                    <div class="scale-wrapper">
-                        <div class="score-scale-bar"></div>
-                        <div id="sleep-last-pointer" class="scale-pointer pointer-last"><div class="pointer-label">Last</div></div>
-                        <div id="sleep-avg-pointer" class="scale-pointer pointer-avg"><div class="pointer-label">Avg</div></div>
-                    </div>
-                </div>
-            </div>
-            <div id="sleep-details" class="details-container">
-                <div class="chart-wrapper"><h3>Sleep Windows</h3><p class="chart-subtitle">Sleep periods showing time in bed. Color indicates sleep consistency.</p><div style="height: 300px; position: relative;"><canvas id="sleep-windows-chart"></canvas></div></div>
-                <div class="chart-wrapper"><h3>Sleep Duration</h3><p class="chart-subtitle">Total hours slept each day.</p><div style="height: 300px; position: relative;"><canvas id="sleep-duration-chart"></canvas></div></div>
+<div class="metric-wrapper">
+    <div id="vo2-summary" class="summary-item">
+        <h2>VO2 Max Score 💪</h2>
+        <div class="score-scale-container">
+            <div class="scale-wrapper">
+                <div class="score-scale-bar"></div>
+                <div id="vo2-last-pointer" class="scale-pointer pointer-last"><div class="pointer-label">Last</div></div>
+                <div id="vo2-avg-pointer" class="scale-pointer pointer-avg"><div class="pointer-label">Avg</div></div>
             </div>
         </div>
-
-        <div class="metric-wrapper">
-            <div id="vo2-summary" class="summary-item">
-                <h2>VO2 Max Score 💪</h2>
-                <div class="score-scale-container">
-                    <div class="scale-wrapper">
-                        <div class="score-scale-bar"></div>
-                        <div id="vo2-last-pointer" class="scale-pointer pointer-last"><div class="pointer-label">Last</div></div>
-                        <div id="vo2-avg-pointer" class="scale-pointer pointer-avg"><div class="pointer-label">Avg</div></div>
-                    </div>
-                </div>
+    </div>
+    <div id="vo2-details" class="details-container">
+        <div class="chart-wrapper">
+            <h3>VO2 Max Trend</h3>
+            <p class="chart-subtitle">Your estimated VO2 max over time. Higher is better.</p>
+            <div class="vo2-chart-container">
+            <canvas id="vo2-max-chart"></canvas>
+                <div id="vo2-gradient-bg" class="vo2-gradient-bg"></div>
             </div>
-            <div id="vo2-details" class="details-container">
-                <div class="chart-wrapper">
-                    <h3>VO2 Max Trend</h3>
-                    <p class="chart-subtitle">Your estimated VO2 max over time. Higher is better.</p>
-                    <div class="vo2-chart-container">
-                    <canvas id="vo2-max-chart"></canvas>
-                        <div id="vo2-gradient-bg" class="vo2-gradient-bg"></div>
-                    </div>
-                    <div id="vo2-zones-data" style="display: none;"></div>
-                </div>
+            <div id="vo2-zones-data" style="display: none;"></div>
+        </div>
+    </div>
+</div>
+
+<div class="metric-wrapper">
+    <div id="steps-summary" class="summary-item">
+        <h2>Steps Score 🚶</h2>
+        <div class="score-scale-container">
+            <div class="scale-wrapper">
+                <div class="score-scale-bar"></div>
+                <div id="steps-last-pointer" class="scale-pointer pointer-last"><div class="pointer-label">Last</div></div>
+                <div id="steps-avg-pointer" class="scale-pointer pointer-avg"><div class="pointer-label">Avg</div></div>
             </div>
         </div>
+    </div>
+    <div id="steps-details" class="details-container">
+        <div class="chart-wrapper">
+            <h3>Daily Steps</h3>
+            <p class="chart-subtitle">Daily steps with 7-day rolling average. Color indicates health risk based on steps.</p>
+            <canvas id="steps-chart"></canvas>
+        </div>
+    </div>
+</div>
 
-        <div class="metric-wrapper">
-            <div id="steps-summary" class="summary-item">
-                <h2>Steps Score 🚶</h2>
-                <div class="score-scale-container">
-                    <div class="scale-wrapper">
-                        <div class="score-scale-bar"></div>
-                        <div id="steps-last-pointer" class="scale-pointer pointer-last"><div class="pointer-label">Last</div></div>
-                        <div id="steps-avg-pointer" class="scale-pointer pointer-avg"><div class="pointer-label">Avg</div></div>
-                    </div>
-                </div>
-            </div>
-            <div id="steps-details" class="details-container">
-                <div class="chart-wrapper">
-                    <h3>Daily Steps</h3>
-                    <p class="chart-subtitle">Daily steps with 7-day rolling average. Color indicates health risk based on steps.</p>
-                    <canvas id="steps-chart"></canvas>
-                </div>
+<div class="metric-wrapper">
+    <div id="strength-summary" class="summary-item">
+        <h2>Strength Training Score 💪</h2>
+        <div class="score-scale-container">
+            <div class="scale-wrapper">
+                <div class="score-scale-bar"></div>
+                <div id="strength-last-pointer" class="scale-pointer pointer-last"><div class="pointer-label">Last</div></div>
+                <div id="strength-avg-pointer" class="scale-pointer pointer-avg"><div class="pointer-label">Avg</div></div>
             </div>
         </div>
+    </div>
+    <div id="strength-details" class="details-container">
+        <div class="chart-wrapper">
+            <h3>Strength Training</h3>
+            <p class="chart-subtitle">Daily strength training duration with 7-day rolling sum. Color indicates heart rate multiplier based on weekly volume.</p>
+            <canvas id="strength-chart"></canvas>
+        </div>
+    </div>
+</div>
 
-        <div class="metric-wrapper">
-            <div id="strength-summary" class="summary-item">
-                <h2>Strength Training Score 💪</h2>
-                <div class="score-scale-container">
-                    <div class="scale-wrapper">
-                        <div class="score-scale-bar"></div>
-                        <div id="strength-last-pointer" class="scale-pointer pointer-last"><div class="pointer-label">Last</div></div>
-                        <div id="strength-avg-pointer" class="scale-pointer pointer-avg"><div class="pointer-label">Avg</div></div>
-                    </div>
-                </div>
-            </div>
-            <div id="strength-details" class="details-container">
-                <div class="chart-wrapper">
-                    <h3>Strength Training</h3>
-                    <p class="chart-subtitle">Daily strength training duration with 7-day rolling sum. Color indicates heart rate multiplier based on weekly volume.</p>
-                    <canvas id="strength-chart"></canvas>
-                </div>
+<div class="metric-wrapper">
+    <div id="bodyComp-summary" class="summary-item">
+        <h2>Body Composition Score 🏋️</h2>
+        <div class="score-scale-container">
+            <div class="scale-wrapper">
+                <div class="score-scale-bar"></div>
+                <div id="bodyComp-last-pointer" class="scale-pointer pointer-last"><div class="pointer-label">Last</div></div>
+                <div id="bodyComp-avg-pointer" class="scale-pointer pointer-avg"><div class="pointer-label">Avg</div></div>
             </div>
         </div>
-
-        <div class="metric-wrapper">
-            <div id="bodyComp-summary" class="summary-item">
-                <h2>Body Composition Score 🏋️</h2>
-                <div class="score-scale-container">
-                    <div class="scale-wrapper">
-                        <div class="score-scale-bar"></div>
-                        <div id="bodyComp-last-pointer" class="scale-pointer pointer-last"><div class="pointer-label">Last</div></div>
-                        <div id="bodyComp-avg-pointer" class="scale-pointer pointer-avg"><div class="pointer-label">Avg</div></div>
-                    </div>
-                </div>
-            </div>
-            <div id="bodyComp-details" class="details-container">
-                <div class="chart-wrapper">
-                    <h3>Body Composition Trends</h3>
-                    <p class="chart-subtitle">Weight, body fat percentage, FFMI, and FMI over time. Color indicates health risk based on FFMI.</p>
-                    <div style="height: 300px; position: relative;">
-                        <canvas id="bodyComp-chart"></canvas>
-                    </div>
-                </div>
+    </div>
+    <div id="bodyComp-details" class="details-container">
+        <div class="chart-wrapper">
+            <h3>Body Composition Trends</h3>
+            <p class="chart-subtitle">Weight, body fat percentage, FFMI, and FMI over time. Color indicates health risk based on FFMI.</p>
+            <div style="height: 300px; position: relative;">
+                <canvas id="bodyComp-chart"></canvas>
             </div>
         </div>
+    </div>
+</div>
 
-        <div class="metric-wrapper">
-            <div id="rhr-summary" class="summary-item">
-                <h2>Resting Heart Rate Score ❤️</h2>
-                <div class="score-scale-container">
-                    <div class="scale-wrapper">
-                        <div class="score-scale-bar"></div>
-                        <div id="rhr-last-pointer" class="scale-pointer pointer-last"><div class="pointer-label">Last</div></div>
-                        <div id="rhr-avg-pointer" class="scale-pointer pointer-avg"><div class="pointer-label">Avg</div></div>
-                    </div>
-                </div>
-            </div>
-            <div id="rhr-details" class="details-container">
-                <div class="chart-wrapper">
-                    <h3>Resting Heart Rate Trends</h3>
-                    <p class="chart-subtitle">Daily resting heart rate in BPM over time. Color indicates health risk based on hazard ratios.</p>
-                    <div style="height: 300px; position: relative;">
-                        <canvas id="rhr-chart"></canvas>
-                    </div>
-                </div>
+<div class="metric-wrapper">
+    <div id="rhr-summary" class="summary-item">
+        <h2>Resting Heart Rate Score ❤️</h2>
+        <div class="score-scale-container">
+            <div class="scale-wrapper">
+                <div class="score-scale-bar"></div>
+                <div id="rhr-last-pointer" class="scale-pointer pointer-last"><div class="pointer-label">Last</div></div>
+                <div id="rhr-avg-pointer" class="scale-pointer pointer-avg"><div class="pointer-label">Avg</div></div>
             </div>
         </div>
-
-        <div class="metric-wrapper">
-            <div id="heart-rate-summary" class="summary-item">
-                <h2>Heart Rate Activity Score 💓</h2>
-                <div class="score-scale-container">
-                    <div class="scale-wrapper">
-                        <div class="score-scale-bar"></div>
-                        <div id="heart-rate-last-pointer" class="scale-pointer pointer-last"><div class="pointer-label">Last</div></div>
-                        <div id="heart-rate-avg-pointer" class="scale-pointer pointer-avg"><div class="pointer-label">Avg</div></div>
-                    </div>
-                </div>
-            </div>
-            <div id="heart-rate-details" class="details-container">
-                <div class="chart-wrapper">
-                    <h3>Activity Time Distribution</h3>
-                    <p class="chart-subtitle">Time spent in moderate (MPA) and vigorous (VPA) physical activity. Shows adjusted VPA time and 7-day rolling average.</p>
-                    <div style="height: 300px; position: relative;">
-                        <canvas id="heart-rate-activity-chart"></canvas>
-                    </div>
-                </div>
-                <div class="chart-wrapper">
-                    <h3>Hazard Ratio Trend</h3>
-                    <p class="chart-subtitle">Health risk score based on physical activity levels. Lower is better.</p>
-                    <div style="height: 300px; position: relative;">
-                        <canvas id="heart-rate-hr-chart"></canvas>
-                    </div>
-                </div>
+    </div>
+    <div id="rhr-details" class="details-container">
+        <div class="chart-wrapper">
+            <h3>Resting Heart Rate Trends</h3>
+            <p class="chart-subtitle">Daily resting heart rate in BPM over time. Color indicates health risk based on hazard ratios.</p>
+            <div style="height: 300px; position: relative;">
+                <canvas id="rhr-chart"></canvas>
             </div>
         </div>
+    </div>
+</div>
+
+<div class="metric-wrapper">
+    <div id="heart-rate-summary" class="summary-item">
+        <h2>Heart Rate Activity Score 💓</h2>
+        <div class="score-scale-container">
+            <div class="scale-wrapper">
+                <div class="score-scale-bar"></div>
+                <div id="heart-rate-last-pointer" class="scale-pointer pointer-last"><div class="pointer-label">Last</div></div>
+                <div id="heart-rate-avg-pointer" class="scale-pointer pointer-avg"><div class="pointer-label">Avg</div></div>
+            </div>
+        </div>
+    </div>
+    <div id="heart-rate-details" class="details-container">
+        <div class="chart-wrapper">
+            <h3>Activity Time Distribution</h3>
+            <p class="chart-subtitle">Time spent in moderate (MPA) and vigorous (VPA) physical activity. Shows adjusted VPA time and 7-day rolling average.</p>
+            <div style="height: 300px; position: relative;">
+                <canvas id="heart-rate-activity-chart"></canvas>
+            </div>
+        </div>
+        <div class="chart-wrapper">
+            <h3>Hazard Ratio Trend</h3>
+            <p class="chart-subtitle">Health risk score based on physical activity levels. Lower is better.</p>
+            <div style="height: 300px; position: relative;">
+                <canvas id="heart-rate-hr-chart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
     </div>
 
     <script>
@@ -1088,268 +1090,270 @@
             return gradient;
         }
 
-        // Chart creation functions (simplified versions)
-        function createSleepCharts(data) {
-            // Sleep windows chart
-            const sleepWindowsCtx = document.getElementById('sleep-windows-chart');
-            if (sleepWindowsCtx && data.daily) {
-                new Chart(sleepWindowsCtx, {
-                    type: 'bar',
-                    data: {
-                        labels: data.daily.map(d => d.label),
-                        datasets: [{
-                            label: 'Sleep Consistency',
-                            data: data.daily.map(d => d.consistencyScore),
-                            backgroundColor: data.daily.map(d => d.consistencyColor),
-                            borderColor: data.daily.map(d => d.consistencyColor),
-                            borderWidth: 1
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: { display: false },
-                            datalabels: { display: false }
-                        },
-                        scales: {
-                            y: { beginAtZero: true, max: 2 }
-                        }
-                    }
-                });
+        
+// Chart creation functions (simplified versions)
+function createSleepCharts(data) {
+    // Sleep windows chart
+    const sleepWindowsCtx = document.getElementById('sleep-windows-chart');
+    if (sleepWindowsCtx && data.daily) {
+        new Chart(sleepWindowsCtx, {
+            type: 'bar',
+            data: {
+                labels: data.daily.map(d => d.label),
+                datasets: [{
+                    label: 'Sleep Consistency',
+                    data: data.daily.map(d => d.consistencyScore),
+                    backgroundColor: data.daily.map(d => d.consistencyColor),
+                    borderColor: data.daily.map(d => d.consistencyColor),
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    datalabels: { display: false }
+                },
+                scales: {
+                    y: { beginAtZero: true, max: 2 }
+                }
             }
+        });
+    }
 
-            // Sleep duration chart
-            const sleepDurationCtx = document.getElementById('sleep-duration-chart');
-            if (sleepDurationCtx && data.daily) {
-                new Chart(sleepDurationCtx, {
-                    type: 'line',
-                    data: {
-                        labels: data.daily.map(d => d.label),
-                        datasets: [{
-                            label: 'Sleep Duration (hours)',
-                            data: data.daily.map(d => d.sleepDuration),
-                            borderColor: '#4CAF50',
-                            backgroundColor: 'rgba(76, 175, 80, 0.1)',
-                            fill: true
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: { display: false },
-                            datalabels: { display: false }
-                        }
-                    }
-                });
+    // Sleep duration chart
+    const sleepDurationCtx = document.getElementById('sleep-duration-chart');
+    if (sleepDurationCtx && data.daily) {
+        new Chart(sleepDurationCtx, {
+            type: 'line',
+            data: {
+                labels: data.daily.map(d => d.label),
+                datasets: [{
+                    label: 'Sleep Duration (hours)',
+                    data: data.daily.map(d => d.sleepDuration),
+                    borderColor: '#4CAF50',
+                    backgroundColor: 'rgba(76, 175, 80, 0.1)',
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    datalabels: { display: false }
+                }
             }
-        }
+        });
+    }
+}
 
-        function createVO2Charts(data) {
-            const vo2Ctx = document.getElementById('vo2-max-chart');
-            if (vo2Ctx && data.daily) {
-                new Chart(vo2Ctx, {
-                    type: 'line',
-                    data: {
-                        labels: data.daily.map(d => d.date),
-                        datasets: [{
-                            label: 'VO2 Max',
-                            data: data.daily.map(d => d.vo2),
-                            borderColor: '#FF9800',
-                            backgroundColor: 'rgba(255, 152, 0, 0.1)',
-                            fill: true
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: { display: false },
-                            datalabels: { display: false }
-                        }
-                    }
-                });
+function createVO2Charts(data) {
+    const vo2Ctx = document.getElementById('vo2-max-chart');
+    if (vo2Ctx && data.daily) {
+        new Chart(vo2Ctx, {
+            type: 'line',
+            data: {
+                labels: data.daily.map(d => d.date),
+                datasets: [{
+                    label: 'VO2 Max',
+                    data: data.daily.map(d => d.vo2),
+                    borderColor: '#FF9800',
+                    backgroundColor: 'rgba(255, 152, 0, 0.1)',
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    datalabels: { display: false }
+                }
             }
-        }
+        });
+    }
+}
 
-        function createStepsCharts(data) {
-            const stepsCtx = document.getElementById('steps-chart');
-            if (stepsCtx && data.daily) {
-                new Chart(stepsCtx, {
-                    type: 'bar',
-                    data: {
-                        labels: data.daily.map(d => d.label),
-                        datasets: [{
-                            label: 'Daily Steps',
-                            data: data.daily.map(d => d.dailySteps),
-                            backgroundColor: data.daily.map(d => d.hrColor),
-                            borderColor: data.daily.map(d => d.hrColor),
-                            borderWidth: 1
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: { display: false },
-                            datalabels: { display: false }
-                        }
-                    }
-                });
+function createStepsCharts(data) {
+    const stepsCtx = document.getElementById('steps-chart');
+    if (stepsCtx && data.daily) {
+        new Chart(stepsCtx, {
+            type: 'bar',
+            data: {
+                labels: data.daily.map(d => d.label),
+                datasets: [{
+                    label: 'Daily Steps',
+                    data: data.daily.map(d => d.dailySteps),
+                    backgroundColor: data.daily.map(d => d.hrColor),
+                    borderColor: data.daily.map(d => d.hrColor),
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    datalabels: { display: false }
+                }
             }
-        }
+        });
+    }
+}
 
-        function createStrengthCharts(data) {
-            const strengthCtx = document.getElementById('strength-chart');
-            if (strengthCtx && data.daily) {
-                new Chart(strengthCtx, {
-                    type: 'bar',
-                    data: {
-                        labels: data.daily.map(d => d.label),
-                        datasets: [{
-                            label: 'Strength Training (minutes)',
-                            data: data.daily.map(d => d.dailyDuration),
-                            backgroundColor: data.daily.map(d => d.hrColor),
-                            borderColor: data.daily.map(d => d.hrColor),
-                            borderWidth: 1
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: { display: false },
-                            datalabels: { display: false }
-                        }
-                    }
-                });
+function createStrengthCharts(data) {
+    const strengthCtx = document.getElementById('strength-chart');
+    if (strengthCtx && data.daily) {
+        new Chart(strengthCtx, {
+            type: 'bar',
+            data: {
+                labels: data.daily.map(d => d.label),
+                datasets: [{
+                    label: 'Strength Training (minutes)',
+                    data: data.daily.map(d => d.dailyDuration),
+                    backgroundColor: data.daily.map(d => d.hrColor),
+                    borderColor: data.daily.map(d => d.hrColor),
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    datalabels: { display: false }
+                }
             }
-        }
+        });
+    }
+}
 
-        function createBodyCompCharts(data) {
-            const bodyCompCtx = document.getElementById('bodyComp-chart');
-            if (bodyCompCtx && data.daily) {
-                new Chart(bodyCompCtx, {
-                    type: 'line',
-                    data: {
-                        labels: data.daily.map(d => d.label),
-                        datasets: [
-                            {
-                                label: 'Weight (kg)',
-                                data: data.daily.map(d => d.weight),
-                                borderColor: '#FF5722',
-                                backgroundColor: 'rgba(255, 87, 34, 0.1)',
-                                yAxisID: 'y'
-                            },
-                            {
-                                label: 'Body Fat %',
-                                data: data.daily.map(d => d.bodyFat),
-                                borderColor: '#9C27B0',
-                                backgroundColor: 'rgba(156, 39, 176, 0.1)',
-                                yAxisID: 'y1'
-                            }
-                        ]
+function createBodyCompCharts(data) {
+    const bodyCompCtx = document.getElementById('bodyComp-chart');
+    if (bodyCompCtx && data.daily) {
+        new Chart(bodyCompCtx, {
+            type: 'line',
+            data: {
+                labels: data.daily.map(d => d.label),
+                datasets: [
+                    {
+                        label: 'Weight (kg)',
+                        data: data.daily.map(d => d.weight),
+                        borderColor: '#FF5722',
+                        backgroundColor: 'rgba(255, 87, 34, 0.1)',
+                        yAxisID: 'y'
                     },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: { display: true },
-                            datalabels: { display: false }
-                        },
-                        scales: {
-                            y: { type: 'linear', display: true, position: 'left' },
-                            y1: { type: 'linear', display: true, position: 'right' }
-                        }
+                    {
+                        label: 'Body Fat %',
+                        data: data.daily.map(d => d.bodyFat),
+                        borderColor: '#9C27B0',
+                        backgroundColor: 'rgba(156, 39, 176, 0.1)',
+                        yAxisID: 'y1'
                     }
-                });
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: true },
+                    datalabels: { display: false }
+                },
+                scales: {
+                    y: { type: 'linear', display: true, position: 'left' },
+                    y1: { type: 'linear', display: true, position: 'right' }
+                }
             }
-        }
+        });
+    }
+}
 
-        function createRHRCharts(data) {
-            const rhrCtx = document.getElementById('rhr-chart');
-            if (rhrCtx && data.daily) {
-                new Chart(rhrCtx, {
-                    type: 'line',
-                    data: {
-                        labels: data.daily.map(d => d.label),
-                        datasets: [{
-                            label: 'Resting Heart Rate (BPM)',
-                            data: data.daily.map(d => d.rhr),
-                            borderColor: '#E91E63',
-                            backgroundColor: 'rgba(233, 30, 99, 0.1)',
-                            fill: true
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: { display: false },
-                            datalabels: { display: false }
-                        }
-                    }
-                });
+function createRHRCharts(data) {
+    const rhrCtx = document.getElementById('rhr-chart');
+    if (rhrCtx && data.daily) {
+        new Chart(rhrCtx, {
+            type: 'line',
+            data: {
+                labels: data.daily.map(d => d.label),
+                datasets: [{
+                    label: 'Resting Heart Rate (BPM)',
+                    data: data.daily.map(d => d.rhr),
+                    borderColor: '#E91E63',
+                    backgroundColor: 'rgba(233, 30, 99, 0.1)',
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    datalabels: { display: false }
+                }
             }
-        }
+        });
+    }
+}
 
-        function createHeartRateCharts(data) {
-            const activityCtx = document.getElementById('heart-rate-activity-chart');
-            if (activityCtx && data.daily) {
-                new Chart(activityCtx, {
-                    type: 'bar',
-                    data: {
-                        labels: data.daily.map(d => d.label),
-                        datasets: [
-                            {
-                                label: 'MPA Time (min)',
-                                data: data.daily.map(d => d.mpaTime),
-                                backgroundColor: '#4CAF50'
-                            },
-                            {
-                                label: 'VPA Time (min)',
-                                data: data.daily.map(d => d.vpaTime),
-                                backgroundColor: '#FF9800'
-                            }
-                        ]
+function createHeartRateCharts(data) {
+    const activityCtx = document.getElementById('heart-rate-activity-chart');
+    if (activityCtx && data.daily) {
+        new Chart(activityCtx, {
+            type: 'bar',
+            data: {
+                labels: data.daily.map(d => d.label),
+                datasets: [
+                    {
+                        label: 'MPA Time (min)',
+                        data: data.daily.map(d => d.mpaTime),
+                        backgroundColor: '#4CAF50'
                     },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: { display: true },
-                            datalabels: { display: false }
-                        }
+                    {
+                        label: 'VPA Time (min)',
+                        data: data.daily.map(d => d.vpaTime),
+                        backgroundColor: '#FF9800'
                     }
-                });
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: true },
+                    datalabels: { display: false }
+                }
             }
+        });
+    }
 
-            const hrCtx = document.getElementById('heart-rate-hr-chart');
-            if (hrCtx && data.daily) {
-                new Chart(hrCtx, {
-                    type: 'line',
-                    data: {
-                        labels: data.daily.map(d => d.label),
-                        datasets: [{
-                            label: 'Hazard Ratio',
-                            data: data.daily.map(d => d.hazardRatio),
-                            borderColor: '#F44336',
-                            backgroundColor: 'rgba(244, 67, 54, 0.1)',
-                            fill: true
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: { display: false },
-                            datalabels: { display: false }
-                        }
-                    }
-                });
+    const hrCtx = document.getElementById('heart-rate-hr-chart');
+    if (hrCtx && data.daily) {
+        new Chart(hrCtx, {
+            type: 'line',
+            data: {
+                labels: data.daily.map(d => d.label),
+                datasets: [{
+                    label: 'Hazard Ratio',
+                    data: data.daily.map(d => d.hazardRatio),
+                    borderColor: '#F44336',
+                    backgroundColor: 'rgba(244, 67, 54, 0.1)',
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    datalabels: { display: false }
+                }
             }
-        }
+        });
+    }
+}
+
 
         // Event listeners for summary item clicks
         document.addEventListener('DOMContentLoaded', function() {
