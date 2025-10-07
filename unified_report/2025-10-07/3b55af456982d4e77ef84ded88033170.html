@@ -159,7 +159,7 @@
 
         /* Gradient scale styling */
         .gradient-scale {
-            background: linear-gradient(to right, #d32f2f 0%, #f44336 15%, #ff5722 30%, #ff9800 45%, #ffc107 60%, #66bb6a 75%, #4caf50 90%, #2e7d32 100%);
+            background: linear-gradient(to right, #FF0000 0%, #FF4040 12.5%, #FF8080 25%, #FFBFBF 37.5%, #FFFFFF 50%, #D0FFD0 62.5%, #A1FFA1 75%, #72FF72 87.5%, #43FF43 100%);
             height: 8px;
             border-radius: 4px;
             position: relative;
@@ -245,8 +245,7 @@
                 <div class="score-scale-container">
                     <div class="scale-wrapper">
                         <div class="score-scale-bar gradient-scale"></div>
-                        <div id="sleep-category-last-pointer" class="scale-pointer pointer-last"><div class="pointer-label">Last</div></div>
-                        <div id="sleep-category-avg-pointer" class="scale-pointer pointer-avg"><div class="pointer-label">Avg</div></div>
+                        <div id="sleep-category-pointer" class="scale-pointer pointer-last"><div class="pointer-label">0.0</div></div>
                     </div>
                 </div>
             </div>
@@ -289,8 +288,7 @@
                 <div class="score-scale-container">
                     <div class="scale-wrapper">
                         <div class="score-scale-bar gradient-scale"></div>
-                        <div id="aerobic-category-last-pointer" class="scale-pointer pointer-last"><div class="pointer-label">Last</div></div>
-                        <div id="aerobic-category-avg-pointer" class="scale-pointer pointer-avg"><div class="pointer-label">Avg</div></div>
+                        <div id="aerobic-category-pointer" class="scale-pointer pointer-last"><div class="pointer-label">0.0</div></div>
                     </div>
                 </div>
             </div>
@@ -333,8 +331,7 @@
                 <div class="score-scale-container">
                     <div class="scale-wrapper">
                         <div class="score-scale-bar gradient-scale"></div>
-                        <div id="anaerobic-category-last-pointer" class="scale-pointer pointer-last"><div class="pointer-label">Last</div></div>
-                        <div id="anaerobic-category-avg-pointer" class="scale-pointer pointer-avg"><div class="pointer-label">Avg</div></div>
+                        <div id="anaerobic-category-pointer" class="scale-pointer pointer-last"><div class="pointer-label">0.0</div></div>
                     </div>
                 </div>
             </div>
@@ -370,8 +367,7 @@
                 <div class="score-scale-container">
                     <div class="scale-wrapper">
                         <div class="score-scale-bar gradient-scale"></div>
-                        <div id="healthspan-sleep-category-last-pointer" class="scale-pointer pointer-last"><div class="pointer-label">Last</div></div>
-                        <div id="healthspan-sleep-category-avg-pointer" class="scale-pointer pointer-avg"><div class="pointer-label">Avg</div></div>
+                        <div id="healthspan-sleep-category-pointer" class="scale-pointer pointer-last"><div class="pointer-label">0.0</div></div>
                     </div>
                 </div>
             </div>
@@ -384,8 +380,7 @@
                         <div class="score-scale-container">
                             <div class="scale-wrapper">
                                 <div class="score-scale-bar gradient-scale"></div>
-                                <div id="healthspan-sleep-window-last-pointer" class="scale-pointer pointer-last"><div class="pointer-label">Last</div></div>
-                                <div id="healthspan-sleep-window-avg-pointer" class="scale-pointer pointer-avg"><div class="pointer-label">Avg</div></div>
+                                <div id="healthspan-sleep-window-pointer" class="scale-pointer pointer-last"><div class="pointer-label">0.0</div></div>
                             </div>
                         </div>
                     </div>
@@ -394,8 +389,7 @@
                         <div class="score-scale-container">
                             <div class="scale-wrapper">
                                 <div class="score-scale-bar gradient-scale"></div>
-                                <div id="healthspan-sleep-duration-last-pointer" class="scale-pointer pointer-last"><div class="pointer-label">Last</div></div>
-                                <div id="healthspan-sleep-duration-avg-pointer" class="scale-pointer pointer-avg"><div class="pointer-label">Avg</div></div>
+                                <div id="healthspan-sleep-duration-pointer" class="scale-pointer pointer-last"><div class="pointer-label">0.0</div></div>
                             </div>
                         </div>
                     </div>
@@ -440,8 +434,7 @@
                 <div class="score-scale-container">
                     <div class="scale-wrapper">
                         <div class="score-scale-bar gradient-scale"></div>
-                        <div id="healthspan-aerobic-category-last-pointer" class="scale-pointer pointer-last"><div class="pointer-label">Last</div></div>
-                        <div id="healthspan-aerobic-category-avg-pointer" class="scale-pointer pointer-avg"><div class="pointer-label">Avg</div></div>
+                        <div id="healthspan-aerobic-category-pointer" class="scale-pointer pointer-last"><div class="pointer-label">0.0</div></div>
                     </div>
                 </div>
             </div>
@@ -454,8 +447,7 @@
                         <div class="score-scale-container">
                             <div class="scale-wrapper">
                                 <div class="score-scale-bar gradient-scale"></div>
-                                <div id="healthspan-vo2-last-pointer" class="scale-pointer pointer-last"><div class="pointer-label">Last</div></div>
-                                <div id="healthspan-vo2-avg-pointer" class="scale-pointer pointer-avg"><div class="pointer-label">Avg</div></div>
+                                <div id="healthspan-vo2-pointer" class="scale-pointer pointer-last"><div class="pointer-label">0.0</div></div>
                             </div>
                         </div>
                     </div>
@@ -464,8 +456,7 @@
                         <div class="score-scale-container">
                             <div class="scale-wrapper">
                                 <div class="score-scale-bar gradient-scale"></div>
-                                <div id="healthspan-steps-last-pointer" class="scale-pointer pointer-last"><div class="pointer-label">Last</div></div>
-                                <div id="healthspan-steps-avg-pointer" class="scale-pointer pointer-avg"><div class="pointer-label">Avg</div></div>
+                                <div id="healthspan-steps-pointer" class="scale-pointer pointer-last"><div class="pointer-label">0.0</div></div>
                             </div>
                         </div>
                     </div>
@@ -474,8 +465,7 @@
                         <div class="score-scale-container">
                             <div class="scale-wrapper">
                                 <div class="score-scale-bar gradient-scale"></div>
-                                <div id="healthspan-heart-rate-last-pointer" class="scale-pointer pointer-last"><div class="pointer-label">Last</div></div>
-                                <div id="healthspan-heart-rate-avg-pointer" class="scale-pointer pointer-avg"><div class="pointer-label">Avg</div></div>
+                                <div id="healthspan-heart-rate-pointer" class="scale-pointer pointer-last"><div class="pointer-label">0.0</div></div>
                             </div>
                         </div>
                     </div>
@@ -484,8 +474,7 @@
                         <div class="score-scale-container">
                             <div class="scale-wrapper">
                                 <div class="score-scale-bar gradient-scale"></div>
-                                <div id="healthspan-rhr-last-pointer" class="scale-pointer pointer-last"><div class="pointer-label">Last</div></div>
-                                <div id="healthspan-rhr-avg-pointer" class="scale-pointer pointer-avg"><div class="pointer-label">Avg</div></div>
+                                <div id="healthspan-rhr-pointer" class="scale-pointer pointer-last"><div class="pointer-label">0.0</div></div>
                             </div>
                         </div>
                     </div>
@@ -552,8 +541,7 @@
                 <div class="score-scale-container">
                     <div class="scale-wrapper">
                         <div class="score-scale-bar gradient-scale"></div>
-                        <div id="healthspan-anaerobic-category-last-pointer" class="scale-pointer pointer-last"><div class="pointer-label">Last</div></div>
-                        <div id="healthspan-anaerobic-category-avg-pointer" class="scale-pointer pointer-avg"><div class="pointer-label">Avg</div></div>
+                        <div id="healthspan-anaerobic-category-pointer" class="scale-pointer pointer-last"><div class="pointer-label">0.0</div></div>
                     </div>
                 </div>
             </div>
@@ -566,8 +554,7 @@
                         <div class="score-scale-container">
                             <div class="scale-wrapper">
                                 <div class="score-scale-bar gradient-scale"></div>
-                                <div id="healthspan-strength-last-pointer" class="scale-pointer pointer-last"><div class="pointer-label">Last</div></div>
-                                <div id="healthspan-strength-avg-pointer" class="scale-pointer pointer-avg"><div class="pointer-label">Avg</div></div>
+                                <div id="healthspan-strength-pointer" class="scale-pointer pointer-last"><div class="pointer-label">0.0</div></div>
                             </div>
                         </div>
                     </div>
@@ -576,8 +563,7 @@
                         <div class="score-scale-container">
                             <div class="scale-wrapper">
                                 <div class="score-scale-bar gradient-scale"></div>
-                                <div id="healthspan-body-comp-last-pointer" class="scale-pointer pointer-last"><div class="pointer-label">Last</div></div>
-                                <div id="healthspan-body-comp-avg-pointer" class="scale-pointer pointer-avg"><div class="pointer-label">Avg</div></div>
+                                <div id="healthspan-body-comp-pointer" class="scale-pointer pointer-last"><div class="pointer-label">0.0</div></div>
                             </div>
                         </div>
                     </div>
@@ -3352,19 +3338,19 @@ function getColorForScore(score) {
     // For ticker scores: lower numbers are better, 1 is neutral, higher is worse
     // Score is calculated as (HR - 1) * 10
     // HR < 1 (score < 0) = good (green)
-    // HR = 1 (score = 0) = neutral (yellow/orange)
+    // HR = 1 (score = 0) = neutral (white)
     // HR > 1 (score > 0) = bad (red)
 
-    // More gradual color transition from red to green
-    if (score <= -3) return '#2e7d32'; // Dark green (very good)
-    if (score <= -2) return '#388e3c'; // Medium-dark green
-    if (score <= -1) return '#4caf50'; // Green
-    if (score <= -0.5) return '#66bb6a'; // Light green
-    if (score <= 0.5) return '#ffc107'; // Yellow (neutral)
-    if (score <= 1.5) return '#ff9800'; // Orange
-    if (score <= 2.5) return '#ff5722'; // Orange-red
-    if (score <= 3.5) return '#f44336'; // Red
-    return '#d32f2f'; // Dark red (very bad)
+    // 9-stop gradient with narrower white region: FF0000 → FF4040 → FF8080 → FFBFBF → FFFFFF → D0FFD0 → A1FFA1 → 72FF72 → 43FF43
+    if (score <= -3) return '#43FF43'; // Bright green (very good)
+    if (score <= -2) return '#72FF72'; // Green
+    if (score <= -1) return '#A1FFA1'; // Light green
+    if (score <= -0.3) return '#D0FFD0'; // Very light green
+    if (score <= 0.3) return '#FFFFFF'; // White (neutral - narrower region)
+    if (score <= 1) return '#FFBFBF'; // Very light red
+    if (score <= 2) return '#FF8080'; // Light red
+    if (score <= 3) return '#FF4040'; // Medium red
+    return '#FF0000'; // Bright red (very bad)
 }
 
 // Helper function to get text color based on background color
@@ -3396,6 +3382,9 @@ function updateGroupTickers(tabName, data) {
         sleepTickerEl.style.backgroundColor = sleepColor;
         sleepTickerEl.style.color = getTextColorForBackground(sleepColor);
 
+        // Update the sleep category pointer
+        updatePointer('sleep-category-pointer', sleepTicker);
+
         // Calculate aerobic group ticker (multiply HR values in category)
         let aerobicHR = 1.0;
         if (data.steps && data.steps.daily && data.steps.daily.length > 0) {
@@ -3413,6 +3402,9 @@ function updateGroupTickers(tabName, data) {
         aerobicTickerEl.style.backgroundColor = aerobicColor;
         aerobicTickerEl.style.color = getTextColorForBackground(aerobicColor);
 
+        // Update the aerobic category pointer
+        updatePointer('aerobic-category-pointer', aerobicTicker);
+
         // Calculate anaerobic group ticker (multiply HR values in category)
         let anaerobicHR = 1.0;
         if (data.strength && data.strength.daily && data.strength.daily.length > 0) {
@@ -3425,6 +3417,9 @@ function updateGroupTickers(tabName, data) {
         const anaerobicColor = getColorForScore(anaerobicTicker);
         anaerobicTickerEl.style.backgroundColor = anaerobicColor;
         anaerobicTickerEl.style.color = getTextColorForBackground(anaerobicColor);
+
+        // Update the anaerobic category pointer
+        updatePointer('anaerobic-category-pointer', anaerobicTicker);
 
     } else if (tabName === 'healthspan') {
         // Calculate healthspan group tickers (multiply HR values in category)
@@ -3440,6 +3435,9 @@ function updateGroupTickers(tabName, data) {
         const sleepColor = getColorForScore(sleepTicker);
         sleepTickerEl.style.backgroundColor = sleepColor;
         sleepTickerEl.style.color = getTextColorForBackground(sleepColor);
+
+        // Update the sleep category pointer
+        updatePointer('healthspan-sleep-category-pointer', sleepTicker);
 
         let aerobicHR = 1.0;
         if (data.vo2 && data.vo2.daily && data.vo2.daily.length > 0) {
@@ -3471,6 +3469,9 @@ function updateGroupTickers(tabName, data) {
         aerobicTickerEl.style.backgroundColor = aerobicColor;
         aerobicTickerEl.style.color = getTextColorForBackground(aerobicColor);
 
+        // Update the aerobic category pointer
+        updatePointer('healthspan-aerobic-category-pointer', aerobicTicker);
+
         let anaerobicHR = 1.0;
         if (data.strength && data.strength.daily && data.strength.daily.length > 0) {
             const latest = data.strength.daily[0];
@@ -3486,6 +3487,9 @@ function updateGroupTickers(tabName, data) {
         const anaerobicColor = getColorForScore(anaerobicTicker);
         anaerobicTickerEl.style.backgroundColor = anaerobicColor;
         anaerobicTickerEl.style.color = getTextColorForBackground(anaerobicColor);
+
+        // Update the anaerobic category pointer
+        updatePointer('healthspan-anaerobic-category-pointer', anaerobicTicker);
     }
 }
 
@@ -3783,18 +3787,15 @@ function createStrengthCharts(data) {
 
 // Summary update functions for Daily Controls
 function updateSleepSummary(data) {
-    updatePointer('sleep-category-last-pointer', data.latestScore);
-    updatePointer('sleep-category-avg-pointer', data.averageScore);
+    updatePointer('sleep-category-pointer', data.averageScore);
 }
 
 function updateAerobicSummary(data) {
-    updatePointer('aerobic-category-last-pointer', data.latestScore);
-    updatePointer('aerobic-category-avg-pointer', data.averageScore);
+    updatePointer('aerobic-category-pointer', data.averageScore);
 }
 
 function updateAnaerobicSummary(data) {
-    updatePointer('anaerobic-category-last-pointer', data.latestScore);
-    updatePointer('anaerobic-category-avg-pointer', data.averageScore);
+    updatePointer('anaerobic-category-pointer', data.averageScore);
 }
 
 // Helper function to update pointer positions
@@ -3806,11 +3807,12 @@ function updatePointer(pointerId, score) {
 
         // Use the same color function as the gradient scale
         const color = getColorForScore(score);
+        pointer.style.borderTopColor = color;
 
-        if (pointerId.includes('last')) {
-            pointer.style.borderTopColor = color;
-        } else {
-            pointer.style.borderBottomColor = color;
+        // Update the label with the actual score value (rounded to 1 decimal)
+        const label = pointer.querySelector('.pointer-label');
+        if (label) {
+            label.textContent = score.toFixed(1);
         }
     }
 }
@@ -4555,42 +4557,34 @@ function createHealthSpanBodyCompCharts(data) {
 // Summary update functions for HealthSpan
 function updateHealthSpanSleepSummary(data) {
     // Update sleep window summary
-    updatePointer('healthspan-sleep-window-last-pointer', data.latestScore);
-    updatePointer('healthspan-sleep-window-avg-pointer', data.averageScore);
+    updatePointer('healthspan-sleep-window-pointer', data.averageScore);
 
     // Update sleep duration summary
-    updatePointer('healthspan-sleep-duration-last-pointer', data.latestScore);
-    updatePointer('healthspan-sleep-duration-avg-pointer', data.averageScore);
+    updatePointer('healthspan-sleep-duration-pointer', data.averageScore);
 }
 
 function updateHealthSpanVO2Summary(data) {
-    updatePointer('healthspan-vo2-last-pointer', data.latestScore);
-    updatePointer('healthspan-vo2-avg-pointer', data.averageScore);
+    updatePointer('healthspan-vo2-pointer', data.averageScore);
 }
 
 function updateHealthSpanStepsSummary(data) {
-    updatePointer('healthspan-steps-last-pointer', data.latestScore);
-    updatePointer('healthspan-steps-avg-pointer', data.averageScore);
+    updatePointer('healthspan-steps-pointer', data.averageScore);
 }
 
 function updateHealthSpanHeartRateSummary(data) {
-    updatePointer('healthspan-heart-rate-activity-last-pointer', data.latestScore);
-    updatePointer('healthspan-heart-rate-activity-avg-pointer', data.averageScore);
+    updatePointer('healthspan-heart-rate-pointer', data.averageScore);
 }
 
 function updateHealthSpanRHRSummary(data) {
-    updatePointer('healthspan-rhr-last-pointer', data.latestScore);
-    updatePointer('healthspan-rhr-avg-pointer', data.averageScore);
+    updatePointer('healthspan-rhr-pointer', data.averageScore);
 }
 
 function updateHealthSpanStrengthSummary(data) {
-    updatePointer('healthspan-strength-time-last-pointer', data.latestScore);
-    updatePointer('healthspan-strength-time-avg-pointer', data.averageScore);
+    updatePointer('healthspan-strength-pointer', data.averageScore);
 }
 
 function updateHealthSpanBodyCompSummary(data) {
-    updatePointer('healthspan-body-comp-last-pointer', data.latestScore);
-    updatePointer('healthspan-body-comp-avg-pointer', data.averageScore);
+    updatePointer('healthspan-body-comp-pointer', data.averageScore);
 }
 
 // Add event listeners for tab switching
