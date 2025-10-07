@@ -76,12 +76,12 @@
         .vo2-chart-container { position: relative; }
         .vo2-gradient-bg { position: absolute; top: 0; left: 0; right: 0; bottom: 0; pointer-events: none; border-radius: 8px; z-index: 1; }
         #vo2-max-chart { position: relative; z-index: 2; }
-
+        
         /* Tab functionality */
         .tab-content { display: none; }
         .tab-content.active { display: block; }
         .nav-button.active { background-color: #007bff !important; }
-
+        
         /* Group styling for new unified report */
         .metric-group {
             margin-bottom: 40px;
@@ -90,7 +90,7 @@
             padding: 20px;
             background-color: #1a1a1a;
         }
-
+        
         .group-header {
             display: flex;
             justify-content: space-between;
@@ -99,12 +99,12 @@
             padding-bottom: 15px;
             border-bottom: 1px solid #333;
         }
-
+        
         .group-header h2 {
             margin: 0;
             font-size: 1.5em;
         }
-
+        
         .group-ticker {
             padding: 8px 16px;
             border-radius: 20px;
@@ -115,51 +115,51 @@
             color: white;
             border: 2px solid rgba(255, 255, 255, 0.3);
         }
-
+        
         .metric-group .metric-wrapper {
             margin-bottom: 15px;
         }
-
+        
         .metric-group .metric-wrapper:last-child {
             margin-bottom: 0;
         }
-
+        
         /* Expandable group functionality */
         .group-header {
             cursor: pointer;
             user-select: none;
             transition: background-color 0.2s ease;
         }
-
+        
         .group-header:hover {
             background-color: #2a2a2a;
         }
-
+        
         .expand-arrow {
             font-size: 1.2em;
             transition: transform 0.3s ease;
             margin-left: 10px;
         }
-
+        
         .group-content {
             overflow: hidden;
             transition: max-height 0.3s ease, opacity 0.3s ease;
         }
-
+        
         .group-content.collapsed {
             max-height: 0;
             opacity: 0;
         }
-
+        
         .group-content.expanded {
             max-height: 2000px;
             opacity: 1;
         }
-
+        
         .group-header.expanded .expand-arrow {
             transform: rotate(180deg);
         }
-
+        
         /* Gradient scale styling */
         .gradient-scale {
             background: linear-gradient(to right, #ff4444 0%, #ff4444 30%, #ffffff 50%, #44ff44 70%, #44ff44 100%);
@@ -167,7 +167,7 @@
             border-radius: 4px;
             position: relative;
         }
-
+        
         .gradient-scale::before {
             content: '';
             position: absolute;
@@ -178,7 +178,7 @@
             background-color: #ffffff;
             transform: translateX(-50%);
         }
-
+        
         /* Category summary styling */
         .category-summary {
             padding: 20px;
@@ -186,11 +186,11 @@
             border-radius: 8px;
             margin: 10px 0;
         }
-
+        
         .category-summary .score-scale-container {
             margin: 0;
         }
-
+        
         /* Component sliders styling */
         .component-sliders {
             display: flex;
@@ -200,17 +200,17 @@
             background-color: #1a1a1a;
             border-radius: 8px;
         }
-
+        
         .component-slider {
             flex: 1;
         }
-
+        
         .component-slider h4 {
             margin: 0 0 10px 0;
             font-size: 0.9em;
             color: #ccc;
         }
-
+        
         .component-slider .score-scale-container {
             margin: 0;
         }
@@ -218,7 +218,7 @@
 </head>
 <body>
     <div class="container" id="main-container">
-
+        
 <h1 style="text-align: center; font-size: 2.5em; margin-bottom: 30px;">Watch Wellness Report</h1>
 
 <!-- Navigation Buttons -->
@@ -242,7 +242,7 @@
                 </div>
                 <div class="expand-arrow">▼</div>
             </div>
-
+            
             <!-- Single sliding scale for Sleep category -->
             <div class="category-summary">
                 <div class="score-scale-container">
@@ -253,7 +253,7 @@
                     </div>
                 </div>
             </div>
-
+            
             <div id="sleep-group-content" class="group-content collapsed">
                 <div class="metric-wrapper">
                     <div class="chart-wrapper">
@@ -286,7 +286,7 @@
                 </div>
                 <div class="expand-arrow">▼</div>
             </div>
-
+            
             <!-- Single sliding scale for Aerobic category -->
             <div class="category-summary">
                 <div class="score-scale-container">
@@ -297,7 +297,7 @@
                     </div>
                 </div>
             </div>
-
+            
             <div id="aerobic-group-content" class="group-content collapsed">
                 <div class="metric-wrapper">
                     <div class="chart-wrapper">
@@ -330,7 +330,7 @@
                 </div>
                 <div class="expand-arrow">▼</div>
             </div>
-
+            
             <!-- Single sliding scale for Anaerobic category -->
             <div class="category-summary">
                 <div class="score-scale-container">
@@ -341,7 +341,7 @@
                     </div>
                 </div>
             </div>
-
+            
             <div id="anaerobic-group-content" class="group-content collapsed">
                 <div class="metric-wrapper">
                     <div class="chart-wrapper">
@@ -355,7 +355,7 @@
             </div>
         </div>
     </div>
-
+    
     <!-- HealthSpan Tab -->
     <div id="healthspan-content" class="tab-content">
         <!-- Sleep Group -->
@@ -367,7 +367,7 @@
                 </div>
                 <div class="expand-arrow">▼</div>
             </div>
-
+            
             <!-- Main sliding scale for Sleep category -->
             <div class="category-summary">
                 <div class="score-scale-container">
@@ -378,7 +378,7 @@
                     </div>
                 </div>
             </div>
-
+            
             <div id="healthspan-sleep-group-content" class="group-content collapsed">
                 <!-- Individual component sliders when expanded -->
                 <div class="component-sliders">
@@ -403,7 +403,7 @@
                         </div>
                     </div>
                 </div>
-
+            
                 <!-- Sleep Window Chart -->
                 <div class="metric-wrapper">
                     <div class="chart-wrapper">
@@ -437,7 +437,7 @@
                 </div>
                 <div class="expand-arrow">▼</div>
             </div>
-
+            
             <!-- Main sliding scale for Aerobic category -->
             <div class="category-summary">
                 <div class="score-scale-container">
@@ -448,7 +448,7 @@
                     </div>
                 </div>
             </div>
-
+            
             <div id="healthspan-aerobic-group-content" class="group-content collapsed">
                 <!-- Individual component sliders when expanded -->
                 <div class="component-sliders">
@@ -493,7 +493,7 @@
                         </div>
                     </div>
                 </div>
-
+            
                 <!-- VO2 Max Chart -->
                 <div class="metric-wrapper">
                     <div class="chart-wrapper">
@@ -549,7 +549,7 @@
                 </div>
                 <div class="expand-arrow">▼</div>
             </div>
-
+            
             <!-- Main sliding scale for Anaerobic category -->
             <div class="category-summary">
                 <div class="score-scale-container">
@@ -560,7 +560,7 @@
                     </div>
                 </div>
             </div>
-
+            
             <div id="healthspan-anaerobic-group-content" class="group-content collapsed">
                 <!-- Individual component sliders when expanded -->
                 <div class="component-sliders">
@@ -585,7 +585,7 @@
                         </div>
                     </div>
                 </div>
-
+            
                 <!-- Strength Training Chart -->
                 <div class="metric-wrapper">
                     <div class="chart-wrapper">
@@ -2946,7 +2946,7 @@
         function initializeCharts() {
             console.log('initializeCharts called');
             console.log('chartData:', chartData);
-
+            
             if (chartData && chartData.sleep) {
                 console.log('Processing sleep data');
                 const sleepData = chartData.sleep;
@@ -3022,15 +3022,15 @@
 
         function updateSummaryScale(metric, latestScore, averageScore, colorStops) {
             console.log('updateSummaryScale called with:', metric, latestScore, averageScore, colorStops);
-
+            
             const scaleBar = document.querySelector(`#${metric}-summary .score-scale-bar`);
             const lastPointer = document.querySelector(`#${metric}-last-pointer`);
             const avgPointer = document.querySelector(`#${metric}-avg-pointer`);
 
-            console.log('Elements found:', {
-                scaleBar: !!scaleBar,
-                lastPointer: !!lastPointer,
-                avgPointer: !!avgPointer
+            console.log('Elements found:', { 
+                scaleBar: !!scaleBar, 
+                lastPointer: !!lastPointer, 
+                avgPointer: !!avgPointer 
             });
 
             if (!scaleBar || !lastPointer || !avgPointer) {
@@ -3063,20 +3063,20 @@
             console.log('createGradient called with colorStops:', colorStops);
             const sortedStops = colorStops.sort((a, b) => b.score - a.score);
             console.log('Sorted stops:', sortedStops);
-
+            
             // Use a simpler, more reliable gradient format
-            const gradient = `linear-gradient(to right,
-                #d32f2f 0%,
-                #f57c00 25%,
-                #ffffff 50%,
-                #7cb342 75%,
+            const gradient = `linear-gradient(to right, 
+                #d32f2f 0%, 
+                #f57c00 25%, 
+                #ffffff 50%, 
+                #7cb342 75%, 
                 #388e3c 100%)`;
-
+            
             console.log('Generated gradient string:', gradient);
             return gradient;
         }
 
-
+        
 // Tab switching functionality
 function switchTab(tabName) {
     // Update navigation buttons
@@ -3086,16 +3086,16 @@ function switchTab(tabName) {
     });
     document.getElementById(tabName + '-nav').style.backgroundColor = '#007bff';
     document.getElementById(tabName + '-nav').classList.add('active');
-
+    
     // Update tab content visibility
     document.querySelectorAll('.tab-content').forEach(content => {
         content.classList.remove('active');
     });
     document.getElementById(tabName + '-content').classList.add('active');
-
+    
     // Destroy existing charts before creating new ones
     destroyAllCharts();
-
+    
     // Re-initialize charts with the new data
     initializeChartsForTab(tabName);
 }
@@ -3112,7 +3112,7 @@ function toggleGroup(groupId) {
     const content = document.getElementById(groupId + '-content');
     const header = document.querySelector(`[onclick="toggleGroup('${groupId}')"]`);
     const arrow = header.querySelector('.expand-arrow');
-
+    
     if (content.classList.contains('collapsed')) {
         content.classList.remove('collapsed');
         content.classList.add('expanded');
@@ -3130,7 +3130,7 @@ function toggleGroup(groupId) {
 function initializeChartsForTab(tabName) {
     const data = chartData[tabName];
     if (!data) return;
-
+    
     if (tabName === 'daily-controls') {
         // Daily Controls charts
         if (data.sleep) {
@@ -3146,7 +3146,7 @@ function initializeChartsForTab(tabName) {
         if (data.strength) {
             createStrengthCharts(data.strength);
         }
-
+        
         // Update category summaries
         if (data.steps && data.heartRate) {
             // Combine aerobic metrics for category summary
@@ -3159,7 +3159,7 @@ function initializeChartsForTab(tabName) {
         if (data.strength) {
             updateAnaerobicSummary(data.strength);
         }
-
+        
         // Update group tickers
         updateGroupTickers('daily-controls', data);
     } else if (tabName === 'healthspan') {
@@ -3192,7 +3192,7 @@ function initializeChartsForTab(tabName) {
             createHealthSpanBodyCompCharts(data.bodyComp);
             updateHealthSpanBodyCompSummary(data.bodyComp);
         }
-
+        
         // Update group tickers
         updateGroupTickers('healthspan', data);
     }
@@ -3214,7 +3214,7 @@ function getColorForScore(score) {
     } else {
         normalizedScore = 1; // Very poor (high risk)
     }
-
+    
     if (normalizedScore >= 4) return '#4CAF50'; // Green
     if (normalizedScore >= 3) return '#FFC107'; // Yellow
     if (normalizedScore >= 2) return '#FF9800'; // Orange
@@ -3243,7 +3243,7 @@ function updateGroupTickers(tabName, data) {
         const sleepColor = getColorForScore(sleepTicker);
         sleepTickerEl.style.backgroundColor = sleepColor;
         sleepTickerEl.style.color = getTextColorForBackground(sleepColor);
-
+        
         // Calculate aerobic group ticker (latest scores only)
         let aerobicTicker = 0;
         if (data.steps) {
@@ -3257,7 +3257,7 @@ function updateGroupTickers(tabName, data) {
         const aerobicColor = getColorForScore(aerobicTicker / 2); // Average of the two metrics
         aerobicTickerEl.style.backgroundColor = aerobicColor;
         aerobicTickerEl.style.color = getTextColorForBackground(aerobicColor);
-
+        
         // Calculate anaerobic group ticker (latest score only)
         let anaerobicTicker = 0;
         if (data.strength) {
@@ -3268,7 +3268,7 @@ function updateGroupTickers(tabName, data) {
         const anaerobicColor = getColorForScore(anaerobicTicker);
         anaerobicTickerEl.style.backgroundColor = anaerobicColor;
         anaerobicTickerEl.style.color = getTextColorForBackground(anaerobicColor);
-
+        
     } else if (tabName === 'healthspan') {
         // Calculate healthspan group tickers (weekly data) - keep two tickers
         let sleepTicker = 0;
@@ -3280,7 +3280,7 @@ function updateGroupTickers(tabName, data) {
         const sleepColor = getColorForScore(sleepTicker / 2); // Average of latest and average
         sleepTickerEl.style.backgroundColor = sleepColor;
         sleepTickerEl.style.color = getTextColorForBackground(sleepColor);
-
+        
         let aerobicTicker = 0;
         if (data.vo2) {
             aerobicTicker += (data.vo2.latestScore || 0) + (data.vo2.averageScore || 0);
@@ -3299,7 +3299,7 @@ function updateGroupTickers(tabName, data) {
         const aerobicColor = getColorForScore(aerobicTicker / 8); // Average of 4 metrics * 2 tickers
         aerobicTickerEl.style.backgroundColor = aerobicColor;
         aerobicTickerEl.style.color = getTextColorForBackground(aerobicColor);
-
+        
         let anaerobicTicker = 0;
         if (data.strength) {
             anaerobicTicker += (data.strength.latestScore || 0) + (data.strength.averageScore || 0);
@@ -3319,10 +3319,10 @@ function updateGroupTickers(tabName, data) {
 function initializeCharts() {
     console.log('initializeCharts called for new unified report');
     console.log('chartData:', chartData);
-
+    
     // Destroy any existing charts first
     destroyAllCharts();
-
+    
     // Initialize with daily-controls data by default
     initializeChartsForTab('daily-controls');
 }
@@ -3338,10 +3338,10 @@ function createStepsCharts(data) {
         console.warn('Steps chart data not available');
         return;
     }
-
+    
     try {
         const reversedDaily = data.daily.slice().reverse();
-
+        
         new Chart(stepsCtx, {
             type: 'bar',
             data: {
@@ -3429,10 +3429,10 @@ function createHeartRateCharts(data) {
     const activityCtx = document.getElementById('heart-rate-activity-chart');
     if (activityCtx && data.daily) {
         const reversedDaily = data.daily.slice().reverse();
-
+        
         // Use pre-calculated combined rolling average from enricher data
         const activityRollingAvg = reversedDaily.map(d => d.activityRollingAvg || 0);
-
+        
         new Chart(activityCtx, {
             type: 'bar',
             data: {
@@ -3505,10 +3505,10 @@ function createStrengthCharts(data) {
     const strengthCtx = document.getElementById('strength-chart');
     if (strengthCtx && data.daily) {
         const reversedDaily = data.daily.slice().reverse();
-
+        
         // Use pre-calculated rolling average from enricher data
         const strengthRollingAvg = reversedDaily.map(d => d.strengthRollingAvg || 0);
-
+        
         new Chart(strengthCtx, {
             type: 'bar',
             data: {
@@ -3621,7 +3621,7 @@ function updatePointer(pointerId, score) {
     if (pointer) {
         const position = Math.max(0, Math.min(100, (score + 2) * 25));
         pointer.style.left = `${position}%`;
-
+        
         // Use gradient colors for scale pointers based on position
         let color;
         if (score >= 4) {
@@ -3633,7 +3633,7 @@ function updatePointer(pointerId, score) {
         } else {
             color = '#F44336'; // Red
         }
-
+        
         if (pointerId.includes('last')) {
             pointer.style.borderTopColor = color;
         } else {
@@ -3649,39 +3649,39 @@ function createSleepCharts(data) {
         // Process sleep data to create proper sleep window visualization
         const sleepWindows = data.daily.slice().reverse().map((d, index) => {
             if (!d.sleepTime || !d.wakeTime) {
-                return {
-                    y: index,
+                return { 
+                    y: index, 
                     x: 12 * 60,
-                    width: 0,
+                    width: 0, 
                     color: '#666',
                     sleepTime: d.sleepTime,
                     wakeTime: d.wakeTime
                 };
             }
-
+            
             let sleepMinutes = timeToMinutes(d.sleepTime);
             let wakeMinutes = timeToMinutes(d.wakeTime);
-
+            
             let sleepRelativeToMidday, wakeRelativeToMidday;
-
+            
             if (sleepMinutes >= 12 * 60) {
                 sleepRelativeToMidday = sleepMinutes - (12 * 60) - (12 * 60);
             } else {
                 sleepRelativeToMidday = sleepMinutes;
             }
-
+            
             if (wakeMinutes >= 12 * 60) {
                 wakeRelativeToMidday = wakeMinutes - (12 * 60) - (12 * 60);
             } else {
                 wakeRelativeToMidday = wakeMinutes;
             }
-
+            
             if (sleepMinutes >= 12 * 60 && wakeMinutes < 12 * 60) {
                 // Normal overnight sleep
             }
-
+            
             const duration = wakeRelativeToMidday - sleepRelativeToMidday;
-
+            
             return {
                 y: index,
                 x: sleepRelativeToMidday,
@@ -3691,7 +3691,7 @@ function createSleepCharts(data) {
                 wakeTime: d.wakeTime
             };
         });
-
+        
         new Chart(sleepWindowsCtx, {
             type: 'bar',
             data: {
@@ -3751,13 +3751,13 @@ function createSleepCharts(data) {
                                 } else {
                                     actualMinutes = value;
                                 }
-
+                                
                                 let hours = Math.floor(actualMinutes / 60);
                                 const minutes = actualMinutes % 60;
-
+                                
                                 if (hours >= 24) hours -= 24;
                                 if (hours < 0) hours += 24;
-
+                                
                                 return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
                             }
                         }
@@ -3779,7 +3779,7 @@ function createSleepCharts(data) {
     const sleepDurationCtx = document.getElementById('sleep-duration-chart');
     if (sleepDurationCtx && data.daily) {
         const reversedDaily = data.daily.slice().reverse();
-
+        
         new Chart(sleepDurationCtx, {
             type: 'bar',
             data: {
@@ -3837,39 +3837,39 @@ function createHealthSpanSleepCharts(data) {
     if (sleepWindowsCtx && data.daily) {
         const sleepWindows = data.daily.slice().reverse().map((d, index) => {
             if (!d.sleepTime || !d.wakeTime) {
-                return {
-                    y: index,
+                return { 
+                    y: index, 
                     x: 12 * 60,
-                    width: 0,
+                    width: 0, 
                     color: '#666',
                     sleepTime: d.sleepTime,
                     wakeTime: d.wakeTime
                 };
             }
-
+            
             let sleepMinutes = timeToMinutes(d.sleepTime);
             let wakeMinutes = timeToMinutes(d.wakeTime);
-
+            
             let sleepRelativeToMidday, wakeRelativeToMidday;
-
+            
             if (sleepMinutes >= 12 * 60) {
                 sleepRelativeToMidday = sleepMinutes - (12 * 60) - (12 * 60);
             } else {
                 sleepRelativeToMidday = sleepMinutes;
             }
-
+            
             if (wakeMinutes >= 12 * 60) {
                 wakeRelativeToMidday = wakeMinutes - (12 * 60) - (12 * 60);
             } else {
                 wakeRelativeToMidday = wakeMinutes;
             }
-
+            
             if (sleepMinutes >= 12 * 60 && wakeMinutes < 12 * 60) {
                 // Normal overnight sleep
             }
-
+            
             const duration = wakeRelativeToMidday - sleepRelativeToMidday;
-
+            
             return {
                 y: index,
                 x: sleepRelativeToMidday,
@@ -3879,7 +3879,7 @@ function createHealthSpanSleepCharts(data) {
                 wakeTime: d.wakeTime
             };
         });
-
+        
         new Chart(sleepWindowsCtx, {
             type: 'bar',
             data: {
@@ -3939,13 +3939,13 @@ function createHealthSpanSleepCharts(data) {
                                 } else {
                                     actualMinutes = value;
                                 }
-
+                                
                                 let hours = Math.floor(actualMinutes / 60);
                                 const minutes = actualMinutes % 60;
-
+                                
                                 if (hours >= 24) hours -= 24;
                                 if (hours < 0) hours += 24;
-
+                                
                                 return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
                             }
                         }
@@ -3967,7 +3967,7 @@ function createHealthSpanSleepCharts(data) {
     const sleepDurationCtx = document.getElementById('healthspan-sleep-duration-chart');
     if (sleepDurationCtx && data.daily) {
         const reversedDaily = data.daily.slice().reverse();
-
+        
         new Chart(sleepDurationCtx, {
             type: 'bar',
             data: {
@@ -4022,7 +4022,7 @@ function createHealthSpanVO2Charts(data) {
     const vo2Ctx = document.getElementById('healthspan-vo2-chart');
     if (vo2Ctx && data.daily) {
         const reversedDaily = data.daily.slice().reverse();
-
+        
         new Chart(vo2Ctx, {
             type: 'line',
             data: {
@@ -4051,7 +4051,7 @@ function createHealthSpanStepsCharts(data) {
     const stepsCtx = document.getElementById('healthspan-steps-chart');
     if (stepsCtx && data.daily) {
         const reversedDaily = data.daily.slice().reverse();
-
+        
         new Chart(stepsCtx, {
             type: 'bar',
             data: {
@@ -4126,7 +4126,7 @@ function createHealthSpanHeartRateCharts(data) {
     const activityCtx = document.getElementById('healthspan-heart-rate-activity-chart');
     if (activityCtx && data.daily) {
         const reversedDaily = data.daily.slice().reverse();
-
+        
         new Chart(activityCtx, {
             type: 'bar',
             data: {
@@ -4187,7 +4187,7 @@ function createHealthSpanRHRCharts(data) {
     const rhrCtx = document.getElementById('healthspan-rhr-chart');
     if (rhrCtx && data.daily) {
         const reversedDaily = data.daily.slice().reverse();
-
+        
         new Chart(rhrCtx, {
             type: 'line',
             data: {
@@ -4216,7 +4216,7 @@ function createHealthSpanStrengthCharts(data) {
     const strengthCtx = document.getElementById('healthspan-strength-chart');
     if (strengthCtx && data.daily) {
         const reversedDaily = data.daily.slice().reverse();
-
+        
         new Chart(strengthCtx, {
             type: 'bar',
             data: {
@@ -4300,7 +4300,7 @@ function createHealthSpanBodyCompCharts(data) {
     const bodyCompCtx = document.getElementById('healthspan-body-comp-chart');
     if (bodyCompCtx && data.daily) {
         const reversedDaily = data.daily.slice().reverse();
-
+        
         new Chart(bodyCompCtx, {
             type: 'line',
             data: {
@@ -4341,18 +4341,18 @@ function createHealthSpanBodyCompCharts(data) {
                             display: false
                         }
                     },
-                    y: {
-                        type: 'linear',
-                        display: true,
+                    y: { 
+                        type: 'linear', 
+                        display: true, 
                         position: 'left',
                         title: {
                             display: true,
                             text: 'Weight (kg)'
                         }
                     },
-                    y1: {
-                        type: 'linear',
-                        display: true,
+                    y1: { 
+                        type: 'linear', 
+                        display: true, 
                         position: 'right',
                         title: {
                             display: true,
@@ -4370,7 +4370,7 @@ function updateHealthSpanSleepSummary(data) {
     // Update sleep window summary
     updatePointer('healthspan-sleep-window-last-pointer', data.latestScore);
     updatePointer('healthspan-sleep-window-avg-pointer', data.averageScore);
-
+    
     // Update sleep duration summary
     updatePointer('healthspan-sleep-duration-last-pointer', data.latestScore);
     updatePointer('healthspan-sleep-duration-avg-pointer', data.averageScore);
@@ -4413,7 +4413,7 @@ document.addEventListener('DOMContentLoaded', function() {
         e.preventDefault();
         switchTab('daily-controls');
     });
-
+    
     document.getElementById('healthspan-nav').addEventListener('click', function(e) {
         e.preventDefault();
         switchTab('healthspan');
@@ -4441,10 +4441,10 @@ document.addEventListener('DOMContentLoaded', function() {
             navButtons.forEach(button => {
                 button.addEventListener('click', function(e) {
                     e.preventDefault();
-
+                    
                     // Get the tab name from button ID
                     const tabName = this.id.replace('-nav', '');
-
+                    
                     // Call the switchTab function if it exists (defined in unified template)
                     if (typeof switchTab === 'function') {
                         switchTab(tabName);
@@ -4452,15 +4452,15 @@ document.addEventListener('DOMContentLoaded', function() {
                         // Fallback for non-unified templates
                         navButtons.forEach(btn => btn.style.backgroundColor = '#333');
                         this.style.backgroundColor = '#007bff';
-
+                        
                         // Navigate to the appropriate report type
                         const currentDate = document.getElementById('current-date').textContent || new Date().toISOString().split('T')[0];
-
+                        
                         // Construct URL based on report type and current date
                         let baseUrl = window.location.origin + window.location.pathname;
                         // Remove current report type from path if present
                         baseUrl = baseUrl.replace(/\/report_(daily|weekly|monthly)\//, '/');
-
+                        
                         const newUrl = `${baseUrl}report_${tabName}/${currentDate}/`;
                         window.location.href = newUrl;
                     }
@@ -4471,42 +4471,42 @@ document.addEventListener('DOMContentLoaded', function() {
             const prevButton = document.getElementById('prev-day');
             const nextButton = document.getElementById('next-day');
             const currentDateSpan = document.getElementById('current-date');
-
+            
             // Initialize current date display
             if (currentDateSpan && !currentDateSpan.textContent) {
                 const today = new Date();
                 currentDateSpan.textContent = today.toISOString().split('T')[0];
             }
-
+            
             if (prevButton) {
                 prevButton.addEventListener('click', function(e) {
                     e.preventDefault();
                     navigateDate(-1);
                 });
             }
-
+            
             if (nextButton) {
                 nextButton.addEventListener('click', function(e) {
                     e.preventDefault();
                     navigateDate(1);
                 });
             }
-
+            
             function navigateDate(direction) {
                 const currentDateStr = currentDateSpan.textContent;
                 if (!currentDateStr) return;
-
+                
                 const currentDate = new Date(currentDateStr);
                 const newDate = new Date(currentDate);
                 newDate.setDate(currentDate.getDate() + direction);
-
+                
                 const newDateStr = newDate.toISOString().split('T')[0];
                 currentDateSpan.textContent = newDateStr;
-
+                
                 // Update URL to reflect new date
                 const currentPath = window.location.pathname;
                 const pathParts = currentPath.split('/');
-
+                
                 // Find and replace the date part
                 for (let i = 0; i < pathParts.length; i++) {
                     if (pathParts[i].match(/^\d{4}-\d{2}-\d{2}$/)) {
@@ -4514,7 +4514,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         break;
                     }
                 }
-
+                
                 const newUrl = pathParts.join('/');
                 window.location.href = newUrl;
             }
