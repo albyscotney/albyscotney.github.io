@@ -3341,15 +3341,42 @@ function getColorForScore(score) {
     // HR = 1 (score = 0) = neutral (white)
     // HR > 1 (score > 0) = bad (red)
 
+    console.log('getColorForScore called with score:', score, 'type:', typeof score);
+
     // 9-stop gradient with narrower white region: FF0000 → FF4040 → FF8080 → FFBFBF → FFFFFF → D0FFD0 → A1FFA1 → 72FF72 → 43FF43
-    if (score <= -3) return '#43FF43'; // Bright green (very good)
-    if (score <= -2) return '#72FF72'; // Green
-    if (score <= -1) return '#A1FFA1'; // Light green
-    if (score <= -0.3) return '#D0FFD0'; // Very light green
-    if (score <= 0.3) return '#FFFFFF'; // White (neutral - narrower region)
-    if (score <= 1) return '#FFBFBF'; // Very light red
-    if (score <= 2) return '#FF8080'; // Light red
-    if (score <= 3) return '#FF4040'; // Medium red
+    if (score <= -3) {
+        console.log('Score', score, '-> Bright green (#43FF43)');
+        return '#43FF43'; // Bright green (very good)
+    }
+    if (score <= -2) {
+        console.log('Score', score, '-> Green (#72FF72)');
+        return '#72FF72'; // Green
+    }
+    if (score <= -1) {
+        console.log('Score', score, '-> Light green (#A1FFA1)');
+        return '#A1FFA1'; // Light green
+    }
+    if (score <= -0.3) {
+        console.log('Score', score, '-> Very light green (#D0FFD0)');
+        return '#D0FFD0'; // Very light green
+    }
+    if (score <= 0.3) {
+        console.log('Score', score, '-> White (#FFFFFF)');
+        return '#FFFFFF'; // White (neutral - narrower region)
+    }
+    if (score <= 1) {
+        console.log('Score', score, '-> Very light red (#FFBFBF)');
+        return '#FFBFBF'; // Very light red
+    }
+    if (score <= 2) {
+        console.log('Score', score, '-> Light red (#FF8080)');
+        return '#FF8080'; // Light red
+    }
+    if (score <= 3) {
+        console.log('Score', score, '-> Medium red (#FF4040)');
+        return '#FF4040'; // Medium red
+    }
+    console.log('Score', score, '-> Bright red (#FF0000)');
     return '#FF0000'; // Bright red (very bad)
 }
 
@@ -3806,8 +3833,18 @@ function updatePointer(pointerId, score) {
         pointer.style.left = `${position}%`;
 
         // Use the same color function as the gradient scale
+        console.log('updatePointer called with:', pointerId, 'score:', score);
         const color = getColorForScore(score);
-        pointer.style.borderTopColor = color;
+        console.log('getColorForScore returned color:', color);
+
+        // Set the correct border color based on pointer class
+        if (pointer.classList.contains('pointer-last')) {
+            console.log('Setting borderBottomColor to:', color);
+            pointer.style.borderBottomColor = color;
+        } else if (pointer.classList.contains('pointer-avg')) {
+            console.log('Setting borderTopColor to:', color);
+            pointer.style.borderTopColor = color;
+        }
 
         // Update the label with the actual score value (rounded to 1 decimal)
         const label = pointer.querySelector('.pointer-label');
