@@ -215,7 +215,7 @@
 </head>
 <body>
     <div class="container" id="main-container">
-
+        
 <h1 style="text-align: center; font-size: 2.5em; margin-bottom: 30px;">Watch Wellness Report</h1>
 
 <!-- Navigation Buttons -->
@@ -792,19 +792,19 @@
             ]
         },
         "heartRate": {
-            "latestScore": 0.12030075187969946,
-            "averageScore": 0.1104905119942734,
+            "latestScore": 0.023809523809523725,
+            "averageScore": 0.09992839240959617,
             "daily": [
                 {
                     "label": "Oct 07",
-                    "mpaTime": 32.0,
+                    "mpaTime": 34.0,
                     "vpaTime": 0.0,
-                    "adjVpaTime": 16.0,
-                    "rolling7Day": 138.0,
-                    "hazardRatio": 0.98796992481203,
-                    "restingHR": 50.0,
+                    "adjVpaTime": 17.0,
+                    "rolling7Day": 113.0,
+                    "hazardRatio": 0.9976190476190476,
+                    "restingHR": 47.0,
                     "maxHR": 195.0,
-                    "hrReserve": 145.0,
+                    "hrReserve": 148.0,
                     "zoneTimes": {
                         "0-4": 0.0,
                         "100-104": 0.0,
@@ -852,14 +852,14 @@
                 },
                 {
                     "label": "Oct 06",
-                    "mpaTime": 30.0,
-                    "vpaTime": 16.0,
-                    "adjVpaTime": 31.0,
-                    "rolling7Day": 144.0,
-                    "hazardRatio": 0.9866165413533834,
-                    "restingHR": 50.0,
+                    "mpaTime": 28.0,
+                    "vpaTime": 18.0,
+                    "adjVpaTime": 32.0,
+                    "rolling7Day": 154.0,
+                    "hazardRatio": 0.9843609022556391,
+                    "restingHR": 47.0,
                     "maxHR": 195.0,
-                    "hrReserve": 145.0,
+                    "hrReserve": 148.0,
                     "zoneTimes": {
                         "0-4": 0.0,
                         "100-104": 0.0,
@@ -1205,15 +1205,15 @@
             ]
         },
         "strength": {
-            "latestScore": -0.1590608568948415,
-            "averageScore": -0.331187806698201,
+            "latestScore": -0.2171654265873013,
+            "averageScore": -0.33948845951140894,
             "daily": [
                 {
                     "label": "Oct 07",
-                    "dailyDuration": 30.504899088541666,
-                    "weeklySum": 113.5069498697917,
-                    "hrScore": 0.9840939143105158,
-                    "hrColor": "#c3e0c4",
+                    "dailyDuration": 61.00979817708333,
+                    "weeklySum": 144.01184895833336,
+                    "hrScore": 0.9782834573412699,
+                    "hrColor": "#add5af",
                     "hasData": true
                 },
                 {
@@ -3135,7 +3135,7 @@
             return gradient;
         }
 
-
+        
 // Tab switching functionality
 function switchTab(tabName) {
     // Update navigation buttons
@@ -3264,9 +3264,9 @@ function getColorForScore(score) {
     // HR < 1 (score < 0) = good (green)
     // HR = 1 (score = 0) = neutral (white)
     // HR > 1 (score > 0) = bad (red)
-
+    
     console.log('getColorForScore called with score:', score, 'type:', typeof score);
-
+    
     // 9-stop gradient with narrower white region: FF0000 → FF4040 → FF8080 → FFBFBF → FFFFFF → D0FFD0 → A1FFA1 → 72FF72 → 43FF43
     if (score <= -3) {
         console.log('Score', score, '-> Bright green (#43FF43)');
@@ -3760,7 +3760,7 @@ function updatePointer(pointerId, score) {
         console.log('updatePointer called with:', pointerId, 'score:', score);
         const color = getColorForScore(score);
         console.log('getColorForScore returned color:', color);
-
+        
         // Set the correct border color based on pointer class
         if (pointer.classList.contains('pointer-last')) {
             console.log('Setting borderBottomColor to:', color);
