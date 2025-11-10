@@ -584,7 +584,7 @@
                 <div class="metric-wrapper">
                     <div class="chart-wrapper">
                         <h4>Weekly Body Composition</h4>
-                        <p class="chart-subtitle">Weekly weight and body fat percentage trends.</p>
+                        <p class="chart-subtitle">Weekly FFMI and FMI trends.</p>
                         <div style="height: 300px; position: relative;">
                             <canvas id="healthspan-body-comp-chart"></canvas>
                         </div>
@@ -4533,15 +4533,15 @@ function createHealthSpanBodyCompCharts(data) {
                 labels: reversedDaily.map(d => d.label),
                 datasets: [
                     {
-                        label: 'Weight (kg)',
-                        data: reversedDaily.map(d => d.weight),
+                        label: 'FFMI',
+                        data: reversedDaily.map(d => d.ffmi),
                         borderColor: '#FF5722',
                         backgroundColor: 'rgba(255, 87, 34, 0.1)',
                         yAxisID: 'y'
                     },
                     {
-                        label: 'Body Fat %',
-                        data: reversedDaily.map(d => d.bodyFat),
+                        label: 'FMI',
+                        data: reversedDaily.map(d => d.fmi),
                         borderColor: '#9C27B0',
                         backgroundColor: 'rgba(156, 39, 176, 0.1)',
                         yAxisID: 'y1'
@@ -4573,7 +4573,7 @@ function createHealthSpanBodyCompCharts(data) {
                         position: 'left',
                         title: {
                             display: true,
-                            text: 'Weight (kg)'
+                            text: 'FFMI'
                         }
                     },
                     y1: {
@@ -4582,7 +4582,7 @@ function createHealthSpanBodyCompCharts(data) {
                         position: 'right',
                         title: {
                             display: true,
-                            text: 'Body Fat (%)'
+                            text: 'FMI (kg/m²)'
                         }
                     }
                 }
