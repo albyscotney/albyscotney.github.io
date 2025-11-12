@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Watch Wellness</title>
+    <title>Watch Wellness Report</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏥</text></svg>">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
@@ -39,142 +39,34 @@
 
         .score-scale-container {
             position: relative;
-            height: 120px;
+            height: 80px;
             margin: 0;
             flex-shrink: 0;
         }
 
         .scale-wrapper {
             position: relative;
-            height: 120px;
+            height: 100%;
             margin: 0 45px;
         }
 
-        .score-scale-bar {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 12px;
-            border-radius: 6px;
-        }
+        .score-scale-bar { position: absolute; top: 50%; transform: translateY(-50%); width: 100%; height: 10px; border-radius: 5px; }
+        .scale-pointer { position: absolute; transform: translateX(-50%); width: 0; height: 0; border-left: 8px solid transparent; border-right: 8px solid transparent; }
 
-        .master-score-overview {
-            max-width: 720px;
-            margin: 0 auto 30px;
-        }
+        .pointer-avg { top: 63px; border-top: 12px solid; }
+        .pointer-last { top: 5px; border-bottom: 12px solid; }
 
-        .scale-pointer {
-            position: absolute;
-            left: 0;
-            transform: translateX(-50%);
-            width: 0;
-            height: 0;
-            border-left: 8px solid transparent;
-            border-right: 8px solid transparent;
-            pointer-events: none;
-            transition: left 0.2s ease;
-        }
-
-        .scale-pointer.hidden {
-            display: none;
-        }
-
-        .pointer-last {
-            top: 18px;
-            border-bottom: 12px solid #ffffff;
-            border-top: none;
-        }
-
-        .pointer-last .pointer-label {
-            position: absolute;
-            top: 16px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 0.75em;
-            color: #111;
-            background-color: rgba(255, 255, 255, 0.9);
-            padding: 4px 8px;
+        .pointer-label {
+            font-size: 0.8em;
+            color: #ccc;
+            background-color: rgba(0,0,0,0.8);
+            padding: 3px 6px;
             border-radius: 4px;
             white-space: nowrap;
-            pointer-events: none;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 2px;
         }
 
-        .pointer-label-title {
-            font-size: 0.7em;
-            letter-spacing: 0.05em;
-            text-transform: uppercase;
-            font-weight: 600;
-        }
-
-        .pointer-label-value {
-            font-size: 0.95em;
-            font-weight: 600;
-        }
-
-        .pointer-label-circle {
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.7em;
-            font-weight: 700;
-            border: 2px solid #ffffff;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
-        }
-
-        .master-pointer {
-            width: 26px;
-            height: 26px;
-            border: none;
-            top: 0;
-            transform: translate(-50%, -50%);
-        }
-
-        .master-pointer .master-pointer-badge {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.7em;
-            font-weight: 700;
-            border: 2px solid #ffffff;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
-            color: #111;
-            background-color: #ffffff;
-        }
-
-        .pointer-avg {
-            bottom: 18px;
-            top: auto;
-            border-bottom: none;
-            border-top: 12px solid #ffffff;
-        }
-
-        .pointer-avg .pointer-label {
-            position: absolute;
-            bottom: 16px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 0.75em;
-            color: #111;
-            background-color: rgba(255, 255, 255, 0.9);
-            padding: 4px 8px;
-            border-radius: 4px;
-            white-space: nowrap;
-            pointer-events: none;
-        }
+        .pointer-avg .pointer-label { position: absolute; bottom: 14px; transform: translateX(-50%); }
+        .pointer-last .pointer-label { position: absolute; top: 14px; transform: translateX(-50%); }
 
         .details-container { display: none; flex-direction: column; gap: 30px; margin-top: 20px; }
         .details-container.visible { display: flex; }
@@ -267,14 +159,10 @@
 
         /* Gradient scale styling */
         .gradient-scale {
-            background: linear-gradient(to right, #d32f2f 0%, #ffffff 50%, #43a047 100%);
-            height: 12px;
-            border-radius: 6px;
+            background: linear-gradient(to right, #FF0000 0%, #FF4040 12.5%, #FF8080 25%, #FFBFBF 37.5%, #FFFFFF 50%, #D0FFD0 62.5%, #A1FFA1 75%, #72FF72 87.5%, #43FF43 100%);
+            height: 8px;
+            border-radius: 4px;
             position: relative;
-        }
-
-        .gradient-scale.gradient-steps {
-            background: linear-gradient(to right, #d32f2f 0%, #ffffff 100%);
         }
 
         .gradient-scale::before {
@@ -328,17 +216,7 @@
 <body>
     <div class="container" id="main-container">
         
-<h1 style="text-align: center; font-size: 2.5em; margin-bottom: 20px;">Watch Wellness</h1>
-
-<div id="master-score-overview" class="master-score-overview">
-    <div class="score-scale-container">
-        <div class="scale-wrapper">
-            <div class="score-scale-bar gradient-scale"></div>
-            <div id="master-recent-pointer" class="scale-pointer master-pointer"></div>
-            <div id="master-healthspan-pointer" class="scale-pointer master-pointer"></div>
-        </div>
-    </div>
-</div>
+<h1 style="text-align: center; font-size: 2.5em; margin-bottom: 30px;">Watch Wellness Report</h1>
 
 <!-- Navigation Buttons -->
 <div class="navigation-container" style="margin-bottom: 30px; text-align: center;">
@@ -577,7 +455,7 @@
                         <h4>Steps</h4>
                         <div class="score-scale-container">
                             <div class="scale-wrapper">
-                                <div class="score-scale-bar gradient-scale gradient-steps"></div>
+                                <div class="score-scale-bar gradient-scale"></div>
                                 <div id="healthspan-steps-pointer" class="scale-pointer pointer-last"><div class="pointer-label">0.0</div></div>
                             </div>
                         </div>
@@ -725,7 +603,7 @@
     "daily-controls": {
         "sleep": {
             "latestScore": -1.0775000000000001,
-            "averageScore": -1.002299851400098,
+            "averageScore": -1.075841757111412,
             "daily": [
                 {
                     "label": "Nov 10",
@@ -804,19 +682,6 @@
                     "timeInBed": 7.916666666666667,
                     "awakeCount": 1,
                     "hasData": true
-                },
-                {
-                    "label": "Nov 04",
-                    "consistencyScore": 1.0149410304158908,
-                    "durationScore": 0.93,
-                    "consistencyColor": "#f7c3c2",
-                    "durationColor": "#43a047",
-                    "sleepTime": "01:22",
-                    "wakeTime": "09:00",
-                    "sleepDuration": 7.631666666666667,
-                    "timeInBed": 7.781666666666667,
-                    "awakeCount": 0,
-                    "hasData": true
                 }
             ],
             "colorStops": [
@@ -846,6 +711,14 @@
             "latestScore": 0.0,
             "averageScore": 0.0,
             "daily": [
+                {
+                    "label": "Nov 11",
+                    "dailySteps": 13496,
+                    "rollingAvgSteps": 14957,
+                    "hazardRatio": 1.0,
+                    "hrColor": "#ffffff",
+                    "hasData": true
+                },
                 {
                     "label": "Nov 10",
                     "dailySteps": 15520,
@@ -893,14 +766,6 @@
                     "hazardRatio": 1.0,
                     "hrColor": "#ffffff",
                     "hasData": true
-                },
-                {
-                    "label": "Nov 04",
-                    "dailySteps": 18510,
-                    "rollingAvgSteps": 12032,
-                    "hazardRatio": 1.0,
-                    "hrColor": "#ffffff",
-                    "hasData": true
                 }
             ],
             "colorStops": [
@@ -927,9 +792,64 @@
             ]
         },
         "heartRate": {
-            "latestScore": -0.2457943925233641,
-            "averageScore": -0.31949265687583495,
+            "latestScore": -0.07058823529411784,
+            "averageScore": -0.29286106966151193,
             "daily": [
+                {
+                    "label": "Nov 11",
+                    "mpaTime": 40.0,
+                    "vpaTime": 10.0,
+                    "adjVpaTime": 30.0,
+                    "rolling7Day": 96.0,
+                    "hazardRatio": 1.0070588235294118,
+                    "restingHR": 51.0,
+                    "maxHR": 195.0,
+                    "hrReserve": 144.0,
+                    "zoneTimes": {
+                        "0-4": 0.0,
+                        "100-104": 0.0,
+                        "105-109": 0.0,
+                        "10-14": 0.0,
+                        "110-114": 0.0,
+                        "115-119": 0.0,
+                        "120-124": 0.0,
+                        "125-129": 0.0,
+                        "130-134": 0.0,
+                        "135-139": 0.0,
+                        "140-144": 0.0,
+                        "145-149": 0.0,
+                        "150-154": 0.0,
+                        "155-159": 0.0,
+                        "15-19": 0.0,
+                        "160-164": 0.0,
+                        "165-169": 0.0,
+                        "170-174": 0.0,
+                        "175-179": 0.0,
+                        "180-184": 0.0,
+                        "185-189": 0.0,
+                        "190-194": 0.0,
+                        "195-199": 0.0,
+                        "200plus": 0.0,
+                        "20-24": 0.0,
+                        "25-29": 0.0,
+                        "30-34": 0.0,
+                        "35-39": 0.0,
+                        "40-44": 0.0,
+                        "45-49": 0.0,
+                        "50-54": 0.0,
+                        "55-59": 0.0,
+                        "5-9": 0.0,
+                        "60-64": 0.0,
+                        "65-69": 0.0,
+                        "70-74": 0.0,
+                        "75-79": 0.0,
+                        "80-84": 0.0,
+                        "85-89": 0.0,
+                        "90-94": 0.0,
+                        "95-99": 0.0
+                    },
+                    "hasData": true
+                },
                 {
                     "label": "Nov 10",
                     "mpaTime": 50.0,
@@ -1259,61 +1179,6 @@
                         "95-99": 0.0
                     },
                     "hasData": true
-                },
-                {
-                    "label": "Nov 04",
-                    "mpaTime": 24.0,
-                    "vpaTime": 0.0,
-                    "adjVpaTime": 12.0,
-                    "rolling7Day": 77.0,
-                    "hazardRatio": 1.0257009345794392,
-                    "restingHR": 48.0,
-                    "maxHR": 195.0,
-                    "hrReserve": 147.0,
-                    "zoneTimes": {
-                        "0-4": 0.0,
-                        "100-104": 0.0,
-                        "105-109": 0.0,
-                        "10-14": 0.0,
-                        "110-114": 0.0,
-                        "115-119": 0.0,
-                        "120-124": 0.0,
-                        "125-129": 0.0,
-                        "130-134": 0.0,
-                        "135-139": 0.0,
-                        "140-144": 0.0,
-                        "145-149": 0.0,
-                        "150-154": 0.0,
-                        "155-159": 0.0,
-                        "15-19": 0.0,
-                        "160-164": 0.0,
-                        "165-169": 0.0,
-                        "170-174": 0.0,
-                        "175-179": 0.0,
-                        "180-184": 0.0,
-                        "185-189": 0.0,
-                        "190-194": 0.0,
-                        "195-199": 0.0,
-                        "200plus": 0.0,
-                        "20-24": 0.0,
-                        "25-29": 0.0,
-                        "30-34": 0.0,
-                        "35-39": 0.0,
-                        "40-44": 0.0,
-                        "45-49": 0.0,
-                        "50-54": 0.0,
-                        "55-59": 0.0,
-                        "5-9": 0.0,
-                        "60-64": 0.0,
-                        "65-69": 0.0,
-                        "70-74": 0.0,
-                        "75-79": 0.0,
-                        "80-84": 0.0,
-                        "85-89": 0.0,
-                        "90-94": 0.0,
-                        "95-99": 0.0
-                    },
-                    "hasData": true
                 }
             ],
             "colorStops": [
@@ -1340,9 +1205,17 @@
             ]
         },
         "strength": {
-            "latestScore": -0.30529901026165707,
-            "averageScore": -0.3170520467952809,
+            "latestScore": -0.287187903025794,
+            "averageScore": -0.30780527100163213,
             "daily": [
+                {
+                    "label": "Nov 11",
+                    "dailyDuration": 29.709950764973957,
+                    "weeklySum": 180.77364908854167,
+                    "hrScore": 0.9712812096974206,
+                    "hrColor": "#93c895",
+                    "hasData": true
+                },
                 {
                     "label": "Nov 10",
                     "dailyDuration": 44.24998372395833,
@@ -1390,14 +1263,6 @@
                     "hrScore": 0.9680690030536954,
                     "hrColor": "#86c289",
                     "hasData": true
-                },
-                {
-                    "label": "Nov 04",
-                    "dailyDuration": 39.218282063802086,
-                    "weeklySum": 214.75555013020838,
-                    "hrScore": 0.964808466641865,
-                    "hrColor": "#7abc7d",
-                    "hasData": true
                 }
             ],
             "colorStops": [
@@ -1422,41 +1287,23 @@
                     "color": "#388e3c"
                 }
             ]
-        },
-        "scoreBars": {
-            "sleep": {
-                "value": 0.9892192889239723,
-                "source": "SleepHRsRescaled"
-            },
-            "aerobic": {
-                "value": 1.5084815080164722,
-                "source": "AerobicHRsRescaled"
-            },
-            "anaerobic": {
-                "value": 1.5067861970935668,
-                "source": "AnaerobicHRsRescaled"
-            },
-            "steps": {
-                "value": 1.0,
-                "source": "StepsDaily"
-            }
         }
     },
     "healthspan": {
         "sleep": {
-            "latestScore": 0.26251349739079943,
-            "averageScore": 0.04911695361093038,
+            "latestScore": -0.1836554850000205,
+            "averageScore": 0.05389885158537222,
             "daily": [
                 {
                     "label": "Week of Nov 03",
-                    "consistencyScore": 1.103496074988258,
+                    "consistencyScore": 1.0555209155913958,
                     "durationScore": 0.93,
                     "consistencyColor": "#e53935",
                     "durationColor": "#43a047",
-                    "sleepTime": "01:22",
-                    "wakeTime": "09:00",
-                    "sleepDuration": 7.999166666666667,
-                    "timeInBed": 8.224166666666667,
+                    "sleepTime": "23:57",
+                    "wakeTime": "07:37",
+                    "sleepDuration": 7.888333333333333,
+                    "timeInBed": 8.121666666666668,
                     "awakeCount": 1,
                     "hasData": true
                 },
@@ -1745,19 +1592,6 @@
                     "timeInBed": 7.689563492063492,
                     "awakeCount": 1,
                     "hasData": true
-                },
-                {
-                    "label": "Week of May 26",
-                    "consistencyScore": 0.9725873391121618,
-                    "durationScore": 0.9760526315789474,
-                    "consistencyColor": "#97ca9a",
-                    "durationColor": "#a4d1a6",
-                    "sleepTime": "00:04",
-                    "wakeTime": "07:01",
-                    "sleepDuration": 6.95,
-                    "timeInBed": 7.3,
-                    "awakeCount": 1,
-                    "hasData": true
                 }
             ],
             "colorStops": [
@@ -1785,7 +1619,7 @@
         },
         "vo2": {
             "latestScore": -4.6,
-            "averageScore": -4.6,
+            "averageScore": -4.600000000000001,
             "daily": [
                 {
                     "date": "Week of Nov 03",
@@ -1878,10 +1712,6 @@
                 {
                     "date": "Week of Jun 02",
                     "vo2": 56.65714285714286
-                },
-                {
-                    "date": "Week of May 26",
-                    "vo2": 57.0
                 }
             ],
             "zones": [
@@ -1931,12 +1761,12 @@
         },
         "steps": {
             "latestScore": 0.0,
-            "averageScore": 0.17670717120181534,
+            "averageScore": 0.1843900916888508,
             "daily": [
                 {
                     "label": "Week of Nov 03",
-                    "dailySteps": 14155,
-                    "rollingAvgSteps": 11906,
+                    "dailySteps": 11763,
+                    "rollingAvgSteps": 12012,
                     "hazardRatio": 1.0,
                     "hrColor": "#ffffff",
                     "hasData": true
@@ -2116,14 +1946,6 @@
                     "hazardRatio": 1.0,
                     "hrColor": "#ffffff",
                     "hasData": true
-                },
-                {
-                    "label": "Week of May 26",
-                    "dailySteps": 15250,
-                    "rollingAvgSteps": 16179,
-                    "hazardRatio": 1.0,
-                    "hrColor": "#ffffff",
-                    "hasData": true
                 }
             ],
             "colorStops": [
@@ -2150,19 +1972,19 @@
             ]
         },
         "heartRate": {
-            "latestScore": -0.1608576140736684,
-            "averageScore": -0.2528932670248518,
+            "latestScore": -0.20786146234194725,
+            "averageScore": -0.2011786488491918,
             "daily": [
                 {
                     "label": "Week of Nov 03",
-                    "mpaTime": 34.0,
+                    "mpaTime": 36.0,
                     "vpaTime": 6.0,
-                    "adjVpaTime": 23.0,
-                    "rolling7Day": 87.0,
-                    "hazardRatio": 1.0160857614073668,
-                    "restingHR": 47.5,
+                    "adjVpaTime": 24.0,
+                    "rolling7Day": 82.33333333333333,
+                    "hazardRatio": 1.0207861462341947,
+                    "restingHR": 48.0,
                     "maxHR": 195.0,
-                    "hrReserve": 147.5,
+                    "hrReserve": 147.0,
                     "zoneTimes": {},
                     "hasData": true
                 },
@@ -2451,19 +2273,6 @@
                     "hrReserve": 149.42857142857142,
                     "zoneTimes": {},
                     "hasData": true
-                },
-                {
-                    "label": "Week of May 26",
-                    "mpaTime": 0.0,
-                    "vpaTime": 0.0,
-                    "adjVpaTime": 0.0,
-                    "rolling7Day": 0.0,
-                    "hazardRatio": 1.1489333333333334,
-                    "restingHR": 44.0,
-                    "maxHR": 195.0,
-                    "hrReserve": 151.0,
-                    "zoneTimes": {},
-                    "hasData": true
                 }
             ],
             "colorStops": [
@@ -2490,13 +2299,13 @@
             ]
         },
         "rhr": {
-            "latestScore": -1.7574999999999996,
-            "averageScore": -1.7301636904761908,
+            "latestScore": -1.7209999999999992,
+            "averageScore": -1.7194534161490682,
             "daily": [
                 {
                     "label": "Week of Nov 03",
-                    "rhr": 47,
-                    "hrScore": 0.82425,
+                    "rhr": 48,
+                    "hrScore": 0.8279000000000001,
                     "hrColor": "#43a047",
                     "hasData": true
                 },
@@ -2653,13 +2462,6 @@
                     "hrScore": 0.8143428571428571,
                     "hrColor": "#43a047",
                     "hasData": true
-                },
-                {
-                    "label": "Week of May 26",
-                    "rhr": 44,
-                    "hrScore": 0.806,
-                    "hrColor": "#43a047",
-                    "hasData": true
                 }
             ],
             "colorStops": [
@@ -2686,15 +2488,15 @@
             ]
         },
         "strength": {
-            "latestScore": -0.375957666790675,
-            "averageScore": -0.20763492713980036,
+            "latestScore": -0.3570751010147999,
+            "averageScore": -0.2084677944906066,
             "daily": [
                 {
                     "label": "Week of Nov 03",
-                    "dailyDuration": 42.82527465820313,
-                    "weeklySum": 237.80515747070314,
-                    "hrScore": 0.9624042333209325,
-                    "hrColor": "#71b774",
+                    "dailyDuration": 35.65304429796007,
+                    "weeklySum": 224.41601630316845,
+                    "hrScore": 0.96429248989852,
+                    "hrColor": "#78bb7b",
                     "hasData": true
                 },
                 {
@@ -2872,14 +2674,6 @@
                     "hrScore": 0.9805599222403805,
                     "hrColor": "#b5dab7",
                     "hasData": true
-                },
-                {
-                    "label": "Week of May 26",
-                    "dailyDuration": 0.0,
-                    "weeklySum": 119.03811645507815,
-                    "hrScore": 0.9830403587704613,
-                    "hrColor": "#bfdec0",
-                    "hasData": true
                 }
             ],
             "colorStops": [
@@ -2906,16 +2700,16 @@
             ]
         },
         "bodyComp": {
-            "latestScore": -2.148313283372001,
-            "averageScore": -2.2253861853446533,
+            "latestScore": -2.166791481581032,
+            "averageScore": -2.227234005165556,
             "daily": [
                 {
                     "label": "Week of Nov 03",
-                    "weight": 89.087875,
-                    "bodyFat": 18.3,
-                    "ffmi": 20.593253133488005,
-                    "fmi": 4.61268705437981,
-                    "hrScore": 0.7851686716627999,
+                    "weight": 89.51825000000001,
+                    "bodyFat": 18.400000000000002,
+                    "ffmi": 20.667165926324127,
+                    "fmi": 4.6605417468311465,
+                    "hrScore": 0.7833208518418968,
                     "hrColor": "#43a047",
                     "hasData": true
                 },
@@ -3032,29 +2826,7 @@
                     "color": "#388e3c"
                 }
             ]
-        },
-        "scoreBars": {
-            "sleep": {
-                "value": 1.2686230143836938,
-                "source": "SleepHRsRescaled"
-            },
-            "aerobic": {
-                "value": 1.7951903087129502,
-                "source": "AerobicHRsRescaled"
-            },
-            "anaerobic": {
-                "value": 1.2729709746651285,
-                "source": "AnaerobicHRsRescaled"
-            },
-            "steps": {
-                "value": 0.9873941381053484,
-                "source": "StepsDaily"
-            }
         }
-    },
-    "masterScore": {
-        "recent": 1.310070699007715,
-        "healthspan": 1.4371480850174814
     }
 };
 
@@ -3292,6 +3064,7 @@ function initializeChartsForTab(tabName) {
         // Daily Controls charts
         if (data.sleep) {
             createSleepCharts(data.sleep);
+            updateSleepSummary(data.sleep);
         }
         if (data.steps) {
             createStepsCharts(data.steps);
@@ -3303,30 +3076,50 @@ function initializeChartsForTab(tabName) {
             createStrengthCharts(data.strength);
         }
 
+        // Update category summaries
+        if (data.steps && data.heartRate) {
+            // Combine aerobic metrics for category summary
+            const aerobicData = {
+                latestScore: (data.steps.latestScore + data.heartRate.latestScore) / 2,
+                averageScore: (data.steps.averageScore + data.heartRate.averageScore) / 2
+            };
+            updateAerobicSummary(aerobicData);
+        }
+        if (data.strength) {
+            updateAnaerobicSummary(data.strength);
+        }
+
         // Update group tickers
         updateGroupTickers('daily-controls', data);
     } else if (tabName === 'healthspan') {
         // HealthSpan charts (weekly aggregated)
         if (data.sleep) {
             createHealthSpanSleepCharts(data.sleep);
+            updateHealthSpanSleepSummary(data.sleep);
         }
         if (data.vo2) {
             createHealthSpanVO2Charts(data.vo2);
+            updateHealthSpanVO2Summary(data.vo2);
         }
         if (data.steps) {
             createHealthSpanStepsCharts(data.steps);
+            updateHealthSpanStepsSummary(data.steps);
         }
         if (data.heartRate) {
             createHealthSpanHeartRateCharts(data.heartRate);
+            updateHealthSpanHeartRateSummary(data.heartRate);
         }
         if (data.rhr) {
             createHealthSpanRHRCharts(data.rhr);
+            updateHealthSpanRHRSummary(data.rhr);
         }
         if (data.strength) {
             createHealthSpanStrengthCharts(data.strength);
+            updateHealthSpanStrengthSummary(data.strength);
         }
         if (data.bodyComp) {
             createHealthSpanBodyCompCharts(data.bodyComp);
+            updateHealthSpanBodyCompSummary(data.bodyComp);
         }
 
         // Update group tickers
@@ -3334,364 +3127,197 @@ function initializeChartsForTab(tabName) {
     }
 }
 
-const DEFAULT_SCALE = {
-    min: 0,
-    mid: 1,
-    max: 2,
-    minColor: '#d32f2f',
-    midColor: '#ffffff',
-    maxColor: '#43a047',
-    fallbackColor: '#616161',
-    decimals: 2,
-};
+// Helper function to get color based on score (lower is better, 1 is neutral/white)
+function getColorForScore(score) {
+    // For ticker scores: lower numbers are better, 1 is neutral, higher is worse
+    // Score is calculated as (HR - 1) * 10
+    // HR < 1 (score < 0) = good (green)
+    // HR = 1 (score = 0) = neutral (white)
+    // HR > 1 (score > 0) = bad (red)
 
-const STEP_SCALE = {
-    ...DEFAULT_SCALE,
-    max: 1,
-    maxColor: '#ffffff',
-};
+    console.log('getColorForScore called with score:', score, 'type:', typeof score);
 
-function toNumberOrNull(value) {
-    if (value === null || value === undefined) {
-        return null;
+    // 9-stop gradient with narrower white region: FF0000 → FF4040 → FF8080 → FFBFBF → FFFFFF → D0FFD0 → A1FFA1 → 72FF72 → 43FF43
+    if (score <= -3) {
+        console.log('Score', score, '-> Bright green (#43FF43)');
+        return '#43FF43'; // Bright green (very good)
     }
-    const numericValue = Number(value);
-    return Number.isFinite(numericValue) ? numericValue : null;
+    if (score <= -2) {
+        console.log('Score', score, '-> Green (#72FF72)');
+        return '#72FF72'; // Green
+    }
+    if (score <= -1) {
+        console.log('Score', score, '-> Light green (#A1FFA1)');
+        return '#A1FFA1'; // Light green
+    }
+    if (score <= -0.3) {
+        console.log('Score', score, '-> Very light green (#D0FFD0)');
+        return '#D0FFD0'; // Very light green
+    }
+    if (score <= 0.3) {
+        console.log('Score', score, '-> White (#FFFFFF)');
+        return '#FFFFFF'; // White (neutral - narrower region)
+    }
+    if (score <= 1) {
+        console.log('Score', score, '-> Very light red (#FFBFBF)');
+        return '#FFBFBF'; // Very light red
+    }
+    if (score <= 2) {
+        console.log('Score', score, '-> Light red (#FF8080)');
+        return '#FF8080'; // Light red
+    }
+    if (score <= 3) {
+        console.log('Score', score, '-> Medium red (#FF4040)');
+        return '#FF4040'; // Medium red
+    }
+    console.log('Score', score, '-> Bright red (#FF0000)');
+    return '#FF0000'; // Bright red (very bad)
 }
 
-function clampValue(value, min, max) {
-    return Math.min(Math.max(value, min), max);
+// Helper function to get text color based on background color
+function getTextColorForBackground(bgColor) {
+    // For light backgrounds (white, yellow, orange), use black text
+    // For dark backgrounds (green, red), use white text
+    const lightBackgrounds = ['#ffffff', '#FFC107', '#FF9800', '#f57c00', '#7cb342'];
+    if (lightBackgrounds.includes(bgColor.toLowerCase())) {
+        return '#000000'; // Black text for light backgrounds
+    }
+    return '#FFFFFF'; // White text for dark backgrounds
 }
 
-function interpolateColor(startHex, endHex, t) {
-    const start = hexToRgb(startHex) || { r: 0, g: 0, b: 0 };
-    const end = hexToRgb(endHex) || { r: 255, g: 255, b: 255 };
-    const ratio = Math.min(Math.max(t, 0), 1);
-
-    const r = Math.round(start.r + (end.r - start.r) * ratio);
-    const g = Math.round(start.g + (end.g - start.g) * ratio);
-    const b = Math.round(start.b + (end.b - start.b) * ratio);
-
-    return rgbToHex(r, g, b);
-}
-
-function getReadableTextColor(hexColor) {
-    const rgb = hexToRgb(hexColor);
-    if (!rgb) {
-        return '#111111';
-    }
-
-    const luminance = (0.2126 * rgb.r + 0.7152 * rgb.g + 0.0722 * rgb.b) / 255;
-    return luminance > 0.6 ? '#111111' : '#ffffff';
-}
-
-function getScaleColor(rawValue, overrides = {}) {
-    const config = { ...DEFAULT_SCALE, ...overrides };
-    const value = toNumberOrNull(rawValue);
-
-    if (value === null) {
-        return config.fallbackColor;
-    }
-
-    const min = config.min;
-    const mid = config.mid;
-    const max = config.max;
-    const minColor = config.minColor;
-    const midColor = config.midColor;
-    const maxColor = config.maxColor;
-
-    const lowerBound = Math.min(min, max);
-    const upperBound = Math.max(min, max);
-    const clampedValue = clampValue(value, lowerBound, upperBound);
-
-    if (max === mid) {
-        const denominator = mid - min;
-        const t = denominator === 0 ? 1 : (clampedValue - min) / denominator;
-        return interpolateColor(minColor, midColor, t);
-    }
-
-    if (clampedValue <= mid) {
-        const denominator = mid - min;
-        const t = denominator === 0 ? 0 : (clampedValue - min) / denominator;
-        return interpolateColor(minColor, midColor, t);
-    }
-
-    const denominator = max - mid;
-    const t = denominator === 0 ? 0 : (clampedValue - mid) / denominator;
-    return interpolateColor(midColor, maxColor, t);
-}
-
-function getScalePosition(rawValue, overrides = {}) {
-    const config = { ...DEFAULT_SCALE, ...overrides };
-    const value = toNumberOrNull(rawValue);
-
-    if (value === null) {
-        return null;
-    }
-
-    const min = config.min;
-    const max = config.max;
-
-    if (max === min) {
-        return 50;
-    }
-
-    const lowerBound = Math.min(min, max);
-    const upperBound = Math.max(min, max);
-    const clampedValue = clampValue(value, lowerBound, upperBound);
-
-    return ((clampedValue - min) / (max - min)) * 100;
-}
-
-function updatePointer(pointerId, rawValue, overrides = {}, extra = {}) {
-    const pointer = document.getElementById(pointerId);
-    if (!pointer) {
-        return;
-    }
-
-    const isMasterPointer = pointer.classList.contains('master-pointer');
-
-    const config = { ...DEFAULT_SCALE, ...overrides };
-    const value = toNumberOrNull(rawValue);
-    const position = getScalePosition(value, config);
-
-    if (value === null || position === null || Number.isNaN(position)) {
-        pointer.classList.add('hidden');
-        return;
-    }
-
-    pointer.classList.remove('hidden');
-
-    const anchor = extra.anchor ? Math.max(0, Math.min(100, extra.anchor)) : null;
-    if (isMasterPointer && typeof extra.top === 'number') {
-        pointer.style.top = `${extra.top}px`;
-    }
-
-    const basePosition = anchor !== null ? anchor : position;
-    const finalPosition =
-        typeof extra.offset === 'number'
-            ? basePosition + extra.offset
-            : basePosition;
-
-    pointer.dataset.scalePosition = position.toString();
-    pointer.style.left = `${Math.max(0, Math.min(100, finalPosition))}%`;
-
-    const color = getScaleColor(value, config);
-    if (isMasterPointer) {
-        pointer.style.borderBottomColor = 'transparent';
-        pointer.style.borderTopColor = 'transparent';
-    } else if (pointer.classList.contains('pointer-avg')) {
-        pointer.style.borderTopColor = color;
-        pointer.style.borderBottomColor = 'transparent';
-    } else {
-        pointer.style.borderBottomColor = color;
-        pointer.style.borderTopColor = 'transparent';
-    }
-
-    const label = isMasterPointer
-        ? pointer.querySelector('.master-pointer-badge')
-        : pointer.querySelector('.pointer-label');
-
-    if (label) {
-        const decimals = config.decimals ?? 2;
-        const clampedValue = clampValue(value, config.min, config.max);
-        const readableColor = getReadableTextColor(color);
-
-        if (isMasterPointer) {
-            label.style.backgroundColor = color;
-            label.style.color = readableColor;
-        } else {
-            const valueContainer = label.querySelector('.pointer-label-value');
-            const titleContainer = label.querySelector('.pointer-label-title');
-
-            if (valueContainer) {
-                valueContainer.textContent = clampedValue.toFixed(decimals);
-                valueContainer.style.color = readableColor;
-            } else {
-                label.textContent = clampedValue.toFixed(decimals);
-            }
-
-            if (titleContainer) {
-                titleContainer.style.color = readableColor;
-            }
-
-            label.style.backgroundColor = color;
-            label.style.color = readableColor;
-        }
-    }
-}
-
-function setTicker(elementId, rawValue, overrides = {}) {
-    const element = document.getElementById(elementId);
-    if (!element) {
-        return;
-    }
-
-    const config = { ...DEFAULT_SCALE, ...overrides };
-    const value = toNumberOrNull(rawValue);
-
-    if (value === null) {
-        element.textContent = '—';
-        element.style.backgroundColor = '#424242';
-        element.style.color = '#bdbdbd';
-        return;
-    }
-
-    const clampedValue = clampValue(value, config.min, config.max);
-    const decimals = config.decimals ?? 2;
-    const color = getScaleColor(clampedValue, config);
-
-    element.textContent = clampedValue.toFixed(decimals);
-    element.style.backgroundColor = color;
-    element.style.color = getReadableTextColor(color);
-}
-
+// Update group tickers based on HR values
 function updateGroupTickers(tabName, data) {
-    if (!data || !data.scoreBars) {
-        return;
-    }
-
-    const scoreBars = data.scoreBars;
-
     if (tabName === 'daily-controls') {
-        const sleepValue = toNumberOrNull(scoreBars.sleep && scoreBars.sleep.value);
-        setTicker('sleep-group-ticker', sleepValue);
-        updatePointer('sleep-category-pointer', sleepValue);
+        // Calculate sleep group ticker (multiply HR values in category)
+        let sleepHR = 1.0;
+        if (data.sleep && data.sleep.daily && data.sleep.daily.length > 0) {
+            // For sleep, we have consistencyScore and durationScore which are HR values
+            const latest = data.sleep.daily[0];
+            if (latest.consistencyScore) sleepHR *= latest.consistencyScore;
+            if (latest.durationScore) sleepHR *= latest.durationScore;
+        }
+        const sleepTicker = (sleepHR - 1) * 10;
+        const sleepTickerEl = document.getElementById('sleep-group-ticker');
+        sleepTickerEl.textContent = Math.round(sleepTicker);
+        const sleepColor = getColorForScore(sleepTicker);
+        sleepTickerEl.style.backgroundColor = sleepColor;
+        sleepTickerEl.style.color = getTextColorForBackground(sleepColor);
 
-        const aerobicValue = toNumberOrNull(scoreBars.aerobic && scoreBars.aerobic.value);
-        setTicker('aerobic-group-ticker', aerobicValue);
-        updatePointer('aerobic-category-pointer', aerobicValue);
+        // Update the sleep category pointer
+        updatePointer('sleep-category-pointer', sleepTicker);
 
-        const anaerobicValue = toNumberOrNull(scoreBars.anaerobic && scoreBars.anaerobic.value);
-        setTicker('anaerobic-group-ticker', anaerobicValue);
-        updatePointer('anaerobic-category-pointer', anaerobicValue);
+        // Calculate aerobic group ticker (multiply HR values in category)
+        let aerobicHR = 1.0;
+        if (data.steps && data.steps.daily && data.steps.daily.length > 0) {
+            const latest = data.steps.daily[0];
+            if (latest.hazardRatio) aerobicHR *= latest.hazardRatio;
+        }
+        if (data.heartRate && data.heartRate.daily && data.heartRate.daily.length > 0) {
+            const latest = data.heartRate.daily[0];
+            if (latest.hazardRatio) aerobicHR *= latest.hazardRatio;
+        }
+        const aerobicTicker = (aerobicHR - 1) * 10;
+        const aerobicTickerEl = document.getElementById('aerobic-group-ticker');
+        aerobicTickerEl.textContent = Math.round(aerobicTicker);
+        const aerobicColor = getColorForScore(aerobicTicker);
+        aerobicTickerEl.style.backgroundColor = aerobicColor;
+        aerobicTickerEl.style.color = getTextColorForBackground(aerobicColor);
+
+        // Update the aerobic category pointer
+        updatePointer('aerobic-category-pointer', aerobicTicker);
+
+        // Calculate anaerobic group ticker (multiply HR values in category)
+        let anaerobicHR = 1.0;
+        if (data.strength && data.strength.daily && data.strength.daily.length > 0) {
+            const latest = data.strength.daily[0];
+            if (latest.hrScore) anaerobicHR *= latest.hrScore;
+        }
+        const anaerobicTicker = (anaerobicHR - 1) * 10;
+        const anaerobicTickerEl = document.getElementById('anaerobic-group-ticker');
+        anaerobicTickerEl.textContent = Math.round(anaerobicTicker);
+        const anaerobicColor = getColorForScore(anaerobicTicker);
+        anaerobicTickerEl.style.backgroundColor = anaerobicColor;
+        anaerobicTickerEl.style.color = getTextColorForBackground(anaerobicColor);
+
+        // Update the anaerobic category pointer
+        updatePointer('anaerobic-category-pointer', anaerobicTicker);
+
     } else if (tabName === 'healthspan') {
-        const sleepValue = toNumberOrNull(scoreBars.sleep && scoreBars.sleep.value);
-        setTicker('healthspan-sleep-group-ticker', sleepValue);
-        updatePointer('healthspan-sleep-category-pointer', sleepValue);
-        updatePointer('healthspan-sleep-window-pointer', sleepValue);
-        updatePointer('healthspan-sleep-duration-pointer', sleepValue);
+        // Calculate healthspan group tickers (multiply HR values in category)
+        let sleepHR = 1.0;
+        if (data.sleep && data.sleep.daily && data.sleep.daily.length > 0) {
+            const latest = data.sleep.daily[0];
+            if (latest.consistencyScore) sleepHR *= latest.consistencyScore;
+            if (latest.durationScore) sleepHR *= latest.durationScore;
+        }
+        const sleepTicker = (sleepHR - 1) * 10;
+        const sleepTickerEl = document.getElementById('healthspan-sleep-group-ticker');
+        sleepTickerEl.textContent = Math.round(sleepTicker);
+        const sleepColor = getColorForScore(sleepTicker);
+        sleepTickerEl.style.backgroundColor = sleepColor;
+        sleepTickerEl.style.color = getTextColorForBackground(sleepColor);
 
-        const aerobicValue = toNumberOrNull(scoreBars.aerobic && scoreBars.aerobic.value);
-        setTicker('healthspan-aerobic-group-ticker', aerobicValue);
-        updatePointer('healthspan-aerobic-category-pointer', aerobicValue);
-        updatePointer('healthspan-vo2-pointer', aerobicValue);
-        updatePointer('healthspan-heart-rate-pointer', aerobicValue);
-        updatePointer('healthspan-rhr-pointer', aerobicValue);
+        // Update the sleep category pointer
+        updatePointer('healthspan-sleep-category-pointer', sleepTicker);
 
-        const stepsValue = toNumberOrNull(scoreBars.steps && scoreBars.steps.value);
-        updatePointer('healthspan-steps-pointer', stepsValue, STEP_SCALE);
-
-        const anaerobicValue = toNumberOrNull(scoreBars.anaerobic && scoreBars.anaerobic.value);
-        setTicker('healthspan-anaerobic-group-ticker', anaerobicValue);
-        updatePointer('healthspan-anaerobic-category-pointer', anaerobicValue);
-        updatePointer('healthspan-strength-pointer', anaerobicValue);
-        updatePointer('healthspan-body-comp-pointer', anaerobicValue);
-    }
-}
-
-function combinePointerOffsets(pointers) {
-    const MIN_SEPARATION_PCT = 3;
-
-    if (!Array.isArray(pointers) || pointers.length === 0) {
-        return {};
-    }
-
-    const sorted = pointers
-        .map((item, idx) => ({
-            id: item.id,
-            position: Math.max(0, Math.min(100, item.position)),
-            index: idx,
-        }))
-        .sort((a, b) => a.position - b.position);
-
-    const offsets = {};
-
-    for (let i = 0; i < sorted.length; i += 1) {
-        const current = sorted[i];
-        let offset = 0;
-
-        if (i > 0) {
-            const prev = sorted[i - 1];
-            const diff = current.position + offset - prev.position;
-            if (diff < MIN_SEPARATION_PCT) {
-                offset = prev.position + MIN_SEPARATION_PCT - current.position;
+        let aerobicHR = 1.0;
+        if (data.vo2 && data.vo2.daily && data.vo2.daily.length > 0) {
+            // VO2 data uses 'vo2' as the HR value
+            const latest = data.vo2.daily[0];
+            // Calculate HR from VO2 score if available
+            if (latest.vo2) {
+                // Reverse the score calculation: score = (hr - 1) * 10 => hr = score/10 + 1
+                const vo2HR = (data.vo2.latestScore || 0) / 10 + 1;
+                if (vo2HR !== 1) aerobicHR *= vo2HR;
             }
         }
+        if (data.steps && data.steps.daily && data.steps.daily.length > 0) {
+            const latest = data.steps.daily[0];
+            if (latest.hazardRatio) aerobicHR *= latest.hazardRatio;
+        }
+        if (data.heartRate && data.heartRate.daily && data.heartRate.daily.length > 0) {
+            const latest = data.heartRate.daily[0];
+            if (latest.hazardRatio) aerobicHR *= latest.hazardRatio;
+        }
+        if (data.rhr && data.rhr.daily && data.rhr.daily.length > 0) {
+            const latest = data.rhr.daily[0];
+            if (latest.hrScore) aerobicHR *= latest.hrScore;
+        }
+        const aerobicTicker = (aerobicHR - 1) * 10;
+        const aerobicTickerEl = document.getElementById('healthspan-aerobic-group-ticker');
+        aerobicTickerEl.textContent = Math.round(aerobicTicker);
+        const aerobicColor = getColorForScore(aerobicTicker);
+        aerobicTickerEl.style.backgroundColor = aerobicColor;
+        aerobicTickerEl.style.color = getTextColorForBackground(aerobicColor);
 
-        offsets[current.id] = offset;
+        // Update the aerobic category pointer
+        updatePointer('healthspan-aerobic-category-pointer', aerobicTicker);
+
+        let anaerobicHR = 1.0;
+        if (data.strength && data.strength.daily && data.strength.daily.length > 0) {
+            const latest = data.strength.daily[0];
+            if (latest.hrScore) anaerobicHR *= latest.hrScore;
+        }
+        if (data.bodyComp && data.bodyComp.daily && data.bodyComp.daily.length > 0) {
+            const latest = data.bodyComp.daily[0];
+            if (latest.hrScore) anaerobicHR *= latest.hrScore;
+        }
+        const anaerobicTicker = (anaerobicHR - 1) * 10;
+        const anaerobicTickerEl = document.getElementById('healthspan-anaerobic-group-ticker');
+        anaerobicTickerEl.textContent = Math.round(anaerobicTicker);
+        const anaerobicColor = getColorForScore(anaerobicTicker);
+        anaerobicTickerEl.style.backgroundColor = anaerobicColor;
+        anaerobicTickerEl.style.color = getTextColorForBackground(anaerobicColor);
+
+        // Update the anaerobic category pointer
+        updatePointer('healthspan-anaerobic-category-pointer', anaerobicTicker);
     }
-
-    return offsets;
-}
-
-function updateMasterScoreOverview(masterScore) {
-    const container = document.getElementById('master-score-overview');
-    if (!container) {
-        return;
-    }
-
-    const recentValue = toNumberOrNull(masterScore.recent);
-    const healthspanValue = toNumberOrNull(masterScore.healthspan);
-    const hasData = recentValue !== null || healthspanValue !== null;
-
-    container.style.display = hasData ? '' : 'none';
-
-    const pointerPositions = [];
-    if (recentValue !== null) {
-        pointerPositions.push({
-            id: 'master-recent-pointer',
-            position: getScalePosition(recentValue),
-        });
-    }
-    if (healthspanValue !== null) {
-        pointerPositions.push({
-            id: 'master-healthspan-pointer',
-            position: getScalePosition(healthspanValue),
-        });
-    }
-
-    const scaleWrapper = container.querySelector('.scale-wrapper');
-    const scaleBar = scaleWrapper?.querySelector('.score-scale-bar');
-    const barCenter =
-        scaleBar && scaleWrapper
-            ? scaleBar.offsetTop + scaleBar.offsetHeight / 2
-            : 6;
-
-    const offsets = combinePointerOffsets(pointerPositions);
-
-    const recentPointer = document.getElementById('master-recent-pointer');
-    const healthspanPointer = document.getElementById('master-healthspan-pointer');
-
-    if (recentPointer) {
-        recentPointer.innerHTML = '<div class="master-pointer-badge">R</div>';
-    }
-    if (healthspanPointer) {
-        healthspanPointer.innerHTML = '<div class="master-pointer-badge">HS</div>';
-    }
-
-    updatePointer('master-recent-pointer', recentValue, {}, {
-        top: barCenter,
-        anchor: pointerPositions.find(p => p.id === 'master-recent-pointer')
-            ?.position,
-        offset: offsets['master-recent-pointer'] || 0,
-    });
-    updatePointer('master-healthspan-pointer', healthspanValue, {}, {
-        top: barCenter,
-        anchor: pointerPositions.find(p => p.id === 'master-healthspan-pointer')
-            ?.position,
-        offset: offsets['master-healthspan-pointer'] || 0,
-    });
 }
 
 // Override the original initializeCharts to work with new structure
 function initializeCharts() {
     console.log('initializeCharts called for new unified report');
     console.log('chartData:', chartData);
-
-    if (chartData && chartData.masterScore) {
-        updateMasterScoreOverview(chartData.masterScore);
-    }
 
     // Destroy any existing charts first
     destroyAllCharts();
@@ -3977,6 +3603,48 @@ function createStrengthCharts(data) {
                 }
             }
         });
+    }
+}
+
+// Summary update functions for Daily Controls
+function updateSleepSummary(data) {
+    updatePointer('sleep-category-pointer', data.averageScore);
+}
+
+function updateAerobicSummary(data) {
+    updatePointer('aerobic-category-pointer', data.averageScore);
+}
+
+function updateAnaerobicSummary(data) {
+    updatePointer('anaerobic-category-pointer', data.averageScore);
+}
+
+// Helper function to update pointer positions
+function updatePointer(pointerId, score) {
+    const pointer = document.getElementById(pointerId);
+    if (pointer) {
+        const position = Math.max(0, Math.min(100, (score + 2) * 25));
+        pointer.style.left = `${position}%`;
+
+        // Use the same color function as the gradient scale
+        console.log('updatePointer called with:', pointerId, 'score:', score);
+        const color = getColorForScore(score);
+        console.log('getColorForScore returned color:', color);
+
+        // Set the correct border color based on pointer class
+        if (pointer.classList.contains('pointer-last')) {
+            console.log('Setting borderBottomColor to:', color);
+            pointer.style.borderBottomColor = color;
+        } else if (pointer.classList.contains('pointer-avg')) {
+            console.log('Setting borderTopColor to:', color);
+            pointer.style.borderTopColor = color;
+        }
+
+        // Update the label with the actual score value (rounded to 1 decimal)
+        const label = pointer.querySelector('.pointer-label');
+        if (label) {
+            label.textContent = score.toFixed(1);
+        }
     }
 }
 
@@ -4715,6 +4383,39 @@ function createHealthSpanBodyCompCharts(data) {
             }
         });
     }
+}
+
+// Summary update functions for HealthSpan
+function updateHealthSpanSleepSummary(data) {
+    // Update sleep window summary
+    updatePointer('healthspan-sleep-window-pointer', data.averageScore);
+
+    // Update sleep duration summary
+    updatePointer('healthspan-sleep-duration-pointer', data.averageScore);
+}
+
+function updateHealthSpanVO2Summary(data) {
+    updatePointer('healthspan-vo2-pointer', data.averageScore);
+}
+
+function updateHealthSpanStepsSummary(data) {
+    updatePointer('healthspan-steps-pointer', data.averageScore);
+}
+
+function updateHealthSpanHeartRateSummary(data) {
+    updatePointer('healthspan-heart-rate-pointer', data.averageScore);
+}
+
+function updateHealthSpanRHRSummary(data) {
+    updatePointer('healthspan-rhr-pointer', data.averageScore);
+}
+
+function updateHealthSpanStrengthSummary(data) {
+    updatePointer('healthspan-strength-pointer', data.averageScore);
+}
+
+function updateHealthSpanBodyCompSummary(data) {
+    updatePointer('healthspan-body-comp-pointer', data.averageScore);
 }
 
 // Add event listeners for tab switching
