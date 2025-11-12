@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Watch Wellness Report</title>
+    <title>Watch Wellness</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏥</text></svg>">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
@@ -46,27 +46,138 @@
 
         .scale-wrapper {
             position: relative;
-            height: 100%;
+            height: 80px;
             margin: 0 45px;
         }
 
-        .score-scale-bar { position: absolute; top: 50%; transform: translateY(-50%); width: 100%; height: 10px; border-radius: 5px; }
-        .scale-pointer { position: absolute; transform: translateX(-50%); width: 0; height: 0; border-left: 8px solid transparent; border-right: 8px solid transparent; }
-
-        .pointer-avg { top: 63px; border-top: 12px solid; }
-        .pointer-last { top: 5px; border-bottom: 12px solid; }
-
-        .pointer-label {
-            font-size: 0.8em;
-            color: #ccc;
-            background-color: rgba(0,0,0,0.8);
-            padding: 3px 6px;
-            border-radius: 4px;
-            white-space: nowrap;
+        .score-scale-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 12px;
+            border-radius: 6px;
         }
 
-        .pointer-avg .pointer-label { position: absolute; bottom: 14px; transform: translateX(-50%); }
-        .pointer-last .pointer-label { position: absolute; top: 14px; transform: translateX(-50%); }
+        .master-score-overview {
+            max-width: 900px;
+            width: 100%;
+            box-sizing: border-box;
+            padding: 0 20px;
+            margin: 56px auto 36px;
+        }
+
+        .scale-pointer {
+            position: absolute;
+            left: 0;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            pointer-events: none;
+            transition: left 0.2s ease;
+        }
+
+        .scale-pointer.hidden {
+            display: none;
+        }
+
+        .pointer-last {
+            top: 14px;
+            border-bottom: 12px solid #ffffff;
+            border-top: none;
+        }
+
+        .pointer-last .pointer-label {
+            position: absolute;
+            top: 12px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.75em;
+            color: #111;
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 4px 8px;
+            border-radius: 4px;
+            white-space: nowrap;
+            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+        }
+
+        .pointer-label-title {
+            font-size: 0.7em;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .pointer-label-value {
+            font-size: 0.95em;
+            font-weight: 600;
+        }
+
+        .pointer-label-circle {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7em;
+            font-weight: 700;
+            border: 2px solid #ffffff;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+        }
+
+        .master-pointer {
+            width: 26px;
+            height: 26px;
+            border: none;
+            top: 0;
+            transform: translate(-50%, -50%);
+        }
+
+        .master-pointer .master-pointer-badge {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7em;
+            font-weight: 700;
+            border: 2px solid #ffffff;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+            color: #111;
+            background-color: #ffffff;
+        }
+
+        .pointer-avg {
+            bottom: 14px;
+            top: auto;
+            border-bottom: none;
+            border-top: 12px solid #ffffff;
+        }
+
+        .pointer-avg .pointer-label {
+            position: absolute;
+            bottom: 12px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.75em;
+            color: #111;
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 4px 8px;
+            border-radius: 4px;
+            white-space: nowrap;
+            pointer-events: none;
+        }
 
         .details-container { display: none; flex-direction: column; gap: 30px; margin-top: 20px; }
         .details-container.visible { display: flex; }
@@ -84,11 +195,16 @@
 
         /* Group styling for new unified report */
         .metric-group {
-            margin-bottom: 40px;
-            border: 1px solid #333;
+            margin-bottom: 32px;
+            border: 2px solid #333;
             border-radius: 12px;
-            padding: 20px;
+            padding: 20px 20px 12px;
             background-color: #1a1a1a;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .daily-controls-group {
+            border-color: #3a3a3a;
         }
 
         .group-header {
@@ -159,10 +275,14 @@
 
         /* Gradient scale styling */
         .gradient-scale {
-            background: linear-gradient(to right, #FF0000 0%, #FF4040 12.5%, #FF8080 25%, #FFBFBF 37.5%, #FFFFFF 50%, #D0FFD0 62.5%, #A1FFA1 75%, #72FF72 87.5%, #43FF43 100%);
-            height: 8px;
-            border-radius: 4px;
+            background: linear-gradient(to right, #d32f2f 0%, #ffffff 50%, #43a047 100%);
+            height: 12px;
+            border-radius: 6px;
             position: relative;
+        }
+
+        .gradient-scale.gradient-steps {
+            background: linear-gradient(to right, #d32f2f 0%, #ffffff 100%);
         }
 
         .gradient-scale::before {
@@ -178,10 +298,10 @@
 
         /* Category summary styling */
         .category-summary {
-            padding: 20px;
+            padding: 12px 20px 16px;
             background-color: #1a1a1a;
             border-radius: 8px;
-            margin: 10px 0;
+            margin: 8px 0 6px;
         }
 
         .category-summary .score-scale-container {
@@ -196,6 +316,13 @@
             padding: 15px;
             background-color: #1a1a1a;
             border-radius: 8px;
+        }
+
+        .component-sliders.component-sliders-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            grid-column-gap: 20px;
+            grid-row-gap: 20px;
         }
 
         .component-slider {
@@ -216,7 +343,65 @@
 <body>
     <div class="container" id="main-container">
         
-<h1 style="text-align: center; font-size: 2.5em; margin-bottom: 30px;">Watch Wellness Report</h1>
+<style>
+    .report-title {
+        text-align: center;
+        font-size: 4.25em;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        margin: 0 0 28px;
+        padding-top: 24px;
+    }
+    .scale-marker-group {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        pointer-events: none;
+    }
+    .scale-marker {
+        position: absolute;
+        top: 6px;
+        transform: translate(-50%, -50%);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 30px;
+        height: 30px;
+        border-radius: 999px;
+        pointer-events: none;
+        font-weight: 700;
+        font-size: 0.75rem;
+        border: 2px solid rgba(255, 255, 255, 0.85);
+        box-shadow: 0 8px 22px rgba(0, 0, 0, 0.45);
+        background-color: #ffffff;
+        color: #111111;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+    }
+    .scale-marker.hidden {
+        display: none;
+    }
+    .marker-recent {
+        z-index: 1;
+    }
+    .marker-healthspan {
+        z-index: 2;
+    }
+</style>
+<h1 class="report-title">Watch Wellness</h1>
+
+<div id="master-score-overview" class="master-score-overview">
+    <div class="score-scale-container">
+        <div class="scale-wrapper">
+            <div class="score-scale-bar gradient-scale"></div>
+            <div class="scale-marker-group">
+                <div id="master-marker-recent" class="scale-marker marker-recent" data-label="R">R</div>
+                <div id="master-marker-healthspan" class="scale-marker marker-healthspan" data-label="HS">HS</div>
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- Navigation Buttons -->
 <div class="navigation-container" style="margin-bottom: 30px; text-align: center;">
@@ -231,7 +416,7 @@
     <!-- Daily Controls Tab -->
     <div id="daily-controls-content" class="tab-content active">
         <!-- Sleep Group -->
-        <div class="metric-group">
+        <div id="daily-controls-sleep-group" class="metric-group daily-controls-group" data-category="sleep">
             <div class="group-header" onclick="toggleGroup('sleep-group')">
                 <h2>Sleep 😴</h2>
                 <div class="group-ticker">
@@ -245,7 +430,10 @@
                 <div class="score-scale-container">
                     <div class="scale-wrapper">
                         <div class="score-scale-bar gradient-scale"></div>
-                        <div id="sleep-category-pointer" class="scale-pointer pointer-last"><div class="pointer-label">0.0</div></div>
+                        <div class="scale-marker-group">
+                            <div id="sleep-category-marker-recent" class="scale-marker marker-recent" data-label="R">R</div>
+                            <div id="sleep-category-marker-healthspan" class="scale-marker marker-healthspan" data-label="HS">HS</div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -274,7 +462,7 @@
         </div>
 
         <!-- Aerobic Group -->
-        <div class="metric-group">
+        <div id="daily-controls-aerobic-group" class="metric-group daily-controls-group" data-category="aerobic">
             <div class="group-header" onclick="toggleGroup('aerobic-group')">
                 <h2>Aerobic 🏃</h2>
                 <div class="group-ticker">
@@ -288,7 +476,10 @@
                 <div class="score-scale-container">
                     <div class="scale-wrapper">
                         <div class="score-scale-bar gradient-scale"></div>
-                        <div id="aerobic-category-pointer" class="scale-pointer pointer-last"><div class="pointer-label">0.0</div></div>
+                        <div class="scale-marker-group">
+                            <div id="aerobic-category-marker-recent" class="scale-marker marker-recent" data-label="R">R</div>
+                            <div id="aerobic-category-marker-healthspan" class="scale-marker marker-healthspan" data-label="HS">HS</div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -317,7 +508,7 @@
         </div>
 
         <!-- Anaerobic Group -->
-        <div class="metric-group">
+        <div id="daily-controls-anaerobic-group" class="metric-group daily-controls-group" data-category="anaerobic">
             <div class="group-header" onclick="toggleGroup('anaerobic-group')">
                 <h2>Anaerobic 💪</h2>
                 <div class="group-ticker">
@@ -331,7 +522,10 @@
                 <div class="score-scale-container">
                     <div class="scale-wrapper">
                         <div class="score-scale-bar gradient-scale"></div>
-                        <div id="anaerobic-category-pointer" class="scale-pointer pointer-last"><div class="pointer-label">0.0</div></div>
+                        <div class="scale-marker-group">
+                            <div id="anaerobic-category-marker-recent" class="scale-marker marker-recent" data-label="R">R</div>
+                            <div id="anaerobic-category-marker-healthspan" class="scale-marker marker-healthspan" data-label="HS">HS</div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -367,7 +561,10 @@
                 <div class="score-scale-container">
                     <div class="scale-wrapper">
                         <div class="score-scale-bar gradient-scale"></div>
-                        <div id="healthspan-sleep-category-pointer" class="scale-pointer pointer-last"><div class="pointer-label">0.0</div></div>
+                        <div class="scale-marker-group">
+                            <div id="healthspan-sleep-category-marker-recent" class="scale-marker marker-recent" data-label="R">R</div>
+                            <div id="healthspan-sleep-category-marker-healthspan" class="scale-marker marker-healthspan" data-label="HS">HS</div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -380,7 +577,10 @@
                         <div class="score-scale-container">
                             <div class="scale-wrapper">
                                 <div class="score-scale-bar gradient-scale"></div>
-                                <div id="healthspan-sleep-window-pointer" class="scale-pointer pointer-last"><div class="pointer-label">0.0</div></div>
+                                <div class="scale-marker-group">
+                                    <div id="healthspan-sleep-window-marker-recent" class="scale-marker marker-recent" data-label="R">R</div>
+                                    <div id="healthspan-sleep-window-marker-healthspan" class="scale-marker marker-healthspan" data-label="HS">HS</div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -389,7 +589,10 @@
                         <div class="score-scale-container">
                             <div class="scale-wrapper">
                                 <div class="score-scale-bar gradient-scale"></div>
-                                <div id="healthspan-sleep-duration-pointer" class="scale-pointer pointer-last"><div class="pointer-label">0.0</div></div>
+                                <div class="scale-marker-group">
+                                    <div id="healthspan-sleep-duration-marker-recent" class="scale-marker marker-recent" data-label="R">R</div>
+                                    <div id="healthspan-sleep-duration-marker-healthspan" class="scale-marker marker-healthspan" data-label="HS">HS</div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -434,38 +637,25 @@
                 <div class="score-scale-container">
                     <div class="scale-wrapper">
                         <div class="score-scale-bar gradient-scale"></div>
-                        <div id="healthspan-aerobic-category-pointer" class="scale-pointer pointer-last"><div class="pointer-label">0.0</div></div>
+                        <div class="scale-marker-group">
+                            <div id="healthspan-aerobic-category-marker-recent" class="scale-marker marker-recent" data-label="R">R</div>
+                            <div id="healthspan-aerobic-category-marker-healthspan" class="scale-marker marker-healthspan" data-label="HS">HS</div>
+                        </div>
                     </div>
                 </div>
             </div>
 
             <div id="healthspan-aerobic-group-content" class="group-content collapsed">
                 <!-- Individual component sliders when expanded -->
-                <div class="component-sliders">
+                <div class="component-sliders component-sliders-grid">
                     <div class="component-slider">
                         <h4>VO2 Max</h4>
                         <div class="score-scale-container">
                             <div class="scale-wrapper">
                                 <div class="score-scale-bar gradient-scale"></div>
-                                <div id="healthspan-vo2-pointer" class="scale-pointer pointer-last"><div class="pointer-label">0.0</div></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="component-slider">
-                        <h4>Steps</h4>
-                        <div class="score-scale-container">
-                            <div class="scale-wrapper">
-                                <div class="score-scale-bar gradient-scale"></div>
-                                <div id="healthspan-steps-pointer" class="scale-pointer pointer-last"><div class="pointer-label">0.0</div></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="component-slider">
-                        <h4>Heart Rate Activity</h4>
-                        <div class="score-scale-container">
-                            <div class="scale-wrapper">
-                                <div class="score-scale-bar gradient-scale"></div>
-                                <div id="healthspan-heart-rate-pointer" class="scale-pointer pointer-last"><div class="pointer-label">0.0</div></div>
+                                <div class="scale-marker-group">
+                                    <div id="healthspan-vo2-marker-healthspan" class="scale-marker marker-healthspan" data-label="HS">HS</div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -474,7 +664,33 @@
                         <div class="score-scale-container">
                             <div class="scale-wrapper">
                                 <div class="score-scale-bar gradient-scale"></div>
-                                <div id="healthspan-rhr-pointer" class="scale-pointer pointer-last"><div class="pointer-label">0.0</div></div>
+                                <div class="scale-marker-group">
+                                    <div id="healthspan-rhr-marker-healthspan" class="scale-marker marker-healthspan" data-label="HS">HS</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="component-slider">
+                        <h4>Heart Rate Activity</h4>
+                        <div class="score-scale-container">
+                            <div class="scale-wrapper">
+                                <div class="score-scale-bar gradient-scale"></div>
+                                <div class="scale-marker-group">
+                                    <div id="healthspan-heart-rate-marker-recent" class="scale-marker marker-recent" data-label="R">R</div>
+                                    <div id="healthspan-heart-rate-marker-healthspan" class="scale-marker marker-healthspan" data-label="HS">HS</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="component-slider">
+                        <h4>Steps</h4>
+                        <div class="score-scale-container">
+                            <div class="scale-wrapper">
+                                <div class="score-scale-bar gradient-scale gradient-steps"></div>
+                                <div class="scale-marker-group">
+                                    <div id="healthspan-steps-marker-recent" class="scale-marker marker-recent" data-label="R">R</div>
+                                    <div id="healthspan-steps-marker-healthspan" class="scale-marker marker-healthspan" data-label="HS">HS</div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -541,7 +757,10 @@
                 <div class="score-scale-container">
                     <div class="scale-wrapper">
                         <div class="score-scale-bar gradient-scale"></div>
-                        <div id="healthspan-anaerobic-category-pointer" class="scale-pointer pointer-last"><div class="pointer-label">0.0</div></div>
+                        <div class="scale-marker-group">
+                            <div id="healthspan-anaerobic-category-marker-recent" class="scale-marker marker-recent" data-label="R">R</div>
+                            <div id="healthspan-anaerobic-category-marker-healthspan" class="scale-marker marker-healthspan" data-label="HS">HS</div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -554,7 +773,10 @@
                         <div class="score-scale-container">
                             <div class="scale-wrapper">
                                 <div class="score-scale-bar gradient-scale"></div>
-                                <div id="healthspan-strength-pointer" class="scale-pointer pointer-last"><div class="pointer-label">0.0</div></div>
+                                <div class="scale-marker-group">
+                            <div id="healthspan-strength-marker-recent" class="scale-marker marker-recent" data-label="R">R</div>
+                                    <div id="healthspan-strength-marker-healthspan" class="scale-marker marker-healthspan" data-label="HS">HS</div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -563,7 +785,9 @@
                         <div class="score-scale-container">
                             <div class="scale-wrapper">
                                 <div class="score-scale-bar gradient-scale"></div>
-                                <div id="healthspan-body-comp-pointer" class="scale-pointer pointer-last"><div class="pointer-label">0.0</div></div>
+                                <div class="scale-marker-group">
+                                    <div id="healthspan-body-comp-marker-healthspan" class="scale-marker marker-healthspan" data-label="HS">HS</div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -609,6 +833,8 @@
                     "label": "Nov 11",
                     "consistencyScore": 0.95,
                     "durationScore": 0.93,
+                    "consistencyRescaled": 2.0,
+                    "durationRescaled": 2.0,
                     "consistencyColor": "#43a047",
                     "durationColor": "#43a047",
                     "sleepTime": "01:24",
@@ -622,6 +848,8 @@
                     "label": "Nov 10",
                     "consistencyScore": 0.95,
                     "durationScore": 0.9392105263157895,
+                    "consistencyRescaled": 2.0,
+                    "durationRescaled": 1.8684210526315792,
                     "consistencyColor": "#43a047",
                     "durationColor": "#43a047",
                     "sleepTime": "00:49",
@@ -635,6 +863,8 @@
                     "label": "Nov 09",
                     "consistencyScore": 0.95,
                     "durationScore": 0.93,
+                    "consistencyRescaled": 2.0,
+                    "durationRescaled": 2.0,
                     "consistencyColor": "#43a047",
                     "durationColor": "#43a047",
                     "sleepTime": "00:13",
@@ -648,6 +878,8 @@
                     "label": "Nov 08",
                     "consistencyScore": 0.9545669577874818,
                     "durationScore": 0.93,
+                    "consistencyRescaled": 1.9086608442503632,
+                    "durationRescaled": 2.0,
                     "consistencyColor": "#54a857",
                     "durationColor": "#43a047",
                     "sleepTime": "00:37",
@@ -661,6 +893,8 @@
                     "label": "Nov 07",
                     "consistencyScore": 0.9574478408539544,
                     "durationScore": 0.93,
+                    "consistencyRescaled": 1.8510431829209113,
+                    "durationRescaled": 2.0,
                     "consistencyColor": "#5fae62",
                     "durationColor": "#43a047",
                     "sleepTime": "00:53",
@@ -674,6 +908,8 @@
                     "label": "Nov 06",
                     "consistencyScore": 0.9765274494352507,
                     "durationScore": 0.93,
+                    "consistencyRescaled": 1.4694510112949852,
+                    "durationRescaled": 2.0,
                     "consistencyColor": "#a6d2a8",
                     "durationColor": "#43a047",
                     "sleepTime": "01:03",
@@ -687,6 +923,8 @@
                     "label": "Nov 05",
                     "consistencyScore": 0.959570596797671,
                     "durationScore": 0.93,
+                    "consistencyRescaled": 1.8085880640465797,
+                    "durationRescaled": 2.0,
                     "consistencyColor": "#66b26a",
                     "durationColor": "#43a047",
                     "sleepTime": "23:57",
@@ -729,6 +967,7 @@
                     "dailySteps": 13496,
                     "rollingAvgSteps": 14957,
                     "hazardRatio": 1.0,
+                    "hazardRatioRescaled": 1.0,
                     "hrColor": "#ffffff",
                     "hasData": true
                 },
@@ -737,6 +976,7 @@
                     "dailySteps": 15520,
                     "rollingAvgSteps": 15674,
                     "hazardRatio": 1.0,
+                    "hazardRatioRescaled": 1.0,
                     "hrColor": "#ffffff",
                     "hasData": true
                 },
@@ -745,6 +985,7 @@
                     "dailySteps": 22975,
                     "rollingAvgSteps": 14857,
                     "hazardRatio": 1.0,
+                    "hazardRatioRescaled": 1.0,
                     "hrColor": "#ffffff",
                     "hasData": true
                 },
@@ -753,6 +994,7 @@
                     "dailySteps": 26764,
                     "rollingAvgSteps": 15052,
                     "hazardRatio": 1.0,
+                    "hazardRatioRescaled": 1.0,
                     "hrColor": "#ffffff",
                     "hasData": true
                 },
@@ -761,6 +1003,7 @@
                     "dailySteps": 7592,
                     "rollingAvgSteps": 12463,
                     "hazardRatio": 1.0,
+                    "hazardRatioRescaled": 1.0,
                     "hrColor": "#ffffff",
                     "hasData": true
                 },
@@ -769,6 +1012,7 @@
                     "dailySteps": 11378,
                     "rollingAvgSteps": 12254,
                     "hazardRatio": 1.0,
+                    "hazardRatioRescaled": 1.0,
                     "hrColor": "#ffffff",
                     "hasData": true
                 },
@@ -777,6 +1021,7 @@
                     "dailySteps": 6979,
                     "rollingAvgSteps": 12223,
                     "hazardRatio": 1.0,
+                    "hazardRatioRescaled": 1.0,
                     "hrColor": "#ffffff",
                     "hasData": true
                 }
@@ -815,6 +1060,7 @@
                     "adjVpaTime": 30.0,
                     "rolling7Day": 96.0,
                     "hazardRatio": 1.0070588235294118,
+                    "hazardRatioRescaled": 0.9693094629156009,
                     "restingHR": 51.0,
                     "maxHR": 195.0,
                     "hrReserve": 144.0,
@@ -870,6 +1116,7 @@
                     "adjVpaTime": 43.0,
                     "rolling7Day": 78.0,
                     "hazardRatio": 1.0245794392523364,
+                    "hazardRatioRescaled": 0.8931328728159287,
                     "restingHR": 45.0,
                     "maxHR": 195.0,
                     "hrReserve": 150.0,
@@ -925,6 +1172,7 @@
                     "adjVpaTime": 0.0,
                     "rolling7Day": 46.0,
                     "hazardRatio": 1.0604672897196261,
+                    "hazardRatioRescaled": 0.7370987403494516,
                     "restingHR": 47.0,
                     "maxHR": 195.0,
                     "hrReserve": 148.0,
@@ -980,6 +1228,7 @@
                     "adjVpaTime": 0.0,
                     "rolling7Day": 74.0,
                     "hazardRatio": 1.0290654205607477,
+                    "hazardRatioRescaled": 0.8736286062576188,
                     "restingHR": 45.0,
                     "maxHR": 195.0,
                     "hrReserve": 150.0,
@@ -1035,6 +1284,7 @@
                     "adjVpaTime": 0.0,
                     "rolling7Day": 74.0,
                     "hazardRatio": 1.0290654205607477,
+                    "hazardRatioRescaled": 0.8736286062576188,
                     "restingHR": 46.0,
                     "maxHR": 195.0,
                     "hrReserve": 149.0,
@@ -1090,6 +1340,7 @@
                     "adjVpaTime": 22.0,
                     "rolling7Day": 78.0,
                     "hazardRatio": 1.0245794392523364,
+                    "hazardRatioRescaled": 0.8931328728159287,
                     "restingHR": 45.0,
                     "maxHR": 195.0,
                     "hrReserve": 150.0,
@@ -1145,6 +1396,7 @@
                     "adjVpaTime": 1.0,
                     "rolling7Day": 73.0,
                     "hazardRatio": 1.0301869158878505,
+                    "hazardRatioRescaled": 0.8687525396180413,
                     "restingHR": 49.0,
                     "maxHR": 195.0,
                     "hrReserve": 146.0,
@@ -1226,6 +1478,7 @@
                     "dailyDuration": 29.709950764973957,
                     "weeklySum": 180.77364908854167,
                     "hrScore": 0.9712812096974206,
+                    "hrRescaled": 1.7179697575644843,
                     "hrColor": "#93c895",
                     "hasData": true
                 },
@@ -1234,6 +1487,7 @@
                     "dailyDuration": 44.24998372395833,
                     "weeklySum": 190.2819803873698,
                     "hrScore": 0.9694700989738343,
+                    "hrRescaled": 1.763247525654142,
                     "hrColor": "#8cc48e",
                     "hasData": true
                 },
@@ -1242,6 +1496,7 @@
                     "dailyDuration": 0.0,
                     "weeklySum": 192.46426391601565,
                     "hrScore": 0.9690544259207589,
+                    "hrRescaled": 1.7736393519810278,
                     "hrColor": "#8ac48d",
                     "hasData": true
                 },
@@ -1250,6 +1505,7 @@
                     "dailyDuration": 0.0,
                     "weeklySum": 192.46426391601565,
                     "hrScore": 0.9690544259207589,
+                    "hrRescaled": 1.7736393519810278,
                     "hrColor": "#8ac48d",
                     "hasData": true
                 },
@@ -1258,6 +1514,7 @@
                     "dailyDuration": 50.953348795572914,
                     "weeklySum": 192.46426391601565,
                     "hrScore": 0.9690544259207589,
+                    "hrRescaled": 1.7736393519810278,
                     "hrColor": "#8ac48d",
                     "hasData": true
                 },
@@ -1266,6 +1523,7 @@
                     "dailyDuration": 34.5517822265625,
                     "weeklySum": 195.0982157389323,
                     "hrScore": 0.9685527208116319,
+                    "hrRescaled": 1.7861819797092016,
                     "hrColor": "#88c38b",
                     "hasData": true
                 },
@@ -1274,6 +1532,7 @@
                     "dailyDuration": 21.308583577473957,
                     "weeklySum": 197.63773396809898,
                     "hrScore": 0.9680690030536954,
+                    "hrRescaled": 1.7982749236576152,
                     "hrColor": "#86c289",
                     "hasData": true
                 }
@@ -1300,6 +1559,94 @@
                     "color": "#388e3c"
                 }
             ]
+        },
+        "scoreBars": {
+            "sleep": {
+                "recent": {
+                    "value": 1.0632933629980463,
+                    "displayValue": 1.0472525650335238
+                },
+                "healthspan": {
+                    "value": 1.2716577766317214,
+                    "displayValue": 0.9897963730964704
+                },
+                "showRecent": true,
+                "showHealthspan": true,
+                "source": "SleepHRsRescaled",
+                "displaySource": "SleepHRs",
+                "components": {
+                    "consistency": {
+                        "recent": {
+                            "value": 1.0179507766884528,
+                            "displayValue": 1.0887985107267444
+                        },
+                        "healthspan": {
+                            "value": 1.28499709693414,
+                            "displayValue": 1.0263909389171844
+                        },
+                        "showRecent": true,
+                        "showHealthspan": true,
+                        "source": "SleepHRsRescaled",
+                        "displaySource": "SleepHRs"
+                    },
+                    "duration": {
+                        "recent": {
+                            "value": 1.6304533517435564,
+                            "displayValue": 0.9600848291639593
+                        },
+                        "healthspan": {
+                            "value": 1.5798127982792232,
+                            "displayValue": 0.9635606136989985
+                        },
+                        "showRecent": true,
+                        "showHealthspan": true,
+                        "source": "SleepHRsRescaled",
+                        "displaySource": "SleepHRs"
+                    }
+                }
+            },
+            "aerobic": {
+                "recent": {
+                    "value": 1.5053034744029365,
+                    "displayValue": 0.6018013711620576
+                },
+                "healthspan": {
+                    "value": 1.793779056288935,
+                    "displayValue": 0.5510853458473217
+                },
+                "showRecent": true,
+                "showHealthspan": true,
+                "source": "AerobicHRsRescaled",
+                "displaySource": "AerobicHRs"
+            },
+            "anaerobic": {
+                "recent": {
+                    "value": 1.5074292586989047,
+                    "displayValue": 0.8989604210769492
+                },
+                "healthspan": {
+                    "value": 1.2772819117063066,
+                    "displayValue": 0.9486091311143005
+                },
+                "showRecent": true,
+                "showHealthspan": true,
+                "source": "AnaerobicHRsRescaled",
+                "displaySource": "AnaerobicHRs"
+            },
+            "steps": {
+                "recent": {
+                    "value": 1.0,
+                    "displayValue": 1.0
+                },
+                "healthspan": {
+                    "value": 0.9873941381053484,
+                    "displayValue": 0.9873941381053484
+                },
+                "showRecent": true,
+                "showHealthspan": true,
+                "source": "StepsDaily",
+                "displaySource": "StepsDaily"
+            }
         }
     },
     "healthspan": {
@@ -1311,6 +1658,8 @@
                     "label": "Week of Nov 03",
                     "consistencyScore": 1.0555209155913958,
                     "durationScore": 0.93,
+                    "consistencyRescaled": 1.0231101285196742,
+                    "durationRescaled": 2.0,
                     "consistencyColor": "#e53935",
                     "durationColor": "#43a047",
                     "sleepTime": "23:57",
@@ -1324,6 +1673,8 @@
                     "label": "Week of Oct 27",
                     "consistencyScore": 1.1339142374313478,
                     "durationScore": 0.9491066468253969,
+                    "consistencyRescaled": 0.7564287438676357,
+                    "durationRescaled": 1.774355158730159,
                     "consistencyColor": "#e53935",
                     "durationColor": "#43a047",
                     "sleepTime": "23:46",
@@ -1337,6 +1688,8 @@
                     "label": "Week of Oct 20",
                     "consistencyScore": 1.0635530538861098,
                     "durationScore": 0.9538680555555556,
+                    "consistencyRescaled": 1.1805169193405909,
+                    "durationRescaled": 1.6618055555555558,
                     "consistencyColor": "#e53935",
                     "durationColor": "#51a755",
                     "sleepTime": "23:34",
@@ -1350,6 +1703,8 @@
                     "label": "Week of Oct 13",
                     "consistencyScore": 1.2347473618870268,
                     "durationScore": 1.035225,
+                    "consistencyRescaled": 0.16161656468919028,
+                    "durationRescaled": 0.7525000000000002,
                     "consistencyColor": "#e53935",
                     "durationColor": "#ec7370",
                     "sleepTime": "18:44",
@@ -1363,6 +1718,8 @@
                     "label": "Week of Oct 06",
                     "consistencyScore": 1.0960102547774386,
                     "durationScore": 1.0028690476190476,
+                    "consistencyRescaled": 0.8525705904420017,
+                    "durationRescaled": 1.129761904761905,
                     "consistencyColor": "#e53935",
                     "durationColor": "#fdf3f3",
                     "sleepTime": "19:35",
@@ -1376,6 +1733,8 @@
                     "label": "Week of Sep 29",
                     "consistencyScore": 0.9600954913447899,
                     "durationScore": 0.9676256265664162,
+                    "consistencyRescaled": 1.824050724922693,
+                    "durationRescaled": 1.5403822055137844,
                     "consistencyColor": "#68b36c",
                     "durationColor": "#85c187",
                     "sleepTime": "23:14",
@@ -1389,6 +1748,8 @@
                     "label": "Week of Sep 22",
                     "consistencyScore": 1.0291336276680638,
                     "durationScore": 0.9478947368421053,
+                    "consistencyRescaled": 1.2968420091177058,
+                    "durationRescaled": 1.7443609022556392,
                     "consistencyColor": "#ef8b89",
                     "durationColor": "#43a047",
                     "sleepTime": "00:00",
@@ -1402,6 +1763,8 @@
                     "label": "Week of Sep 15",
                     "consistencyScore": 1.08071682540937,
                     "durationScore": 0.9834440789473685,
+                    "consistencyRescaled": 1.0023974044962336,
+                    "durationRescaled": 1.350402046783626,
                     "consistencyColor": "#e53935",
                     "durationColor": "#c0dfc2",
                     "sleepTime": "23:23",
@@ -1415,6 +1778,8 @@
                     "label": "Week of Sep 08",
                     "consistencyScore": 0.9901752927006611,
                     "durationScore": 0.9557142857142857,
+                    "consistencyRescaled": 1.420057910412474,
+                    "durationRescaled": 1.7142857142857142,
                     "consistencyColor": "#daecda",
                     "durationColor": "#58aa5c",
                     "sleepTime": "23:49",
@@ -1428,6 +1793,8 @@
                     "label": "Week of Sep 01",
                     "consistencyScore": 0.9659199760234168,
                     "durationScore": 0.9913452380952382,
+                    "consistencyRescaled": 1.681600479531664,
+                    "durationRescaled": 1.2345238095238096,
                     "consistencyColor": "#7ebe81",
                     "durationColor": "#deeedf",
                     "sleepTime": "00:32",
@@ -1441,6 +1808,8 @@
                     "label": "Week of Aug 25",
                     "consistencyScore": 0.9757496990241373,
                     "durationScore": 0.9500000000000001,
+                    "consistencyRescaled": 1.6279784412606249,
+                    "durationRescaled": 1.7142857142857142,
                     "consistencyColor": "#a3d0a5",
                     "durationColor": "#43a047",
                     "sleepTime": "00:06",
@@ -1454,6 +1823,8 @@
                     "label": "Week of Aug 18",
                     "consistencyScore": 0.9890892874406938,
                     "durationScore": 0.9538680555555556,
+                    "consistencyRescaled": 1.5124872552356636,
+                    "durationRescaled": 1.6618055555555558,
                     "consistencyColor": "#d5ead6",
                     "durationColor": "#51a755",
                     "sleepTime": "23:19",
@@ -1467,6 +1838,8 @@
                     "label": "Week of Aug 11",
                     "consistencyScore": 0.9795926610946181,
                     "durationScore": 0.9657142857142859,
+                    "consistencyRescaled": 1.4345735126748358,
+                    "durationRescaled": 1.5714285714285714,
                     "consistencyColor": "#b2d8b3",
                     "durationColor": "#7ebd80",
                     "sleepTime": "23:02",
@@ -1480,6 +1853,8 @@
                     "label": "Week of Aug 04",
                     "consistencyScore": 0.9610753727783521,
                     "durationScore": 0.9496491228070176,
+                    "consistencyRescaled": 1.7784925444329578,
+                    "durationRescaled": 1.7192982456140347,
                     "consistencyColor": "#6cb56f",
                     "durationColor": "#43a047",
                     "sleepTime": "00:10",
@@ -1493,6 +1868,8 @@
                     "label": "Week of Jul 28",
                     "consistencyScore": 1.0833987870086286,
                     "durationScore": 0.9400000000000001,
+                    "consistencyRescaled": 0.9538908264794379,
+                    "durationRescaled": 1.8571428571428572,
                     "consistencyColor": "#e53935",
                     "durationColor": "#43a047",
                     "sleepTime": "23:43",
@@ -1506,6 +1883,8 @@
                     "label": "Week of Jul 21",
                     "consistencyScore": 1.0872610095719577,
                     "durationScore": 1.0071428571428573,
+                    "consistencyRescaled": 0.6883535372430084,
+                    "durationRescaled": 1.1428571428571428,
                     "consistencyColor": "#e53935",
                     "durationColor": "#fbe2e2",
                     "sleepTime": "22:39",
@@ -1519,6 +1898,8 @@
                     "label": "Week of Jul 14",
                     "consistencyScore": 1.1223298005637854,
                     "durationScore": 0.9983458646616541,
+                    "consistencyRescaled": 0.6878362718796396,
+                    "durationRescaled": 1.1052631578947367,
                     "consistencyColor": "#e53935",
                     "durationColor": "#f8fbf8",
                     "sleepTime": "20:24",
@@ -1532,6 +1913,8 @@
                     "label": "Week of Jul 07",
                     "consistencyScore": 0.983771771150855,
                     "durationScore": 0.9461403508771931,
+                    "consistencyRescaled": 1.4274744187594606,
+                    "durationRescaled": 1.7694235588972431,
                     "consistencyColor": "#c1e0c3",
                     "durationColor": "#43a047",
                     "sleepTime": "23:30",
@@ -1545,6 +1928,8 @@
                     "label": "Week of Jun 30",
                     "consistencyScore": 1.0138925995812498,
                     "durationScore": 0.9583458646616542,
+                    "consistencyRescaled": 1.2723245386524868,
+                    "durationRescaled": 1.6766917293233081,
                     "consistencyColor": "#f7c7c6",
                     "durationColor": "#62af65",
                     "sleepTime": "23:07",
@@ -1558,6 +1943,8 @@
                     "label": "Week of Jun 23",
                     "consistencyScore": 1.003580227659558,
                     "durationScore": 0.9400000000000001,
+                    "consistencyRescaled": 1.585538303951696,
+                    "durationRescaled": 1.8571428571428572,
                     "consistencyColor": "#fdf0f0",
                     "durationColor": "#43a047",
                     "sleepTime": "23:17",
@@ -1571,6 +1958,8 @@
                     "label": "Week of Jun 16",
                     "consistencyScore": 1.0981836650105865,
                     "durationScore": 0.9533333333333335,
+                    "consistencyRescaled": 0.8715734960141535,
+                    "durationRescaled": 1.6666666666666667,
                     "consistencyColor": "#e53935",
                     "durationColor": "#4fa653",
                     "sleepTime": "23:11",
@@ -1584,6 +1973,8 @@
                     "label": "Week of Jun 09",
                     "consistencyScore": 1.020672108991353,
                     "durationScore": 0.9827870718462824,
+                    "consistencyRescaled": 1.0220829738303547,
+                    "durationRescaled": 1.346919381787803,
                     "consistencyColor": "#f4adab",
                     "durationColor": "#bedebf",
                     "sleepTime": "23:26",
@@ -1597,6 +1988,8 @@
                     "label": "Week of Jun 02",
                     "consistencyScore": 0.9660156803937193,
                     "durationScore": 0.9808814484126984,
+                    "consistencyRescaled": 1.6796863921256135,
+                    "durationRescaled": 1.3815972222222221,
                     "consistencyColor": "#7fbe81",
                     "durationColor": "#b7dab8",
                     "sleepTime": "00:05",
@@ -1781,6 +2174,7 @@
                     "dailySteps": 11763,
                     "rollingAvgSteps": 12012,
                     "hazardRatio": 1.0,
+                    "hazardRatioRescaled": 1.0,
                     "hrColor": "#ffffff",
                     "hasData": true
                 },
@@ -1789,6 +2183,7 @@
                     "dailySteps": 11286,
                     "rollingAvgSteps": 7555,
                     "hazardRatio": 1.2018804761904762,
+                    "hazardRatioRescaled": 0.8654130158730159,
                     "hrColor": "#e53935",
                     "hasData": true
                 },
@@ -1797,6 +2192,7 @@
                     "dailySteps": 5283,
                     "rollingAvgSteps": 7285,
                     "hazardRatio": 1.1826683673469387,
+                    "hazardRatioRescaled": 0.8782210884353742,
                     "hrColor": "#e53935",
                     "hasData": true
                 },
@@ -1805,6 +2201,7 @@
                     "dailySteps": 8638,
                     "rollingAvgSteps": 8775,
                     "hazardRatio": 1.027299081632653,
+                    "hazardRatioRescaled": 0.981800612244898,
                     "hrColor": "#f09290",
                     "hasData": true
                 },
@@ -1813,6 +2210,7 @@
                     "dailySteps": 10446,
                     "rollingAvgSteps": 12707,
                     "hazardRatio": 1.0,
+                    "hazardRatioRescaled": 1.0,
                     "hrColor": "#ffffff",
                     "hasData": true
                 },
@@ -1821,6 +2219,7 @@
                     "dailySteps": 15301,
                     "rollingAvgSteps": 14424,
                     "hazardRatio": 1.0,
+                    "hazardRatioRescaled": 1.0,
                     "hrColor": "#ffffff",
                     "hasData": true
                 },
@@ -1829,6 +2228,7 @@
                     "dailySteps": 12743,
                     "rollingAvgSteps": 12281,
                     "hazardRatio": 1.0,
+                    "hazardRatioRescaled": 1.0,
                     "hrColor": "#ffffff",
                     "hasData": true
                 },
@@ -1837,6 +2237,7 @@
                     "dailySteps": 9667,
                     "rollingAvgSteps": 9301,
                     "hazardRatio": 1.0122492857142857,
+                    "hazardRatioRescaled": 0.9918338095238095,
                     "hrColor": "#f8cecd",
                     "hasData": true
                 },
@@ -1845,6 +2246,7 @@
                     "dailySteps": 9254,
                     "rollingAvgSteps": 12636,
                     "hazardRatio": 1.0,
+                    "hazardRatioRescaled": 1.0,
                     "hrColor": "#ffffff",
                     "hasData": true
                 },
@@ -1853,6 +2255,7 @@
                     "dailySteps": 18686,
                     "rollingAvgSteps": 17102,
                     "hazardRatio": 1.0,
+                    "hazardRatioRescaled": 1.0,
                     "hrColor": "#ffffff",
                     "hasData": true
                 },
@@ -1861,6 +2264,7 @@
                     "dailySteps": 14834,
                     "rollingAvgSteps": 18858,
                     "hazardRatio": 1.0,
+                    "hazardRatioRescaled": 1.0,
                     "hrColor": "#ffffff",
                     "hasData": true
                 },
@@ -1869,6 +2273,7 @@
                     "dailySteps": 20489,
                     "rollingAvgSteps": 16401,
                     "hazardRatio": 1.0,
+                    "hazardRatioRescaled": 1.0,
                     "hrColor": "#ffffff",
                     "hasData": true
                 },
@@ -1877,6 +2282,7 @@
                     "dailySteps": 13915,
                     "rollingAvgSteps": 14646,
                     "hazardRatio": 1.0,
+                    "hazardRatioRescaled": 1.0,
                     "hrColor": "#ffffff",
                     "hasData": true
                 },
@@ -1885,6 +2291,7 @@
                     "dailySteps": 15771,
                     "rollingAvgSteps": 14926,
                     "hazardRatio": 1.0,
+                    "hazardRatioRescaled": 1.0,
                     "hrColor": "#ffffff",
                     "hasData": true
                 },
@@ -1893,6 +2300,7 @@
                     "dailySteps": 12878,
                     "rollingAvgSteps": 12134,
                     "hazardRatio": 1.0,
+                    "hazardRatioRescaled": 1.0,
                     "hrColor": "#ffffff",
                     "hasData": true
                 },
@@ -1901,6 +2309,7 @@
                     "dailySteps": 10218,
                     "rollingAvgSteps": 11644,
                     "hazardRatio": 1.0,
+                    "hazardRatioRescaled": 1.0,
                     "hrColor": "#ffffff",
                     "hasData": true
                 },
@@ -1909,6 +2318,7 @@
                     "dailySteps": 14240,
                     "rollingAvgSteps": 14467,
                     "hazardRatio": 1.0,
+                    "hazardRatioRescaled": 1.0,
                     "hrColor": "#ffffff",
                     "hasData": true
                 },
@@ -1917,6 +2327,7 @@
                     "dailySteps": 16868,
                     "rollingAvgSteps": 17436,
                     "hazardRatio": 1.0,
+                    "hazardRatioRescaled": 1.0,
                     "hrColor": "#ffffff",
                     "hasData": true
                 },
@@ -1925,6 +2336,7 @@
                     "dailySteps": 16288,
                     "rollingAvgSteps": 15748,
                     "hazardRatio": 1.0,
+                    "hazardRatioRescaled": 1.0,
                     "hrColor": "#ffffff",
                     "hasData": true
                 },
@@ -1933,6 +2345,7 @@
                     "dailySteps": 16056,
                     "rollingAvgSteps": 18803,
                     "hazardRatio": 1.0,
+                    "hazardRatioRescaled": 1.0,
                     "hrColor": "#ffffff",
                     "hasData": true
                 },
@@ -1941,6 +2354,7 @@
                     "dailySteps": 19687,
                     "rollingAvgSteps": 15409,
                     "hazardRatio": 1.0,
+                    "hazardRatioRescaled": 1.0,
                     "hrColor": "#ffffff",
                     "hasData": true
                 },
@@ -1949,6 +2363,7 @@
                     "dailySteps": 11575,
                     "rollingAvgSteps": 12803,
                     "hazardRatio": 1.0,
+                    "hazardRatioRescaled": 1.0,
                     "hrColor": "#ffffff",
                     "hasData": true
                 },
@@ -1957,6 +2372,7 @@
                     "dailySteps": 14008,
                     "rollingAvgSteps": 14381,
                     "hazardRatio": 1.0,
+                    "hazardRatioRescaled": 1.0,
                     "hrColor": "#ffffff",
                     "hasData": true
                 }
@@ -1995,6 +2411,7 @@
                     "adjVpaTime": 24.0,
                     "rolling7Day": 82.33333333333333,
                     "hazardRatio": 1.0207861462341947,
+                    "hazardRatioRescaled": 0.9096254511556755,
                     "restingHR": 48.0,
                     "maxHR": 195.0,
                     "hrReserve": 147.0,
@@ -2008,6 +2425,7 @@
                     "adjVpaTime": 86.0,
                     "rolling7Day": 54.714285714285715,
                     "hazardRatio": 1.0547380507343125,
+                    "hazardRatioRescaled": 0.7620084750682068,
                     "restingHR": 46.714285714285715,
                     "maxHR": 195.0,
                     "hrReserve": 148.28571428571428,
@@ -2021,6 +2439,7 @@
                     "adjVpaTime": 29.0,
                     "rolling7Day": 30.142857142857142,
                     "hazardRatio": 1.1063328882955052,
+                    "hazardRatioRescaled": 0.5376830943673687,
                     "restingHR": 50.142857142857146,
                     "maxHR": 195.0,
                     "hrReserve": 144.85714285714286,
@@ -2034,6 +2453,7 @@
                     "adjVpaTime": 25.0,
                     "rolling7Day": 62.142857142857146,
                     "hazardRatio": 1.0535959056519804,
+                    "hazardRatioRescaled": 0.7669743232522591,
                     "restingHR": 52.857142857142854,
                     "maxHR": 195.0,
                     "hrReserve": 142.14285714285714,
@@ -2047,6 +2467,7 @@
                     "adjVpaTime": 118.0,
                     "rolling7Day": 116.85714285714286,
                     "hazardRatio": 0.9987682155990779,
+                    "hazardRatioRescaled": 1.0503472906707731,
                     "restingHR": 48.285714285714285,
                     "maxHR": 195.0,
                     "hrReserve": 146.71428571428572,
@@ -2060,6 +2481,7 @@
                     "adjVpaTime": 143.0,
                     "rolling7Day": 124.85714285714286,
                     "hazardRatio": 0.9925974600366462,
+                    "hazardRatioRescaled": 1.082818787316605,
                     "restingHR": 48.0,
                     "maxHR": 195.0,
                     "hrReserve": 147.0,
@@ -2073,6 +2495,7 @@
                     "adjVpaTime": 152.0,
                     "rolling7Day": 155.14285714285714,
                     "hazardRatio": 0.9844253490870033,
+                    "hazardRatioRescaled": 1.1730516768110757,
                     "restingHR": 47.42857142857143,
                     "maxHR": 195.0,
                     "hrReserve": 147.57142857142858,
@@ -2086,6 +2509,7 @@
                     "adjVpaTime": 74.0,
                     "rolling7Day": 65.14285714285714,
                     "hazardRatio": 1.0394557449147883,
+                    "hazardRatioRescaled": 0.8284532829791809,
                     "restingHR": 49.42857142857143,
                     "maxHR": 195.0,
                     "hrReserve": 145.57142857142858,
@@ -2099,6 +2523,7 @@
                     "adjVpaTime": 62.0,
                     "rolling7Day": 139.28571428571428,
                     "hazardRatio": 0.9943848272215919,
+                    "hazardRatioRescaled": 1.1034761849639354,
                     "restingHR": 47.42857142857143,
                     "maxHR": 195.0,
                     "hrReserve": 147.57142857142858,
@@ -2112,6 +2537,7 @@
                     "adjVpaTime": 255.0,
                     "rolling7Day": 237.85714285714286,
                     "hazardRatio": 0.9654731562562581,
+                    "hazardRatioRescaled": 1.3836315971526887,
                     "restingHR": 48.285714285714285,
                     "maxHR": 195.0,
                     "hrReserve": 146.71428571428572,
@@ -2125,6 +2551,7 @@
                     "adjVpaTime": 194.0,
                     "rolling7Day": 162.42857142857142,
                     "hazardRatio": 0.9824597207303974,
+                    "hazardRatioRescaled": 1.1948919918844734,
                     "restingHR": 47.142857142857146,
                     "maxHR": 195.0,
                     "hrReserve": 147.85714285714286,
@@ -2138,6 +2565,7 @@
                     "adjVpaTime": 139.0,
                     "rolling7Day": 134.0,
                     "hazardRatio": 0.9920002846195045,
+                    "hazardRatioRescaled": 1.1051021005791768,
                     "restingHR": 47.0,
                     "maxHR": 195.0,
                     "hrReserve": 148.0,
@@ -2151,6 +2579,7 @@
                     "adjVpaTime": 196.0,
                     "rolling7Day": 232.57142857142858,
                     "hazardRatio": 0.9666478089897869,
+                    "hazardRatioRescaled": 1.3705799001134802,
                     "restingHR": 46.714285714285715,
                     "maxHR": 195.0,
                     "hrReserve": 148.28571428571428,
@@ -2164,6 +2593,7 @@
                     "adjVpaTime": 172.0,
                     "rolling7Day": 149.57142857142858,
                     "hazardRatio": 0.9867852404119543,
+                    "hazardRatioRescaled": 1.1542191247208269,
                     "restingHR": 46.57142857142857,
                     "maxHR": 195.0,
                     "hrReserve": 148.42857142857142,
@@ -2177,6 +2607,7 @@
                     "adjVpaTime": 93.0,
                     "rolling7Day": 83.85714285714286,
                     "hazardRatio": 1.0189248409644232,
+                    "hazardRatioRescaled": 0.9177180827633774,
                     "restingHR": 49.42857142857143,
                     "maxHR": 195.0,
                     "hrReserve": 145.57142857142858,
@@ -2190,6 +2621,7 @@
                     "adjVpaTime": 96.0,
                     "rolling7Day": 75.71428571428571,
                     "hazardRatio": 1.0275237571664182,
+                    "hazardRatioRescaled": 0.8803314905807912,
                     "restingHR": 49.142857142857146,
                     "maxHR": 195.0,
                     "hrReserve": 145.85714285714286,
@@ -2203,6 +2635,7 @@
                     "adjVpaTime": 114.0,
                     "rolling7Day": 126.14285714285714,
                     "hazardRatio": 0.993929449792706,
+                    "hazardRatioRescaled": 1.0792795343363148,
                     "restingHR": 46.0,
                     "maxHR": 195.0,
                     "hrReserve": 149.0,
@@ -2216,6 +2649,7 @@
                     "adjVpaTime": 130.0,
                     "rolling7Day": 114.57142857142857,
                     "hazardRatio": 0.9991062731044212,
+                    "hazardRatioRescaled": 1.0464317475839635,
                     "restingHR": 46.285714285714285,
                     "maxHR": 195.0,
                     "hrReserve": 148.71428571428572,
@@ -2229,6 +2663,7 @@
                     "adjVpaTime": 85.0,
                     "rolling7Day": 113.14285714285714,
                     "hazardRatio": 0.999722470394946,
+                    "hazardRatioRescaled": 1.0289087559620655,
                     "restingHR": 45.57142857142857,
                     "maxHR": 195.0,
                     "hrReserve": 149.42857142857142,
@@ -2242,6 +2677,7 @@
                     "adjVpaTime": 183.0,
                     "rolling7Day": 149.42857142857142,
                     "hazardRatio": 0.9898655851912826,
+                    "hazardRatioRescaled": 1.141770711292851,
                     "restingHR": 49.42857142857143,
                     "maxHR": 195.0,
                     "hrReserve": 145.57142857142858,
@@ -2255,6 +2691,7 @@
                     "adjVpaTime": 36.0,
                     "rolling7Day": 17.428571428571427,
                     "hazardRatio": 1.1556380952380951,
+                    "hazardRatioRescaled": 0.3233126293995859,
                     "restingHR": 49.0,
                     "maxHR": 195.0,
                     "hrReserve": 146.0,
@@ -2268,6 +2705,7 @@
                     "adjVpaTime": 18.0,
                     "rolling7Day": 52.57142857142857,
                     "hazardRatio": 1.0618590120160214,
+                    "hazardRatioRescaled": 0.7310477738433853,
                     "restingHR": 47.142857142857146,
                     "maxHR": 195.0,
                     "hrReserve": 147.85714285714286,
@@ -2281,6 +2719,7 @@
                     "adjVpaTime": 77.0,
                     "rolling7Day": 39.857142857142854,
                     "hazardRatio": 1.0776906097018248,
+                    "hazardRatioRescaled": 0.6622147404268491,
                     "restingHR": 45.57142857142857,
                     "maxHR": 195.0,
                     "hrReserve": 149.42857142857142,
@@ -2509,6 +2948,7 @@
                     "dailyDuration": 35.65304429796007,
                     "weeklySum": 224.41601630316845,
                     "hrScore": 0.96429248989852,
+                    "hrRescaled": 1.892687752536996,
                     "hrColor": "#78bb7b",
                     "hasData": true
                 },
@@ -2517,6 +2957,7 @@
                     "dailyDuration": 30.631785365513394,
                     "weeklySum": 166.70679699125748,
                     "hrScore": 0.9739606100969033,
+                    "hrRescaled": 1.6509847475774175,
                     "hrColor": "#9dcd9f",
                     "hasData": true
                 },
@@ -2525,6 +2966,7 @@
                     "dailyDuration": 7.323023623511905,
                     "weeklySum": 34.661944289434544,
                     "hrScore": 1.0031936432645974,
+                    "hrRescaled": 0.7773017755279198,
                     "hrColor": "#fdf2f2",
                     "hasData": true
                 },
@@ -2533,6 +2975,7 @@
                     "dailyDuration": 14.972945149739584,
                     "weeklySum": 114.89429466610865,
                     "hrScore": 0.9838296581588365,
+                    "hrRescaled": 1.4042585460290888,
                     "hrColor": "#c2e0c3",
                     "hasData": true
                 },
@@ -2541,6 +2984,7 @@
                     "dailyDuration": 17.926664225260417,
                     "weeklySum": 145.8306565057664,
                     "hrScore": 0.9779370178084255,
+                    "hrRescaled": 1.5515745547893631,
                     "hrColor": "#acd5ad",
                     "hasData": true
                 },
@@ -2549,6 +2993,7 @@
                     "dailyDuration": 30.501847330729166,
                     "weeklySum": 224.35666213262652,
                     "hrScore": 0.9643489535723143,
+                    "hrRescaled": 1.8912761606921418,
                     "hrColor": "#78bb7b",
                     "hasData": true
                 },
@@ -2557,6 +3002,7 @@
                     "dailyDuration": 23.46622605096726,
                     "weeklySum": 117.62231619698663,
                     "hrScore": 0.9833100350100977,
+                    "hrRescaled": 1.417249124747556,
                     "hrColor": "#c0dfc1",
                     "hasData": true
                 },
@@ -2565,6 +3011,7 @@
                     "dailyDuration": 0.0,
                     "weeklySum": 29.518938337053587,
                     "hrScore": 1.0063995604915144,
+                    "hrRescaled": 0.6192334482621173,
                     "hrColor": "#fbe5e5",
                     "hasData": true
                 },
@@ -2573,6 +3020,7 @@
                     "dailyDuration": 17.047952415829613,
                     "weeklySum": 127.73584827241447,
                     "hrScore": 0.9813836479481115,
+                    "hrRescaled": 1.4654088012972106,
                     "hrColor": "#b9dbba",
                     "hasData": true
                 },
@@ -2581,6 +3029,7 @@
                     "dailyDuration": 12.868347749255951,
                     "weeklySum": 86.03494698660718,
                     "hrScore": 0.9893266767644558,
+                    "hrRescaled": 1.266833080888605,
                     "hrColor": "#d6ead7",
                     "hasData": true
                 },
@@ -2589,6 +3038,7 @@
                     "dailyDuration": 12.913033040364581,
                     "weeklySum": 122.8364240373884,
                     "hrScore": 0.9823168716119259,
+                    "hrRescaled": 1.4420782097018499,
                     "hrColor": "#bcddbd",
                     "hasData": true
                 },
@@ -2597,6 +3047,7 @@
                     "dailyDuration": 33.003515043712795,
                     "weeklySum": 221.8411156063988,
                     "hrScore": 0.9634588351225907,
+                    "hrRescaled": 1.9135291219352324,
                     "hrColor": "#75b978",
                     "hasData": true
                 },
@@ -2605,6 +3056,7 @@
                     "dailyDuration": 29.963875906808035,
                     "weeklySum": 189.11889590308783,
                     "hrScore": 0.9696916388756023,
+                    "hrRescaled": 1.7577090281099415,
                     "hrColor": "#8dc58f",
                     "hasData": true
                 },
@@ -2613,6 +3065,7 @@
                     "dailyDuration": 23.994455101376484,
                     "weeklySum": 197.92142101469497,
                     "hrScore": 0.9680149674257724,
+                    "hrRescaled": 1.7996258143556907,
                     "hrColor": "#86c289",
                     "hasData": true
                 },
@@ -2621,6 +3074,7 @@
                     "dailyDuration": 25.700404575892858,
                     "weeklySum": 189.01534191313246,
                     "hrScore": 0.9709553747475551,
+                    "hrRescaled": 1.7261156313111188,
                     "hrColor": "#91c794",
                     "hasData": true
                 },
@@ -2629,6 +3083,7 @@
                     "dailyDuration": 15.116369047619047,
                     "weeklySum": 86.67280273437503,
                     "hrScore": 0.9892051804315477,
+                    "hrRescaled": 1.2698704892113095,
                     "hrColor": "#d6ead7",
                     "hasData": true
                 },
@@ -2637,6 +3092,7 @@
                     "dailyDuration": 25.909171549479165,
                     "weeklySum": 163.47173200334822,
                     "hrScore": 0.9745768129517431,
+                    "hrRescaled": 1.6355796762064205,
                     "hrColor": "#9fcea1",
                     "hasData": true
                 },
@@ -2645,6 +3101,7 @@
                     "dailyDuration": 25.382624162946428,
                     "weeklySum": 175.80017787388394,
                     "hrScore": 0.9722285375478316,
+                    "hrRescaled": 1.6942865613042095,
                     "hrColor": "#96ca98",
                     "hasData": true
                 },
@@ -2653,6 +3110,7 @@
                     "dailyDuration": 20.09057123093378,
                     "weeklySum": 147.89968319847472,
                     "hrScore": 0.9775429174860049,
+                    "hrRescaled": 1.5614270628498796,
                     "hrColor": "#aad4ac",
                     "hasData": true
                 },
@@ -2661,6 +3119,7 @@
                     "dailyDuration": 22.582798258463544,
                     "weeklySum": 156.52176746186757,
                     "hrScore": 0.975900615721549,
+                    "hrRescaled": 1.6024846069612748,
                     "hrColor": "#a4d1a6",
                     "hasData": true
                 },
@@ -2669,6 +3128,7 @@
                     "dailyDuration": 18.281481061662948,
                     "weeklySum": 105.10735735212056,
                     "hrScore": 0.9856938366948341,
+                    "hrRescaled": 1.357654082629145,
                     "hrColor": "#c9e3ca",
                     "hasData": true
                 },
@@ -2677,6 +3137,7 @@
                     "dailyDuration": 14.292454601469492,
                     "weeklySum": 122.41958879743306,
                     "hrScore": 0.9823962688004889,
+                    "hrRescaled": 1.440093279987776,
                     "hrColor": "#bcddbe",
                     "hasData": true
                 },
@@ -2685,6 +3146,7 @@
                     "dailyDuration": 19.345338367280505,
                     "weeklySum": 132.06040823800225,
                     "hrScore": 0.9805599222403805,
+                    "hrRescaled": 1.4860019439904875,
                     "hrColor": "#b5dab7",
                     "hasData": true
                 }
@@ -2839,7 +3301,99 @@
                     "color": "#388e3c"
                 }
             ]
+        },
+        "scoreBars": {
+            "sleep": {
+                "recent": {
+                    "value": 1.0632933629980463,
+                    "displayValue": 1.0472525650335238
+                },
+                "healthspan": {
+                    "value": 1.2716577766317214,
+                    "displayValue": 0.9897963730964704
+                },
+                "showRecent": true,
+                "showHealthspan": true,
+                "source": "SleepHRsRescaled",
+                "displaySource": "SleepHRs",
+                "components": {
+                    "consistency": {
+                        "recent": {
+                            "value": 1.0179507766884528,
+                            "displayValue": 1.0887985107267444
+                        },
+                        "healthspan": {
+                            "value": 1.28499709693414,
+                            "displayValue": 1.0263909389171844
+                        },
+                        "showRecent": true,
+                        "showHealthspan": true,
+                        "source": "SleepHRsRescaled",
+                        "displaySource": "SleepHRs"
+                    },
+                    "duration": {
+                        "recent": {
+                            "value": 1.6304533517435564,
+                            "displayValue": 0.9600848291639593
+                        },
+                        "healthspan": {
+                            "value": 1.5798127982792232,
+                            "displayValue": 0.9635606136989985
+                        },
+                        "showRecent": true,
+                        "showHealthspan": true,
+                        "source": "SleepHRsRescaled",
+                        "displaySource": "SleepHRs"
+                    }
+                }
+            },
+            "aerobic": {
+                "recent": {
+                    "value": 1.5053034744029365,
+                    "displayValue": 0.6018013711620576
+                },
+                "healthspan": {
+                    "value": 1.793779056288935,
+                    "displayValue": 0.5510853458473217
+                },
+                "showRecent": true,
+                "showHealthspan": true,
+                "source": "AerobicHRsRescaled",
+                "displaySource": "AerobicHRs"
+            },
+            "anaerobic": {
+                "recent": {
+                    "value": 1.5074292586989047,
+                    "displayValue": 0.8989604210769492
+                },
+                "healthspan": {
+                    "value": 1.2772819117063066,
+                    "displayValue": 0.9486091311143005
+                },
+                "showRecent": true,
+                "showHealthspan": true,
+                "source": "AnaerobicHRsRescaled",
+                "displaySource": "AnaerobicHRs"
+            },
+            "steps": {
+                "recent": {
+                    "value": 1.0,
+                    "displayValue": 1.0
+                },
+                "healthspan": {
+                    "value": 0.9873941381053484,
+                    "displayValue": 0.9873941381053484
+                },
+                "showRecent": true,
+                "showHealthspan": true,
+                "source": "StepsDaily",
+                "displaySource": "StepsDaily"
+            }
         }
+    },
+    "masterScore": {
+        "recent": 1.3412344582008362,
+        "healthspan": 1.4383227867054444
     }
 };
 
@@ -3077,7 +3631,6 @@ function initializeChartsForTab(tabName) {
         // Daily Controls charts
         if (data.sleep) {
             createSleepCharts(data.sleep);
-            updateSleepSummary(data.sleep);
         }
         if (data.steps) {
             createStepsCharts(data.steps);
@@ -3089,50 +3642,30 @@ function initializeChartsForTab(tabName) {
             createStrengthCharts(data.strength);
         }
 
-        // Update category summaries
-        if (data.steps && data.heartRate) {
-            // Combine aerobic metrics for category summary
-            const aerobicData = {
-                latestScore: (data.steps.latestScore + data.heartRate.latestScore) / 2,
-                averageScore: (data.steps.averageScore + data.heartRate.averageScore) / 2
-            };
-            updateAerobicSummary(aerobicData);
-        }
-        if (data.strength) {
-            updateAnaerobicSummary(data.strength);
-        }
-
         // Update group tickers
         updateGroupTickers('daily-controls', data);
     } else if (tabName === 'healthspan') {
         // HealthSpan charts (weekly aggregated)
         if (data.sleep) {
             createHealthSpanSleepCharts(data.sleep);
-            updateHealthSpanSleepSummary(data.sleep);
         }
         if (data.vo2) {
             createHealthSpanVO2Charts(data.vo2);
-            updateHealthSpanVO2Summary(data.vo2);
         }
         if (data.steps) {
             createHealthSpanStepsCharts(data.steps);
-            updateHealthSpanStepsSummary(data.steps);
         }
         if (data.heartRate) {
             createHealthSpanHeartRateCharts(data.heartRate);
-            updateHealthSpanHeartRateSummary(data.heartRate);
         }
         if (data.rhr) {
             createHealthSpanRHRCharts(data.rhr);
-            updateHealthSpanRHRSummary(data.rhr);
         }
         if (data.strength) {
             createHealthSpanStrengthCharts(data.strength);
-            updateHealthSpanStrengthSummary(data.strength);
         }
         if (data.bodyComp) {
             createHealthSpanBodyCompCharts(data.bodyComp);
-            updateHealthSpanBodyCompSummary(data.bodyComp);
         }
 
         // Update group tickers
@@ -3140,197 +3673,541 @@ function initializeChartsForTab(tabName) {
     }
 }
 
-// Helper function to get color based on score (lower is better, 1 is neutral/white)
-function getColorForScore(score) {
-    // For ticker scores: lower numbers are better, 1 is neutral, higher is worse
-    // Score is calculated as (HR - 1) * 10
-    // HR < 1 (score < 0) = good (green)
-    // HR = 1 (score = 0) = neutral (white)
-    // HR > 1 (score > 0) = bad (red)
+const DEFAULT_SCALE = {
+    min: 0,
+    mid: 1,
+    max: 2,
+    minColor: '#d32f2f',
+    midColor: '#ffffff',
+    maxColor: '#43a047',
+    fallbackColor: '#616161',
+    decimals: 2,
+};
 
-    console.log('getColorForScore called with score:', score, 'type:', typeof score);
+const STEP_SCALE = {
+    ...DEFAULT_SCALE,
+    max: 1,
+    maxColor: '#ffffff',
+};
 
-    // 9-stop gradient with narrower white region: FF0000 → FF4040 → FF8080 → FFBFBF → FFFFFF → D0FFD0 → A1FFA1 → 72FF72 → 43FF43
-    if (score <= -3) {
-        console.log('Score', score, '-> Bright green (#43FF43)');
-        return '#43FF43'; // Bright green (very good)
+const SCALE_FALLBACK_COLOR = '#616161';
+
+const DAILY_COLOR_PALETTE = {
+    stepsLine: '#1565c0',
+    activityLine: '#1e88e5',
+    strengthLine: '#6f42c1',
+    strengthBar: '#29b6f6',
+    mpaBar: '#64b5f6',
+    vpaBar: '#ba68c8',
+};
+
+function getColorForRescaledValue(value, overrides = {}) {
+    const config = { ...DEFAULT_SCALE, ...overrides };
+    const numericValue = toNumberOrNull(value);
+    if (numericValue === null) {
+        return config.fallbackColor || SCALE_FALLBACK_COLOR;
     }
-    if (score <= -2) {
-        console.log('Score', score, '-> Green (#72FF72)');
-        return '#72FF72'; // Green
-    }
-    if (score <= -1) {
-        console.log('Score', score, '-> Light green (#A1FFA1)');
-        return '#A1FFA1'; // Light green
-    }
-    if (score <= -0.3) {
-        console.log('Score', score, '-> Very light green (#D0FFD0)');
-        return '#D0FFD0'; // Very light green
-    }
-    if (score <= 0.3) {
-        console.log('Score', score, '-> White (#FFFFFF)');
-        return '#FFFFFF'; // White (neutral - narrower region)
-    }
-    if (score <= 1) {
-        console.log('Score', score, '-> Very light red (#FFBFBF)');
-        return '#FFBFBF'; // Very light red
-    }
-    if (score <= 2) {
-        console.log('Score', score, '-> Light red (#FF8080)');
-        return '#FF8080'; // Light red
-    }
-    if (score <= 3) {
-        console.log('Score', score, '-> Medium red (#FF4040)');
-        return '#FF4040'; // Medium red
-    }
-    console.log('Score', score, '-> Bright red (#FF0000)');
-    return '#FF0000'; // Bright red (very bad)
+    return getScaleColor(numericValue, overrides);
 }
 
-// Helper function to get text color based on background color
-function getTextColorForBackground(bgColor) {
-    // For light backgrounds (white, yellow, orange), use black text
-    // For dark backgrounds (green, red), use white text
-    const lightBackgrounds = ['#ffffff', '#FFC107', '#FF9800', '#f57c00', '#7cb342'];
-    if (lightBackgrounds.includes(bgColor.toLowerCase())) {
-        return '#000000'; // Black text for light backgrounds
+function toNumberOrNull(value) {
+    if (value === null || value === undefined) {
+        return null;
     }
-    return '#FFFFFF'; // White text for dark backgrounds
+    const numericValue = Number(value);
+    return Number.isFinite(numericValue) ? numericValue : null;
 }
 
-// Update group tickers based on HR values
+function clampValue(value, min, max) {
+    return Math.min(Math.max(value, min), max);
+}
+
+function interpolateColor(startHex, endHex, t) {
+    const start = hexToRgb(startHex) || { r: 0, g: 0, b: 0 };
+    const end = hexToRgb(endHex) || { r: 255, g: 255, b: 255 };
+    const ratio = Math.min(Math.max(t, 0), 1);
+
+    const r = Math.round(start.r + (end.r - start.r) * ratio);
+    const g = Math.round(start.g + (end.g - start.g) * ratio);
+    const b = Math.round(start.b + (end.b - start.b) * ratio);
+
+    return rgbToHex(r, g, b);
+}
+
+function getReadableTextColor(hexColor) {
+    const rgb = hexToRgb(hexColor);
+    if (!rgb) {
+        return '#111111';
+    }
+
+    const luminance = (0.2126 * rgb.r + 0.7152 * rgb.g + 0.0722 * rgb.b) / 255;
+    return luminance > 0.6 ? '#111111' : '#ffffff';
+}
+
+function getScaleColor(rawValue, overrides = {}) {
+    const config = { ...DEFAULT_SCALE, ...overrides };
+    const value = toNumberOrNull(rawValue);
+
+    if (value === null) {
+        return config.fallbackColor;
+    }
+
+    const min = config.min;
+    const mid = config.mid;
+    const max = config.max;
+    const minColor = config.minColor;
+    const midColor = config.midColor;
+    const maxColor = config.maxColor;
+
+    const lowerBound = Math.min(min, max);
+    const upperBound = Math.max(min, max);
+    const clampedValue = clampValue(value, lowerBound, upperBound);
+
+    if (max === mid) {
+        const denominator = mid - min;
+        const t = denominator === 0 ? 1 : (clampedValue - min) / denominator;
+        return interpolateColor(minColor, midColor, t);
+    }
+
+    if (clampedValue <= mid) {
+        const denominator = mid - min;
+        const t = denominator === 0 ? 0 : (clampedValue - min) / denominator;
+        return interpolateColor(minColor, midColor, t);
+    }
+
+    const denominator = max - mid;
+    const t = denominator === 0 ? 0 : (clampedValue - mid) / denominator;
+    return interpolateColor(midColor, maxColor, t);
+}
+
+function getScalePosition(rawValue, overrides = {}) {
+    const config = { ...DEFAULT_SCALE, ...overrides };
+    const value = toNumberOrNull(rawValue);
+
+    if (value === null) {
+        return null;
+    }
+
+    const min = config.min;
+    const max = config.max;
+
+    if (max === min) {
+        return 50;
+    }
+
+    const lowerBound = Math.min(min, max);
+    const upperBound = Math.max(min, max);
+    const clampedValue = clampValue(value, lowerBound, upperBound);
+
+    return ((clampedValue - min) / (max - min)) * 100;
+}
+
+function updatePointer(pointerId, rawValue, overrides = {}, extra = {}) {
+    const pointer = document.getElementById(pointerId);
+    if (!pointer) {
+        return;
+    }
+
+    const isMasterPointer = pointer.classList.contains('master-pointer');
+
+    const config = { ...DEFAULT_SCALE, ...overrides };
+    const value = toNumberOrNull(rawValue);
+    const position = getScalePosition(value, config);
+
+    if (value === null || position === null || Number.isNaN(position)) {
+        pointer.classList.add('hidden');
+        return;
+    }
+
+    pointer.classList.remove('hidden');
+
+    const anchor = extra.anchor ? Math.max(0, Math.min(100, extra.anchor)) : null;
+    const displayOverride = Object.prototype.hasOwnProperty.call(extra, 'displayValue')
+        ? toNumberOrNull(extra.displayValue)
+        : null;
+    if (isMasterPointer && typeof extra.top === 'number') {
+        pointer.style.top = `${extra.top}px`;
+    }
+
+    const basePosition = anchor !== null ? anchor : position;
+    const finalPosition =
+        typeof extra.offset === 'number'
+            ? basePosition + extra.offset
+            : basePosition;
+
+    pointer.dataset.scalePosition = position.toString();
+    pointer.style.left = `${Math.max(0, Math.min(100, finalPosition))}%`;
+
+    const color = getScaleColor(value, config);
+    const decimals = config.decimals ?? 2;
+    const clampedValue = clampValue(value, config.min, config.max);
+    const labelValue = displayOverride !== null ? displayOverride : clampedValue;
+    const readableColor = getReadableTextColor(color);
+
+    if (isMasterPointer) {
+        pointer.style.borderBottomColor = 'transparent';
+        pointer.style.borderTopColor = 'transparent';
+        const badge = pointer.querySelector('.master-pointer-badge');
+        if (badge) {
+            badge.style.backgroundColor = color;
+            badge.style.color = readableColor;
+        }
+    } else if (pointer.classList.contains('scale-marker')) {
+        const baseLabel =
+            pointer.dataset.label ||
+            pointer.textContent.trim() ||
+            (pointer.classList.contains('marker-recent') ? 'R' : 'HS');
+        pointer.textContent = baseLabel;
+        pointer.style.backgroundColor = color;
+        pointer.style.color = readableColor;
+        pointer.style.borderColor = color;
+    } else if (pointer.classList.contains('pointer-avg')) {
+        pointer.style.borderTopColor = color;
+        pointer.style.borderBottomColor = 'transparent';
+        const label = pointer.querySelector('.pointer-label');
+        if (label) {
+            label.textContent = labelValue.toFixed(decimals);
+            label.style.backgroundColor = color;
+            label.style.color = readableColor;
+        }
+    } else {
+        pointer.style.borderBottomColor = color;
+        pointer.style.borderTopColor = 'transparent';
+        const label = pointer.querySelector('.pointer-label');
+        if (label) {
+            const valueContainer = label.querySelector('.pointer-label-value');
+            const titleContainer = label.querySelector('.pointer-label-title');
+
+            if (valueContainer) {
+                valueContainer.textContent = labelValue.toFixed(decimals);
+                valueContainer.style.color = readableColor;
+            } else {
+                label.textContent = labelValue.toFixed(decimals);
+            }
+
+            if (titleContainer) {
+                titleContainer.style.color = readableColor;
+            }
+
+            label.style.backgroundColor = color;
+            label.style.color = readableColor;
+        }
+    }
+}
+
+function setTicker(elementId, rawValue, overrides = {}, displayValue = null) {
+    const element = document.getElementById(elementId);
+    if (!element) {
+        return;
+    }
+
+    const config = { ...DEFAULT_SCALE, ...overrides };
+    const pointerValue = toNumberOrNull(rawValue);
+    const displayOverride = toNumberOrNull(displayValue);
+    const effectiveValue = pointerValue !== null ? pointerValue : displayOverride;
+
+    if (effectiveValue === null) {
+        element.textContent = '—';
+        element.style.backgroundColor = '#424242';
+        element.style.color = '#bdbdbd';
+        return;
+    }
+
+    const clampedValue = clampValue(effectiveValue, config.min, config.max);
+    const decimals = config.decimals ?? 2;
+    const color = getScaleColor(clampedValue, config);
+    const textValue =
+        displayOverride !== null ? displayOverride : clampedValue;
+
+    element.textContent = textValue.toFixed(decimals);
+    element.style.backgroundColor = color;
+    element.style.color = getReadableTextColor(color);
+}
+
+function selectMarker(entry, key) {
+    if (!entry || !entry[key]) {
+        return null;
+    }
+    const marker = entry[key];
+    const pointer = toNumberOrNull(marker.value);
+    const hasDisplay = Object.prototype.hasOwnProperty.call(marker, 'displayValue');
+    const display = toNumberOrNull(hasDisplay ? marker.displayValue : marker.value);
+
+    if (pointer === null && display === null) {
+        return null;
+    }
+
+    return { pointer, display };
+}
+
+function applyMarker(elementId, markerValues, shouldShow, overrides = {}) {
+    const element = document.getElementById(elementId);
+    if (!element) {
+        return;
+    }
+
+    if (!shouldShow || !markerValues || markerValues.pointer === null) {
+        element.classList.add('hidden');
+        return;
+    }
+
+    updatePointer(elementId, markerValues.pointer, overrides, {
+        displayValue: markerValues.display,
+    });
+}
+
+function updateBarMarkers(baseId, entry, overrides = {}) {
+    const showRecent = !!(entry && entry.showRecent);
+    const showHealthspan = !!(entry && entry.showHealthspan);
+
+    const recentMarker = selectMarker(entry, 'recent');
+    const healthspanMarker = selectMarker(entry, 'healthspan');
+
+    applyMarker(`${baseId}-marker-recent`, recentMarker, showRecent, overrides);
+    applyMarker(`${baseId}-marker-healthspan`, healthspanMarker, showHealthspan, overrides);
+
+    if (showRecent && recentMarker && recentMarker.pointer !== null) {
+        return recentMarker;
+    }
+
+    if (showHealthspan && healthspanMarker && healthspanMarker.pointer !== null) {
+        return healthspanMarker;
+    }
+
+    return null;
+}
+
+function setTickerFromMarker(elementId, marker, overrides = {}) {
+    if (!marker) {
+        setTicker(elementId, null, overrides, null);
+        return;
+    }
+
+    const pointerValue = marker.pointer !== null ? marker.pointer : marker.display;
+    setTicker(elementId, pointerValue, overrides, marker.display);
+}
+
+const DAILY_CONTROLS_BORDER_COLORS = {
+    green: '#43a047',
+    orange: '#fb8c00',
+    red: '#d32f2f',
+};
+
+function computeDailyControlsBorderColor(recentValue, healthspanValue) {
+    const recent = toNumberOrNull(recentValue);
+    const healthspan = toNumberOrNull(healthspanValue);
+
+    if (recent === null || healthspan === null) {
+        return DAILY_CONTROLS_BORDER_COLORS.red;
+    }
+
+    if (recent > healthspan && recent >= 1) {
+        return DAILY_CONTROLS_BORDER_COLORS.green;
+    }
+
+    if ((recent > healthspan && recent < 1) || (recent < healthspan && recent > 1)) {
+        return DAILY_CONTROLS_BORDER_COLORS.orange;
+    }
+
+    return DAILY_CONTROLS_BORDER_COLORS.red;
+}
+
+function applyDailyControlsBorder(groupId, recentValue, healthspanValue) {
+    const groupElement = document.getElementById(groupId);
+    if (!groupElement) {
+        return;
+    }
+
+    const color = computeDailyControlsBorderColor(recentValue, healthspanValue);
+    groupElement.style.borderColor = color;
+
+    const rgb = hexToRgb(color);
+    if (rgb) {
+        groupElement.style.boxShadow = `0 0 18px rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.35)`;
+    } else {
+        groupElement.style.boxShadow = '';
+    }
+}
+
+function updateDailyControlsGroupBorder(groupId, entry) {
+    const recentValue =
+        entry && entry.recent && Object.prototype.hasOwnProperty.call(entry.recent, 'value')
+            ? entry.recent.value
+            : null;
+    const healthspanValue =
+        entry &&
+        entry.healthspan &&
+        Object.prototype.hasOwnProperty.call(entry.healthspan, 'value')
+            ? entry.healthspan.value
+            : null;
+
+    applyDailyControlsBorder(groupId, recentValue, healthspanValue);
+}
+
 function updateGroupTickers(tabName, data) {
+    if (!data || !data.scoreBars) {
+        return;
+    }
+
+    const scoreBars = data.scoreBars;
+
     if (tabName === 'daily-controls') {
-        // Calculate sleep group ticker (multiply HR values in category)
-        let sleepHR = 1.0;
-        if (data.sleep && data.sleep.daily && data.sleep.daily.length > 0) {
-            // For sleep, we have consistencyScore and durationScore which are HR values
-            const latest = data.sleep.daily[0];
-            if (latest.consistencyScore) sleepHR *= latest.consistencyScore;
-            if (latest.durationScore) sleepHR *= latest.durationScore;
-        }
-        const sleepTicker = (sleepHR - 1) * 10;
-        const sleepTickerEl = document.getElementById('sleep-group-ticker');
-        sleepTickerEl.textContent = Math.round(sleepTicker);
-        const sleepColor = getColorForScore(sleepTicker);
-        sleepTickerEl.style.backgroundColor = sleepColor;
-        sleepTickerEl.style.color = getTextColorForBackground(sleepColor);
+        const sleepMarker = updateBarMarkers('sleep-category', scoreBars.sleep || null);
+        setTickerFromMarker('sleep-group-ticker', sleepMarker);
+        updateDailyControlsGroupBorder('daily-controls-sleep-group', scoreBars.sleep || null);
 
-        // Update the sleep category pointer
-        updatePointer('sleep-category-pointer', sleepTicker);
+        const aerobicMarker = updateBarMarkers('aerobic-category', scoreBars.aerobic || null);
+        setTickerFromMarker('aerobic-group-ticker', aerobicMarker);
+        updateDailyControlsGroupBorder(
+            'daily-controls-aerobic-group',
+            scoreBars.aerobic || null
+        );
 
-        // Calculate aerobic group ticker (multiply HR values in category)
-        let aerobicHR = 1.0;
-        if (data.steps && data.steps.daily && data.steps.daily.length > 0) {
-            const latest = data.steps.daily[0];
-            if (latest.hazardRatio) aerobicHR *= latest.hazardRatio;
-        }
-        if (data.heartRate && data.heartRate.daily && data.heartRate.daily.length > 0) {
-            const latest = data.heartRate.daily[0];
-            if (latest.hazardRatio) aerobicHR *= latest.hazardRatio;
-        }
-        const aerobicTicker = (aerobicHR - 1) * 10;
-        const aerobicTickerEl = document.getElementById('aerobic-group-ticker');
-        aerobicTickerEl.textContent = Math.round(aerobicTicker);
-        const aerobicColor = getColorForScore(aerobicTicker);
-        aerobicTickerEl.style.backgroundColor = aerobicColor;
-        aerobicTickerEl.style.color = getTextColorForBackground(aerobicColor);
-
-        // Update the aerobic category pointer
-        updatePointer('aerobic-category-pointer', aerobicTicker);
-
-        // Calculate anaerobic group ticker (multiply HR values in category)
-        let anaerobicHR = 1.0;
-        if (data.strength && data.strength.daily && data.strength.daily.length > 0) {
-            const latest = data.strength.daily[0];
-            if (latest.hrScore) anaerobicHR *= latest.hrScore;
-        }
-        const anaerobicTicker = (anaerobicHR - 1) * 10;
-        const anaerobicTickerEl = document.getElementById('anaerobic-group-ticker');
-        anaerobicTickerEl.textContent = Math.round(anaerobicTicker);
-        const anaerobicColor = getColorForScore(anaerobicTicker);
-        anaerobicTickerEl.style.backgroundColor = anaerobicColor;
-        anaerobicTickerEl.style.color = getTextColorForBackground(anaerobicColor);
-
-        // Update the anaerobic category pointer
-        updatePointer('anaerobic-category-pointer', anaerobicTicker);
-
+        const anaerobicMarker = updateBarMarkers('anaerobic-category', scoreBars.anaerobic || null);
+        setTickerFromMarker('anaerobic-group-ticker', anaerobicMarker);
+        updateDailyControlsGroupBorder(
+            'daily-controls-anaerobic-group',
+            scoreBars.anaerobic || null
+        );
     } else if (tabName === 'healthspan') {
-        // Calculate healthspan group tickers (multiply HR values in category)
-        let sleepHR = 1.0;
-        if (data.sleep && data.sleep.daily && data.sleep.daily.length > 0) {
-            const latest = data.sleep.daily[0];
-            if (latest.consistencyScore) sleepHR *= latest.consistencyScore;
-            if (latest.durationScore) sleepHR *= latest.durationScore;
-        }
-        const sleepTicker = (sleepHR - 1) * 10;
-        const sleepTickerEl = document.getElementById('healthspan-sleep-group-ticker');
-        sleepTickerEl.textContent = Math.round(sleepTicker);
-        const sleepColor = getColorForScore(sleepTicker);
-        sleepTickerEl.style.backgroundColor = sleepColor;
-        sleepTickerEl.style.color = getTextColorForBackground(sleepColor);
+        const sleepEntry = scoreBars.sleep || null;
+        const sleepMarker = updateBarMarkers('healthspan-sleep-category', sleepEntry);
+        setTickerFromMarker('healthspan-sleep-group-ticker', sleepMarker);
 
-        // Update the sleep category pointer
-        updatePointer('healthspan-sleep-category-pointer', sleepTicker);
+        const sleepComponents = (sleepEntry && sleepEntry.components) || {};
+        updateBarMarkers('healthspan-sleep-window', sleepComponents.consistency || null);
+        updateBarMarkers('healthspan-sleep-duration', sleepComponents.duration || null);
 
-        let aerobicHR = 1.0;
-        if (data.vo2 && data.vo2.daily && data.vo2.daily.length > 0) {
-            // VO2 data uses 'vo2' as the HR value
-            const latest = data.vo2.daily[0];
-            // Calculate HR from VO2 score if available
-            if (latest.vo2) {
-                // Reverse the score calculation: score = (hr - 1) * 10 => hr = score/10 + 1
-                const vo2HR = (data.vo2.latestScore || 0) / 10 + 1;
-                if (vo2HR !== 1) aerobicHR *= vo2HR;
+        const aerobicEntry = scoreBars.aerobic || null;
+        const aerobicMarker = updateBarMarkers('healthspan-aerobic-category', aerobicEntry);
+        setTickerFromMarker('healthspan-aerobic-group-ticker', aerobicMarker);
+
+        const showAerobicHS = !!(aerobicEntry && aerobicEntry.showHealthspan);
+        const showAerobicRecent = !!(aerobicEntry && aerobicEntry.showRecent);
+        const aerobicHSMarker = selectMarker(aerobicEntry, 'healthspan');
+        const aerobicRecentMarker = selectMarker(aerobicEntry, 'recent');
+        applyMarker('healthspan-aerobic-category-marker-recent', aerobicRecentMarker, showAerobicRecent);
+        applyMarker('healthspan-aerobic-category-marker-healthspan', aerobicHSMarker, showAerobicHS);
+        applyMarker('healthspan-vo2-marker-healthspan', aerobicHSMarker, showAerobicHS);
+        applyMarker('healthspan-heart-rate-marker-recent', aerobicRecentMarker, showAerobicRecent);
+        applyMarker('healthspan-heart-rate-marker-healthspan', aerobicHSMarker, showAerobicHS);
+        applyMarker('healthspan-rhr-marker-healthspan', aerobicHSMarker, showAerobicHS);
+
+        updateBarMarkers('healthspan-steps', scoreBars.steps || null, STEP_SCALE);
+
+        const anaerobicEntry = scoreBars.anaerobic || null;
+        const anaerobicMarker = updateBarMarkers('healthspan-anaerobic-category', anaerobicEntry);
+        setTickerFromMarker('healthspan-anaerobic-group-ticker', anaerobicMarker);
+
+        const showAnaerobicHS = !!(anaerobicEntry && anaerobicEntry.showHealthspan);
+        const showAnaerobicRecent = !!(anaerobicEntry && anaerobicEntry.showRecent);
+        const anaerobicHSMarker = selectMarker(anaerobicEntry, 'healthspan');
+        const anaerobicRecentMarker = selectMarker(anaerobicEntry, 'recent');
+        applyMarker('healthspan-anaerobic-category-marker-recent', anaerobicRecentMarker, showAnaerobicRecent);
+        applyMarker('healthspan-strength-marker-recent', anaerobicRecentMarker, showAnaerobicRecent);
+        applyMarker('healthspan-strength-marker-healthspan', anaerobicHSMarker, showAnaerobicHS);
+        applyMarker('healthspan-body-comp-marker-healthspan', anaerobicHSMarker, showAnaerobicHS);
+    }
+}
+
+function combinePointerOffsets(pointers) {
+    const MIN_SEPARATION_PCT = 3;
+
+    if (!Array.isArray(pointers) || pointers.length === 0) {
+        return {};
+    }
+
+    const sorted = pointers
+        .map((item, idx) => ({
+            id: item.id,
+            position: Math.max(0, Math.min(100, item.position)),
+            index: idx,
+        }))
+        .sort((a, b) => a.position - b.position);
+
+    const offsets = {};
+
+    for (let i = 0; i < sorted.length; i += 1) {
+        const current = sorted[i];
+        let offset = 0;
+
+        if (i > 0) {
+            const prev = sorted[i - 1];
+            const diff = current.position + offset - prev.position;
+            if (diff < MIN_SEPARATION_PCT) {
+                offset = prev.position + MIN_SEPARATION_PCT - current.position;
             }
         }
-        if (data.steps && data.steps.daily && data.steps.daily.length > 0) {
-            const latest = data.steps.daily[0];
-            if (latest.hazardRatio) aerobicHR *= latest.hazardRatio;
-        }
-        if (data.heartRate && data.heartRate.daily && data.heartRate.daily.length > 0) {
-            const latest = data.heartRate.daily[0];
-            if (latest.hazardRatio) aerobicHR *= latest.hazardRatio;
-        }
-        if (data.rhr && data.rhr.daily && data.rhr.daily.length > 0) {
-            const latest = data.rhr.daily[0];
-            if (latest.hrScore) aerobicHR *= latest.hrScore;
-        }
-        const aerobicTicker = (aerobicHR - 1) * 10;
-        const aerobicTickerEl = document.getElementById('healthspan-aerobic-group-ticker');
-        aerobicTickerEl.textContent = Math.round(aerobicTicker);
-        const aerobicColor = getColorForScore(aerobicTicker);
-        aerobicTickerEl.style.backgroundColor = aerobicColor;
-        aerobicTickerEl.style.color = getTextColorForBackground(aerobicColor);
 
-        // Update the aerobic category pointer
-        updatePointer('healthspan-aerobic-category-pointer', aerobicTicker);
-
-        let anaerobicHR = 1.0;
-        if (data.strength && data.strength.daily && data.strength.daily.length > 0) {
-            const latest = data.strength.daily[0];
-            if (latest.hrScore) anaerobicHR *= latest.hrScore;
-        }
-        if (data.bodyComp && data.bodyComp.daily && data.bodyComp.daily.length > 0) {
-            const latest = data.bodyComp.daily[0];
-            if (latest.hrScore) anaerobicHR *= latest.hrScore;
-        }
-        const anaerobicTicker = (anaerobicHR - 1) * 10;
-        const anaerobicTickerEl = document.getElementById('healthspan-anaerobic-group-ticker');
-        anaerobicTickerEl.textContent = Math.round(anaerobicTicker);
-        const anaerobicColor = getColorForScore(anaerobicTicker);
-        anaerobicTickerEl.style.backgroundColor = anaerobicColor;
-        anaerobicTickerEl.style.color = getTextColorForBackground(anaerobicColor);
-
-        // Update the anaerobic category pointer
-        updatePointer('healthspan-anaerobic-category-pointer', anaerobicTicker);
+        offsets[current.id] = offset;
     }
+
+    return offsets;
+}
+
+function updateMasterScoreOverview(masterScore) {
+    const container = document.getElementById('master-score-overview');
+    if (!container) {
+        return;
+    }
+
+    const recentValue = toNumberOrNull(masterScore.recent);
+    const healthspanValue = toNumberOrNull(masterScore.healthspan);
+    const hasData = recentValue !== null || healthspanValue !== null;
+
+    container.style.display = hasData ? '' : 'none';
+
+    const markers = [
+        {
+            id: 'master-marker-recent',
+            value: recentValue,
+        },
+        {
+            id: 'master-marker-healthspan',
+            value: healthspanValue,
+        },
+    ];
+
+    const pointerPositions = markers
+        .filter(marker => marker.value !== null)
+        .map(marker => ({
+            id: marker.id,
+            position: getScalePosition(marker.value),
+        }));
+
+    const offsets = combinePointerOffsets(pointerPositions);
+
+    markers.forEach(marker => {
+        const element = document.getElementById(marker.id);
+        if (!element) {
+            return;
+        }
+
+        if (marker.value === null) {
+            element.classList.add('hidden');
+            return;
+        }
+
+        const anchorPosition =
+            pointerPositions.find(position => position.id === marker.id)
+                ?.position ?? null;
+
+        updatePointer(marker.id, marker.value, {}, {
+            displayValue: marker.value,
+            anchor: anchorPosition,
+            offset: offsets[marker.id] || 0,
+        });
+    });
 }
 
 // Override the original initializeCharts to work with new structure
 function initializeCharts() {
     console.log('initializeCharts called for new unified report');
     console.log('chartData:', chartData);
+
+    if (chartData && chartData.masterScore) {
+        updateMasterScoreOverview(chartData.masterScore);
+    }
 
     // Destroy any existing charts first
     destroyAllCharts();
@@ -3353,6 +4230,12 @@ function createStepsCharts(data) {
 
     try {
         const reversedDaily = data.daily.slice().reverse();
+        const stepsBarColors = reversedDaily.map(d =>
+            getColorForRescaledValue(d.hazardRatioRescaled, STEP_SCALE)
+        );
+        const stepsLinePointColors = reversedDaily.map(d =>
+            getColorForRescaledValue(d.hazardRatioRescaled, STEP_SCALE)
+        );
 
         new Chart(stepsCtx, {
             type: 'bar',
@@ -3361,22 +4244,27 @@ function createStepsCharts(data) {
                 datasets: [{
                     label: 'Daily Steps',
                     data: reversedDaily.map(d => d.dailySteps),
-                    backgroundColor: reversedDaily.map(d => d.hrColor),
-                    borderColor: reversedDaily.map(d => d.hrColor),
+                    backgroundColor: stepsBarColors,
+                    borderColor: stepsBarColors,
                     borderWidth: 1,
                     borderRadius: 4,
-                    borderSkipped: false
+                    borderSkipped: false,
+                    order: 1
                 }, {
                     label: '7-Day Rolling Average',
                     data: reversedDaily.map(d => d.rollingAvgSteps),
                     type: 'line',
-                    borderColor: '#007bff',
-                    backgroundColor: 'rgba(0, 123, 255, 0.1)',
+                    borderColor: DAILY_COLOR_PALETTE.stepsLine,
+                    backgroundColor: 'rgba(21, 101, 192, 0.12)',
                     borderWidth: 2,
                     fill: false,
                     tension: 0.4,
                     pointRadius: 4,
-                    pointHoverRadius: 6
+                    pointHoverRadius: 6,
+                    pointBackgroundColor: stepsLinePointColors,
+                    pointBorderColor: stepsLinePointColors,
+                    pointBorderWidth: 2,
+                    order: 2
                 }]
             },
             options: {
@@ -3444,6 +4332,9 @@ function createHeartRateCharts(data) {
 
         // Use pre-calculated combined rolling average from enricher data
         const activityRollingAvg = reversedDaily.map(d => d.rolling7Day || 0);
+        const activityLinePointColors = reversedDaily.map(d =>
+            getColorForRescaledValue(d.hazardRatioRescaled)
+        );
 
         // Debug: Log the rolling average data
         console.log('Daily Controls Rolling Average Data:', activityRollingAvg);
@@ -3457,26 +4348,34 @@ function createHeartRateCharts(data) {
                     {
                         label: 'MPA Time (min)',
                         data: reversedDaily.map(d => d.mpaTime),
-                        backgroundColor: '#4CAF50',
-                        stack: 'activity'
+                        backgroundColor: DAILY_COLOR_PALETTE.mpaBar,
+                        borderColor: DAILY_COLOR_PALETTE.mpaBar,
+                        stack: 'activity',
+                        order: 1
                     },
                     {
                         label: 'VPA Time (min)',
                         data: reversedDaily.map(d => d.vpaTime),
-                        backgroundColor: '#FF9800',
-                        stack: 'activity'
+                        backgroundColor: DAILY_COLOR_PALETTE.vpaBar,
+                        borderColor: DAILY_COLOR_PALETTE.vpaBar,
+                        stack: 'activity',
+                        order: 2
                     },
                     {
                         label: 'Activity 7-Day Rolling Avg',
                         data: activityRollingAvg,
                         type: 'line',
-                        borderColor: '#007bff',
-                        backgroundColor: 'rgba(0, 123, 255, 0.1)',
+                        borderColor: DAILY_COLOR_PALETTE.activityLine,
+                        backgroundColor: 'rgba(30, 136, 229, 0.12)',
                         borderWidth: 2,
                         fill: false,
                         tension: 0.4,
                         pointRadius: 4,
-                        pointHoverRadius: 6
+                        pointHoverRadius: 6,
+                        pointBackgroundColor: activityLinePointColors,
+                        pointBorderColor: activityLinePointColors,
+                        pointBorderWidth: 2,
+                        order: 3
                     }
                 ]
             },
@@ -3524,6 +4423,9 @@ function createStrengthCharts(data) {
 
         // Use pre-calculated rolling average from enricher data
         const strengthRollingAvg = reversedDaily.map(d => d.weeklySum || 0);
+        const strengthLinePointColors = reversedDaily.map(d =>
+            getColorForRescaledValue(d.hrRescaled)
+        );
 
         // Debug: Log the strength rolling average data
         console.log('Strength Rolling Average Data:', strengthRollingAvg);
@@ -3536,22 +4438,27 @@ function createStrengthCharts(data) {
                 datasets: [{
                     label: 'Strength Training (minutes)',
                     data: reversedDaily.map(d => d.dailyDuration),
-                    backgroundColor: reversedDaily.map(d => d.hrColor),
-                    borderColor: reversedDaily.map(d => d.hrColor),
+                    backgroundColor: DAILY_COLOR_PALETTE.strengthBar,
+                    borderColor: DAILY_COLOR_PALETTE.strengthBar,
                     borderWidth: 1,
                     borderRadius: 4,
-                    borderSkipped: false
+                    borderSkipped: false,
+                    order: 1
                 }, {
                     label: '7-Day Rolling Average',
                     data: strengthRollingAvg,
                     type: 'line',
-                    borderColor: '#6f42c1',
-                    backgroundColor: 'rgba(111, 66, 193, 0.1)',
+                    borderColor: DAILY_COLOR_PALETTE.strengthLine,
+                    backgroundColor: 'rgba(111, 66, 193, 0.12)',
                     borderWidth: 2,
                     fill: false,
                     tension: 0.4,
                     pointRadius: 4,
-                    pointHoverRadius: 6
+                    pointHoverRadius: 6,
+                    pointBackgroundColor: strengthLinePointColors,
+                    pointBorderColor: strengthLinePointColors,
+                    pointBorderWidth: 2,
+                    order: 2
                 }]
             },
             options: {
@@ -3619,60 +4526,24 @@ function createStrengthCharts(data) {
     }
 }
 
-// Summary update functions for Daily Controls
-function updateSleepSummary(data) {
-    updatePointer('sleep-category-pointer', data.averageScore);
-}
-
-function updateAerobicSummary(data) {
-    updatePointer('aerobic-category-pointer', data.averageScore);
-}
-
-function updateAnaerobicSummary(data) {
-    updatePointer('anaerobic-category-pointer', data.averageScore);
-}
-
-// Helper function to update pointer positions
-function updatePointer(pointerId, score) {
-    const pointer = document.getElementById(pointerId);
-    if (pointer) {
-        const position = Math.max(0, Math.min(100, (score + 2) * 25));
-        pointer.style.left = `${position}%`;
-
-        // Use the same color function as the gradient scale
-        console.log('updatePointer called with:', pointerId, 'score:', score);
-        const color = getColorForScore(score);
-        console.log('getColorForScore returned color:', color);
-
-        // Set the correct border color based on pointer class
-        if (pointer.classList.contains('pointer-last')) {
-            console.log('Setting borderBottomColor to:', color);
-            pointer.style.borderBottomColor = color;
-        } else if (pointer.classList.contains('pointer-avg')) {
-            console.log('Setting borderTopColor to:', color);
-            pointer.style.borderTopColor = color;
-        }
-
-        // Update the label with the actual score value (rounded to 1 decimal)
-        const label = pointer.querySelector('.pointer-label');
-        if (label) {
-            label.textContent = score.toFixed(1);
-        }
-    }
-}
-
 function createSleepCharts(data) {
     // Sleep windows chart
     const sleepWindowsCtx = document.getElementById('sleep-windows-chart');
     if (sleepWindowsCtx && data.daily) {
+        const reversedDaily = data.daily.slice().reverse();
+
         // Process sleep data to create proper sleep window visualization
-        const sleepWindows = data.daily.slice().reverse().map((d, index) => {
+        const sleepWindows = reversedDaily.map((d, index) => {
+            const rescaledValue = d.consistencyRescaled;
+            const barColor = getColorForRescaledValue(rescaledValue);
+
             if (!d.sleepTime || !d.wakeTime) {
                 return {
                     y: index,
                     x: 12 * 60,
                     width: 0,
-                    color: '#666',
+                    color: barColor,
+                    rescaled: rescaledValue,
                     sleepTime: d.sleepTime,
                     wakeTime: d.wakeTime
                 };
@@ -3705,7 +4576,8 @@ function createSleepCharts(data) {
                 y: index,
                 x: sleepRelativeToMidday,
                 width: duration,
-                color: d.consistencyColor,
+                color: barColor,
+                rescaled: rescaledValue,
                 sleepTime: d.sleepTime,
                 wakeTime: d.wakeTime
             };
@@ -3714,12 +4586,12 @@ function createSleepCharts(data) {
         new Chart(sleepWindowsCtx, {
             type: 'bar',
             data: {
-                labels: sleepWindows.map((w, i) => data.daily.slice().reverse()[i].label),
+                labels: sleepWindows.map((_, i) => reversedDaily[i].label),
                 datasets: [{
                     label: 'Sleep Periods',
                     data: sleepWindows.map(w => ({
                         x: [w.x, w.x + w.width],
-                        y: sleepWindows.indexOf(w)
+                        y: w.y
                     })),
                     backgroundColor: sleepWindows.map(w => w.color),
                     borderColor: sleepWindows.map(w => w.color),
@@ -3798,6 +4670,9 @@ function createSleepCharts(data) {
     const sleepDurationCtx = document.getElementById('sleep-duration-chart');
     if (sleepDurationCtx && data.daily) {
         const reversedDaily = data.daily.slice().reverse();
+        const durationColors = reversedDaily.map(d =>
+            getColorForRescaledValue(d.durationRescaled)
+        );
 
         new Chart(sleepDurationCtx, {
             type: 'bar',
@@ -3806,8 +4681,8 @@ function createSleepCharts(data) {
                 datasets: [{
                     label: 'Sleep Duration (hours)',
                     data: reversedDaily.map(d => d.sleepDuration),
-                    backgroundColor: '#4CAF50',
-                    borderColor: '#4CAF50',
+                    backgroundColor: durationColors,
+                    borderColor: durationColors,
                     borderWidth: 1,
                     borderRadius: 4,
                     borderSkipped: false
@@ -4396,39 +5271,6 @@ function createHealthSpanBodyCompCharts(data) {
             }
         });
     }
-}
-
-// Summary update functions for HealthSpan
-function updateHealthSpanSleepSummary(data) {
-    // Update sleep window summary
-    updatePointer('healthspan-sleep-window-pointer', data.averageScore);
-
-    // Update sleep duration summary
-    updatePointer('healthspan-sleep-duration-pointer', data.averageScore);
-}
-
-function updateHealthSpanVO2Summary(data) {
-    updatePointer('healthspan-vo2-pointer', data.averageScore);
-}
-
-function updateHealthSpanStepsSummary(data) {
-    updatePointer('healthspan-steps-pointer', data.averageScore);
-}
-
-function updateHealthSpanHeartRateSummary(data) {
-    updatePointer('healthspan-heart-rate-pointer', data.averageScore);
-}
-
-function updateHealthSpanRHRSummary(data) {
-    updatePointer('healthspan-rhr-pointer', data.averageScore);
-}
-
-function updateHealthSpanStrengthSummary(data) {
-    updatePointer('healthspan-strength-pointer', data.averageScore);
-}
-
-function updateHealthSpanBodyCompSummary(data) {
-    updatePointer('healthspan-body-comp-pointer', data.averageScore);
 }
 
 // Add event listeners for tab switching
