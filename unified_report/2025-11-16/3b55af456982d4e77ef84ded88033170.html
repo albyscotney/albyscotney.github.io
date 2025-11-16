@@ -39,24 +39,31 @@
 
         .score-scale-container {
             position: relative;
-            height: 80px;
+            height: 56px;
             margin: 0;
             flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .scale-wrapper {
             position: relative;
-            height: 80px;
+            height: 100%;
             margin: 0 45px;
+            display: flex;
+            align-items: center;
+            width: 100%;
         }
 
         .score-scale-bar {
             position: absolute;
-            top: 0;
+            top: 50%;
             left: 0;
             right: 0;
             height: 12px;
             border-radius: 6px;
+            transform: translateY(-50%);
         }
 
         .master-score-overview {
@@ -302,10 +309,14 @@
             background-color: #1a1a1a;
             border-radius: 8px;
             margin: 8px 0 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .category-summary .score-scale-container {
             margin: 0;
+            width: 100%;
         }
 
         /* Component sliders styling */
@@ -357,11 +368,10 @@
         top: 0;
         left: 0;
         right: 0;
-        pointer-events: none;
     }
     .scale-marker {
         position: absolute;
-        top: 6px;
+        top: 50%;
         transform: translate(-50%, -50%);
         display: inline-flex;
         align-items: center;
@@ -369,7 +379,8 @@
         width: 30px;
         height: 30px;
         border-radius: 999px;
-        pointer-events: none;
+        pointer-events: auto;
+        cursor: pointer;
         font-weight: 700;
         font-size: 0.75rem;
         border: 2px solid rgba(255, 255, 255, 0.85);
@@ -388,16 +399,35 @@
     .marker-healthspan {
         z-index: 2;
     }
+    .scale-marker-tooltip {
+        position: fixed;
+        background-color: rgba(17, 17, 17, 0.92);
+        color: #ffffff;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 0.75rem;
+        line-height: 1.2;
+        pointer-events: none;
+        opacity: 0;
+        transform: translate(-50%, -8px);
+        transition: opacity 0.1s ease-in-out;
+        z-index: 9999;
+        white-space: nowrap;
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
+    }
+    .scale-marker-tooltip.visible {
+        opacity: 1;
+    }
 </style>
 <h1 class="report-title">Watch Wellness</h1>
 
 <div id="master-score-overview" class="master-score-overview">
     <div class="score-scale-container">
-        <div class="scale-wrapper">
-            <div class="score-scale-bar gradient-scale"></div>
-            <div class="scale-marker-group">
-                <div id="master-marker-recent" class="scale-marker marker-recent" data-label="R">R</div>
-                <div id="master-marker-healthspan" class="scale-marker marker-healthspan" data-label="HS">HS</div>
+            <div class="scale-wrapper">
+                <div class="score-scale-bar gradient-scale"></div>
+                <div class="scale-marker-group">
+                    <div id="master-marker-recent" class="scale-marker marker-recent" data-label="PoA">PoA</div>
+                    <div id="master-marker-healthspan" class="scale-marker marker-healthspan" data-label="HS">HS</div>
             </div>
         </div>
     </div>
@@ -431,7 +461,7 @@
                     <div class="scale-wrapper">
                         <div class="score-scale-bar gradient-scale"></div>
                         <div class="scale-marker-group">
-                            <div id="sleep-category-marker-recent" class="scale-marker marker-recent" data-label="R">R</div>
+                            <div id="sleep-category-marker-recent" class="scale-marker marker-recent" data-label="PoA">PoA</div>
                             <div id="sleep-category-marker-healthspan" class="scale-marker marker-healthspan" data-label="HS">HS</div>
                         </div>
                     </div>
@@ -477,7 +507,7 @@
                     <div class="scale-wrapper">
                         <div class="score-scale-bar gradient-scale"></div>
                         <div class="scale-marker-group">
-                            <div id="aerobic-category-marker-recent" class="scale-marker marker-recent" data-label="R">R</div>
+                            <div id="aerobic-category-marker-recent" class="scale-marker marker-recent" data-label="PoA">PoA</div>
                             <div id="aerobic-category-marker-healthspan" class="scale-marker marker-healthspan" data-label="HS">HS</div>
                         </div>
                     </div>
@@ -523,7 +553,7 @@
                     <div class="scale-wrapper">
                         <div class="score-scale-bar gradient-scale"></div>
                         <div class="scale-marker-group">
-                            <div id="anaerobic-category-marker-recent" class="scale-marker marker-recent" data-label="R">R</div>
+                            <div id="anaerobic-category-marker-recent" class="scale-marker marker-recent" data-label="PoA">PoA</div>
                             <div id="anaerobic-category-marker-healthspan" class="scale-marker marker-healthspan" data-label="HS">HS</div>
                         </div>
                     </div>
@@ -562,7 +592,7 @@
                     <div class="scale-wrapper">
                         <div class="score-scale-bar gradient-scale"></div>
                         <div class="scale-marker-group">
-                            <div id="healthspan-sleep-category-marker-recent" class="scale-marker marker-recent" data-label="R">R</div>
+                            <div id="healthspan-sleep-category-marker-recent" class="scale-marker marker-recent" data-label="PoA">PoA</div>
                             <div id="healthspan-sleep-category-marker-healthspan" class="scale-marker marker-healthspan" data-label="HS">HS</div>
                         </div>
                     </div>
@@ -578,7 +608,7 @@
                             <div class="scale-wrapper">
                                 <div class="score-scale-bar gradient-scale"></div>
                                 <div class="scale-marker-group">
-                                    <div id="healthspan-sleep-window-marker-recent" class="scale-marker marker-recent" data-label="R">R</div>
+                                    <div id="healthspan-sleep-window-marker-recent" class="scale-marker marker-recent" data-label="PoA">PoA</div>
                                     <div id="healthspan-sleep-window-marker-healthspan" class="scale-marker marker-healthspan" data-label="HS">HS</div>
                                 </div>
                             </div>
@@ -590,7 +620,7 @@
                             <div class="scale-wrapper">
                                 <div class="score-scale-bar gradient-scale"></div>
                                 <div class="scale-marker-group">
-                                    <div id="healthspan-sleep-duration-marker-recent" class="scale-marker marker-recent" data-label="R">R</div>
+                                    <div id="healthspan-sleep-duration-marker-recent" class="scale-marker marker-recent" data-label="PoA">PoA</div>
                                     <div id="healthspan-sleep-duration-marker-healthspan" class="scale-marker marker-healthspan" data-label="HS">HS</div>
                                 </div>
                             </div>
@@ -638,7 +668,7 @@
                     <div class="scale-wrapper">
                         <div class="score-scale-bar gradient-scale"></div>
                         <div class="scale-marker-group">
-                            <div id="healthspan-aerobic-category-marker-recent" class="scale-marker marker-recent" data-label="R">R</div>
+                            <div id="healthspan-aerobic-category-marker-recent" class="scale-marker marker-recent" data-label="PoA">PoA</div>
                             <div id="healthspan-aerobic-category-marker-healthspan" class="scale-marker marker-healthspan" data-label="HS">HS</div>
                         </div>
                     </div>
@@ -676,7 +706,7 @@
                             <div class="scale-wrapper">
                                 <div class="score-scale-bar gradient-scale"></div>
                                 <div class="scale-marker-group">
-                                    <div id="healthspan-heart-rate-marker-recent" class="scale-marker marker-recent" data-label="R">R</div>
+                                    <div id="healthspan-heart-rate-marker-recent" class="scale-marker marker-recent" data-label="PoA">PoA</div>
                                     <div id="healthspan-heart-rate-marker-healthspan" class="scale-marker marker-healthspan" data-label="HS">HS</div>
                                 </div>
                             </div>
@@ -688,7 +718,7 @@
                             <div class="scale-wrapper">
                                 <div class="score-scale-bar gradient-scale gradient-steps"></div>
                                 <div class="scale-marker-group">
-                                    <div id="healthspan-steps-marker-recent" class="scale-marker marker-recent" data-label="R">R</div>
+                                    <div id="healthspan-steps-marker-recent" class="scale-marker marker-recent" data-label="PoA">PoA</div>
                                     <div id="healthspan-steps-marker-healthspan" class="scale-marker marker-healthspan" data-label="HS">HS</div>
                                 </div>
                             </div>
@@ -758,7 +788,7 @@
                     <div class="scale-wrapper">
                         <div class="score-scale-bar gradient-scale"></div>
                         <div class="scale-marker-group">
-                            <div id="healthspan-anaerobic-category-marker-recent" class="scale-marker marker-recent" data-label="R">R</div>
+                            <div id="healthspan-anaerobic-category-marker-recent" class="scale-marker marker-recent" data-label="PoA">PoA</div>
                             <div id="healthspan-anaerobic-category-marker-healthspan" class="scale-marker marker-healthspan" data-label="HS">HS</div>
                         </div>
                     </div>
@@ -774,7 +804,7 @@
                             <div class="scale-wrapper">
                                 <div class="score-scale-bar gradient-scale"></div>
                                 <div class="scale-marker-group">
-                            <div id="healthspan-strength-marker-recent" class="scale-marker marker-recent" data-label="R">R</div>
+                            <div id="healthspan-strength-marker-recent" class="scale-marker marker-recent" data-label="PoA">PoA</div>
                                     <div id="healthspan-strength-marker-healthspan" class="scale-marker marker-healthspan" data-label="HS">HS</div>
                                 </div>
                             </div>
@@ -827,8 +857,68 @@
     "daily-controls": {
         "sleep": {
             "latestScore": -1.1650000000000005,
-            "averageScore": -1.0885786489526372,
+            "averageScore": -1.1525000000000019,
             "daily": [
+                {
+                    "label": "Nov 15",
+                    "consistencyScore": 0.95,
+                    "durationScore": 0.93,
+                    "consistencyRescaled": 2.0,
+                    "durationRescaled": 2.0,
+                    "consistencyColor": "#43a047",
+                    "durationColor": "#43a047",
+                    "sleepTime": "00:41",
+                    "wakeTime": "09:15",
+                    "sleepDuration": 8.566666666666666,
+                    "timeInBed": 8.85,
+                    "awakeCount": 1,
+                    "hasData": true
+                },
+                {
+                    "label": "Nov 14",
+                    "consistencyScore": 0.95,
+                    "durationScore": 0.93,
+                    "consistencyRescaled": 2.0,
+                    "durationRescaled": 2.0,
+                    "consistencyColor": "#43a047",
+                    "durationColor": "#43a047",
+                    "sleepTime": "00:23",
+                    "wakeTime": "08:07",
+                    "sleepDuration": 7.733333333333333,
+                    "timeInBed": 7.8,
+                    "awakeCount": 0,
+                    "hasData": true
+                },
+                {
+                    "label": "Nov 13",
+                    "consistencyScore": 0.95,
+                    "durationScore": 0.93,
+                    "consistencyRescaled": 2.0,
+                    "durationRescaled": 2.0,
+                    "consistencyColor": "#43a047",
+                    "durationColor": "#43a047",
+                    "sleepTime": "01:04",
+                    "wakeTime": "08:59",
+                    "sleepDuration": 7.916666666666667,
+                    "timeInBed": 7.95,
+                    "awakeCount": 0,
+                    "hasData": true
+                },
+                {
+                    "label": "Nov 12",
+                    "consistencyScore": 0.95,
+                    "durationScore": 0.93,
+                    "consistencyRescaled": 2.0,
+                    "durationRescaled": 2.0,
+                    "consistencyColor": "#43a047",
+                    "durationColor": "#43a047",
+                    "sleepTime": "00:14",
+                    "wakeTime": "08:00",
+                    "sleepDuration": 7.766666666666667,
+                    "timeInBed": 7.833333333333333,
+                    "awakeCount": 0,
+                    "hasData": true
+                },
                 {
                     "label": "Nov 11",
                     "consistencyScore": 0.95,
@@ -873,66 +963,6 @@
                     "timeInBed": 7.965277777777778,
                     "awakeCount": 0,
                     "hasData": true
-                },
-                {
-                    "label": "Nov 08",
-                    "consistencyScore": 0.9545669577874818,
-                    "durationScore": 0.93,
-                    "consistencyRescaled": 1.9086608442503632,
-                    "durationRescaled": 2.0,
-                    "consistencyColor": "#54a857",
-                    "durationColor": "#43a047",
-                    "sleepTime": "00:37",
-                    "wakeTime": "09:04",
-                    "sleepDuration": 8.45,
-                    "timeInBed": 9.283333333333333,
-                    "awakeCount": 3,
-                    "hasData": true
-                },
-                {
-                    "label": "Nov 07",
-                    "consistencyScore": 0.9574478408539544,
-                    "durationScore": 0.93,
-                    "consistencyRescaled": 1.8510431829209113,
-                    "durationRescaled": 2.0,
-                    "consistencyColor": "#5fae62",
-                    "durationColor": "#43a047",
-                    "sleepTime": "00:53",
-                    "wakeTime": "09:03",
-                    "sleepDuration": 8.166666666666666,
-                    "timeInBed": 8.416666666666666,
-                    "awakeCount": 1,
-                    "hasData": true
-                },
-                {
-                    "label": "Nov 06",
-                    "consistencyScore": 0.9765274494352507,
-                    "durationScore": 0.93,
-                    "consistencyRescaled": 1.4694510112949852,
-                    "durationRescaled": 2.0,
-                    "consistencyColor": "#a6d2a8",
-                    "durationColor": "#43a047",
-                    "sleepTime": "01:03",
-                    "wakeTime": "09:28",
-                    "sleepDuration": 8.416666666666666,
-                    "timeInBed": 8.716666666666667,
-                    "awakeCount": 1,
-                    "hasData": true
-                },
-                {
-                    "label": "Nov 05",
-                    "consistencyScore": 0.959570596797671,
-                    "durationScore": 0.93,
-                    "consistencyRescaled": 1.8085880640465797,
-                    "durationRescaled": 2.0,
-                    "consistencyColor": "#66b26a",
-                    "durationColor": "#43a047",
-                    "sleepTime": "23:57",
-                    "wakeTime": "07:37",
-                    "sleepDuration": 7.666666666666667,
-                    "timeInBed": 7.916666666666667,
-                    "awakeCount": 1,
-                    "hasData": true
                 }
             ],
             "colorStops": [
@@ -963,6 +993,42 @@
             "averageScore": 0.0,
             "daily": [
                 {
+                    "label": "Nov 15",
+                    "dailySteps": 30658,
+                    "rollingAvgSteps": 18397,
+                    "hazardRatio": 1.0,
+                    "hazardRatioRescaled": 1.0,
+                    "hrColor": "#ffffff",
+                    "hasData": true
+                },
+                {
+                    "label": "Nov 14",
+                    "dailySteps": 15099,
+                    "rollingAvgSteps": 17841,
+                    "hazardRatio": 1.0,
+                    "hazardRatioRescaled": 1.0,
+                    "hrColor": "#ffffff",
+                    "hasData": true
+                },
+                {
+                    "label": "Nov 13",
+                    "dailySteps": 16669,
+                    "rollingAvgSteps": 16768,
+                    "hazardRatio": 1.0,
+                    "hazardRatioRescaled": 1.0,
+                    "hrColor": "#ffffff",
+                    "hasData": true
+                },
+                {
+                    "label": "Nov 12",
+                    "dailySteps": 14364,
+                    "rollingAvgSteps": 16012,
+                    "hazardRatio": 1.0,
+                    "hazardRatioRescaled": 1.0,
+                    "hrColor": "#ffffff",
+                    "hasData": true
+                },
+                {
                     "label": "Nov 11",
                     "dailySteps": 13496,
                     "rollingAvgSteps": 14957,
@@ -984,42 +1050,6 @@
                     "label": "Nov 09",
                     "dailySteps": 22975,
                     "rollingAvgSteps": 14857,
-                    "hazardRatio": 1.0,
-                    "hazardRatioRescaled": 1.0,
-                    "hrColor": "#ffffff",
-                    "hasData": true
-                },
-                {
-                    "label": "Nov 08",
-                    "dailySteps": 26764,
-                    "rollingAvgSteps": 15052,
-                    "hazardRatio": 1.0,
-                    "hazardRatioRescaled": 1.0,
-                    "hrColor": "#ffffff",
-                    "hasData": true
-                },
-                {
-                    "label": "Nov 07",
-                    "dailySteps": 7592,
-                    "rollingAvgSteps": 12463,
-                    "hazardRatio": 1.0,
-                    "hazardRatioRescaled": 1.0,
-                    "hrColor": "#ffffff",
-                    "hasData": true
-                },
-                {
-                    "label": "Nov 06",
-                    "dailySteps": 11378,
-                    "rollingAvgSteps": 12254,
-                    "hazardRatio": 1.0,
-                    "hazardRatioRescaled": 1.0,
-                    "hrColor": "#ffffff",
-                    "hasData": true
-                },
-                {
-                    "label": "Nov 05",
-                    "dailySteps": 6979,
-                    "rollingAvgSteps": 12223,
                     "hazardRatio": 1.0,
                     "hazardRatioRescaled": 1.0,
                     "hrColor": "#ffffff",
@@ -1050,9 +1080,233 @@
             ]
         },
         "heartRate": {
-            "latestScore": -0.07058823529411784,
-            "averageScore": -0.29286106966151193,
+            "latestScore": 0.0,
+            "averageScore": -0.1416633943296941,
             "daily": [
+                {
+                    "label": "Nov 15",
+                    "mpaTime": 2.0,
+                    "vpaTime": 0.0,
+                    "adjVpaTime": 1.0,
+                    "rolling7Day": 216.0,
+                    "hazardRatio": 1.0,
+                    "hazardRatioRescaled": 1.0,
+                    "restingHR": 48.0,
+                    "maxHR": 195.0,
+                    "hrReserve": 147.0,
+                    "zoneTimes": {
+                        "0-4": 0.0,
+                        "100-104": 0.0,
+                        "105-109": 0.0,
+                        "10-14": 0.0,
+                        "110-114": 0.0,
+                        "115-119": 0.0,
+                        "120-124": 0.0,
+                        "125-129": 0.0,
+                        "130-134": 0.0,
+                        "135-139": 0.0,
+                        "140-144": 0.0,
+                        "145-149": 0.0,
+                        "150-154": 0.0,
+                        "155-159": 0.0,
+                        "15-19": 0.0,
+                        "160-164": 0.0,
+                        "165-169": 0.0,
+                        "170-174": 0.0,
+                        "175-179": 0.0,
+                        "180-184": 0.0,
+                        "185-189": 0.0,
+                        "190-194": 0.0,
+                        "195-199": 0.0,
+                        "200plus": 0.0,
+                        "20-24": 0.0,
+                        "25-29": 0.0,
+                        "30-34": 0.0,
+                        "35-39": 0.0,
+                        "40-44": 0.0,
+                        "45-49": 0.0,
+                        "50-54": 0.0,
+                        "55-59": 0.0,
+                        "5-9": 0.0,
+                        "60-64": 0.0,
+                        "65-69": 0.0,
+                        "70-74": 0.0,
+                        "75-79": 0.0,
+                        "80-84": 0.0,
+                        "85-89": 0.0,
+                        "90-94": 0.0,
+                        "95-99": 0.0
+                    },
+                    "hasData": true
+                },
+                {
+                    "label": "Nov 14",
+                    "mpaTime": 20.0,
+                    "vpaTime": 0.0,
+                    "adjVpaTime": 10.0,
+                    "rolling7Day": 214.0,
+                    "hazardRatio": 1.0005882352941176,
+                    "hazardRatioRescaled": 0.997442455242967,
+                    "restingHR": 50.0,
+                    "maxHR": 195.0,
+                    "hrReserve": 145.0,
+                    "zoneTimes": {
+                        "0-4": 0.0,
+                        "100-104": 0.0,
+                        "105-109": 0.0,
+                        "10-14": 0.0,
+                        "110-114": 0.0,
+                        "115-119": 0.0,
+                        "120-124": 0.0,
+                        "125-129": 0.0,
+                        "130-134": 0.0,
+                        "135-139": 0.0,
+                        "140-144": 0.0,
+                        "145-149": 0.0,
+                        "150-154": 0.0,
+                        "155-159": 0.0,
+                        "15-19": 0.0,
+                        "160-164": 0.0,
+                        "165-169": 0.0,
+                        "170-174": 0.0,
+                        "175-179": 0.0,
+                        "180-184": 0.0,
+                        "185-189": 0.0,
+                        "190-194": 0.0,
+                        "195-199": 0.0,
+                        "200plus": 0.0,
+                        "20-24": 0.0,
+                        "25-29": 0.0,
+                        "30-34": 0.0,
+                        "35-39": 0.0,
+                        "40-44": 0.0,
+                        "45-49": 0.0,
+                        "50-54": 0.0,
+                        "55-59": 0.0,
+                        "5-9": 0.0,
+                        "60-64": 0.0,
+                        "65-69": 0.0,
+                        "70-74": 0.0,
+                        "75-79": 0.0,
+                        "80-84": 0.0,
+                        "85-89": 0.0,
+                        "90-94": 0.0,
+                        "95-99": 0.0
+                    },
+                    "hasData": true
+                },
+                {
+                    "label": "Nov 13",
+                    "mpaTime": 22.0,
+                    "vpaTime": 0.0,
+                    "adjVpaTime": 11.0,
+                    "rolling7Day": 194.0,
+                    "hazardRatio": 1.0064705882352942,
+                    "hazardRatioRescaled": 0.9718670076726339,
+                    "restingHR": 48.0,
+                    "maxHR": 195.0,
+                    "hrReserve": 147.0,
+                    "zoneTimes": {
+                        "0-4": 0.0,
+                        "100-104": 0.0,
+                        "105-109": 0.0,
+                        "10-14": 0.0,
+                        "110-114": 0.0,
+                        "115-119": 0.0,
+                        "120-124": 0.0,
+                        "125-129": 0.0,
+                        "130-134": 0.0,
+                        "135-139": 0.0,
+                        "140-144": 0.0,
+                        "145-149": 0.0,
+                        "150-154": 0.0,
+                        "155-159": 0.0,
+                        "15-19": 0.0,
+                        "160-164": 0.0,
+                        "165-169": 0.0,
+                        "170-174": 0.0,
+                        "175-179": 0.0,
+                        "180-184": 0.0,
+                        "185-189": 0.0,
+                        "190-194": 0.0,
+                        "195-199": 0.0,
+                        "200plus": 0.0,
+                        "20-24": 0.0,
+                        "25-29": 0.0,
+                        "30-34": 0.0,
+                        "35-39": 0.0,
+                        "40-44": 0.0,
+                        "45-49": 0.0,
+                        "50-54": 0.0,
+                        "55-59": 0.0,
+                        "5-9": 0.0,
+                        "60-64": 0.0,
+                        "65-69": 0.0,
+                        "70-74": 0.0,
+                        "75-79": 0.0,
+                        "80-84": 0.0,
+                        "85-89": 0.0,
+                        "90-94": 0.0,
+                        "95-99": 0.0
+                    },
+                    "hasData": true
+                },
+                {
+                    "label": "Nov 12",
+                    "mpaTime": 18.0,
+                    "vpaTime": 4.0,
+                    "adjVpaTime": 13.0,
+                    "rolling7Day": 216.0,
+                    "hazardRatio": 1.0,
+                    "hazardRatioRescaled": 1.0,
+                    "restingHR": 49.0,
+                    "maxHR": 195.0,
+                    "hrReserve": 146.0,
+                    "zoneTimes": {
+                        "0-4": 0.0,
+                        "100-104": 0.0,
+                        "105-109": 0.0,
+                        "10-14": 0.0,
+                        "110-114": 0.0,
+                        "115-119": 0.0,
+                        "120-124": 0.0,
+                        "125-129": 0.0,
+                        "130-134": 0.0,
+                        "135-139": 0.0,
+                        "140-144": 0.0,
+                        "145-149": 0.0,
+                        "150-154": 0.0,
+                        "155-159": 0.0,
+                        "15-19": 0.0,
+                        "160-164": 0.0,
+                        "165-169": 0.0,
+                        "170-174": 0.0,
+                        "175-179": 0.0,
+                        "180-184": 0.0,
+                        "185-189": 0.0,
+                        "190-194": 0.0,
+                        "195-199": 0.0,
+                        "200plus": 0.0,
+                        "20-24": 0.0,
+                        "25-29": 0.0,
+                        "30-34": 0.0,
+                        "35-39": 0.0,
+                        "40-44": 0.0,
+                        "45-49": 0.0,
+                        "50-54": 0.0,
+                        "55-59": 0.0,
+                        "5-9": 0.0,
+                        "60-64": 0.0,
+                        "65-69": 0.0,
+                        "70-74": 0.0,
+                        "75-79": 0.0,
+                        "80-84": 0.0,
+                        "85-89": 0.0,
+                        "90-94": 0.0,
+                        "95-99": 0.0
+                    },
+                    "hasData": true
+                },
                 {
                     "label": "Nov 11",
                     "mpaTime": 40.0,
@@ -1220,230 +1474,6 @@
                         "95-99": 0.0
                     },
                     "hasData": true
-                },
-                {
-                    "label": "Nov 08",
-                    "mpaTime": 0.0,
-                    "vpaTime": 0.0,
-                    "adjVpaTime": 0.0,
-                    "rolling7Day": 148.0,
-                    "hazardRatio": 1.0290654205607477,
-                    "hazardRatioRescaled": 0.8736286062576188,
-                    "restingHR": 45.0,
-                    "maxHR": 195.0,
-                    "hrReserve": 150.0,
-                    "zoneTimes": {
-                        "0-4": 0.0,
-                        "100-104": 0.0,
-                        "105-109": 0.0,
-                        "10-14": 0.0,
-                        "110-114": 0.0,
-                        "115-119": 0.0,
-                        "120-124": 0.0,
-                        "125-129": 0.0,
-                        "130-134": 0.0,
-                        "135-139": 0.0,
-                        "140-144": 0.0,
-                        "145-149": 0.0,
-                        "150-154": 0.0,
-                        "155-159": 0.0,
-                        "15-19": 0.0,
-                        "160-164": 0.0,
-                        "165-169": 0.0,
-                        "170-174": 0.0,
-                        "175-179": 0.0,
-                        "180-184": 0.0,
-                        "185-189": 0.0,
-                        "190-194": 0.0,
-                        "195-199": 0.0,
-                        "200plus": 0.0,
-                        "20-24": 0.0,
-                        "25-29": 0.0,
-                        "30-34": 0.0,
-                        "35-39": 0.0,
-                        "40-44": 0.0,
-                        "45-49": 0.0,
-                        "50-54": 0.0,
-                        "55-59": 0.0,
-                        "5-9": 0.0,
-                        "60-64": 0.0,
-                        "65-69": 0.0,
-                        "70-74": 0.0,
-                        "75-79": 0.0,
-                        "80-84": 0.0,
-                        "85-89": 0.0,
-                        "90-94": 0.0,
-                        "95-99": 0.0
-                    },
-                    "hasData": true
-                },
-                {
-                    "label": "Nov 07",
-                    "mpaTime": 0.0,
-                    "vpaTime": 0.0,
-                    "adjVpaTime": 0.0,
-                    "rolling7Day": 148.0,
-                    "hazardRatio": 1.0290654205607477,
-                    "hazardRatioRescaled": 0.8736286062576188,
-                    "restingHR": 46.0,
-                    "maxHR": 195.0,
-                    "hrReserve": 149.0,
-                    "zoneTimes": {
-                        "0-4": 0.0,
-                        "100-104": 0.0,
-                        "105-109": 0.0,
-                        "10-14": 0.0,
-                        "110-114": 0.0,
-                        "115-119": 0.0,
-                        "120-124": 0.0,
-                        "125-129": 0.0,
-                        "130-134": 0.0,
-                        "135-139": 0.0,
-                        "140-144": 0.0,
-                        "145-149": 0.0,
-                        "150-154": 0.0,
-                        "155-159": 0.0,
-                        "15-19": 0.0,
-                        "160-164": 0.0,
-                        "165-169": 0.0,
-                        "170-174": 0.0,
-                        "175-179": 0.0,
-                        "180-184": 0.0,
-                        "185-189": 0.0,
-                        "190-194": 0.0,
-                        "195-199": 0.0,
-                        "200plus": 0.0,
-                        "20-24": 0.0,
-                        "25-29": 0.0,
-                        "30-34": 0.0,
-                        "35-39": 0.0,
-                        "40-44": 0.0,
-                        "45-49": 0.0,
-                        "50-54": 0.0,
-                        "55-59": 0.0,
-                        "5-9": 0.0,
-                        "60-64": 0.0,
-                        "65-69": 0.0,
-                        "70-74": 0.0,
-                        "75-79": 0.0,
-                        "80-84": 0.0,
-                        "85-89": 0.0,
-                        "90-94": 0.0,
-                        "95-99": 0.0
-                    },
-                    "hasData": true
-                },
-                {
-                    "label": "Nov 06",
-                    "mpaTime": 36.0,
-                    "vpaTime": 4.0,
-                    "adjVpaTime": 22.0,
-                    "rolling7Day": 156.0,
-                    "hazardRatio": 1.0245794392523364,
-                    "hazardRatioRescaled": 0.8931328728159287,
-                    "restingHR": 45.0,
-                    "maxHR": 195.0,
-                    "hrReserve": 150.0,
-                    "zoneTimes": {
-                        "0-4": 0.0,
-                        "100-104": 0.0,
-                        "105-109": 0.0,
-                        "10-14": 0.0,
-                        "110-114": 0.0,
-                        "115-119": 0.0,
-                        "120-124": 0.0,
-                        "125-129": 0.0,
-                        "130-134": 0.0,
-                        "135-139": 0.0,
-                        "140-144": 0.0,
-                        "145-149": 0.0,
-                        "150-154": 0.0,
-                        "155-159": 0.0,
-                        "15-19": 0.0,
-                        "160-164": 0.0,
-                        "165-169": 0.0,
-                        "170-174": 0.0,
-                        "175-179": 0.0,
-                        "180-184": 0.0,
-                        "185-189": 0.0,
-                        "190-194": 0.0,
-                        "195-199": 0.0,
-                        "200plus": 0.0,
-                        "20-24": 0.0,
-                        "25-29": 0.0,
-                        "30-34": 0.0,
-                        "35-39": 0.0,
-                        "40-44": 0.0,
-                        "45-49": 0.0,
-                        "50-54": 0.0,
-                        "55-59": 0.0,
-                        "5-9": 0.0,
-                        "60-64": 0.0,
-                        "65-69": 0.0,
-                        "70-74": 0.0,
-                        "75-79": 0.0,
-                        "80-84": 0.0,
-                        "85-89": 0.0,
-                        "90-94": 0.0,
-                        "95-99": 0.0
-                    },
-                    "hasData": true
-                },
-                {
-                    "label": "Nov 05",
-                    "mpaTime": 2.0,
-                    "vpaTime": 0.0,
-                    "adjVpaTime": 1.0,
-                    "rolling7Day": 146.0,
-                    "hazardRatio": 1.0301869158878505,
-                    "hazardRatioRescaled": 0.8687525396180413,
-                    "restingHR": 49.0,
-                    "maxHR": 195.0,
-                    "hrReserve": 146.0,
-                    "zoneTimes": {
-                        "0-4": 0.0,
-                        "100-104": 0.0,
-                        "105-109": 0.0,
-                        "10-14": 0.0,
-                        "110-114": 0.0,
-                        "115-119": 0.0,
-                        "120-124": 0.0,
-                        "125-129": 0.0,
-                        "130-134": 0.0,
-                        "135-139": 0.0,
-                        "140-144": 0.0,
-                        "145-149": 0.0,
-                        "150-154": 0.0,
-                        "155-159": 0.0,
-                        "15-19": 0.0,
-                        "160-164": 0.0,
-                        "165-169": 0.0,
-                        "170-174": 0.0,
-                        "175-179": 0.0,
-                        "180-184": 0.0,
-                        "185-189": 0.0,
-                        "190-194": 0.0,
-                        "195-199": 0.0,
-                        "200plus": 0.0,
-                        "20-24": 0.0,
-                        "25-29": 0.0,
-                        "30-34": 0.0,
-                        "35-39": 0.0,
-                        "40-44": 0.0,
-                        "45-49": 0.0,
-                        "50-54": 0.0,
-                        "55-59": 0.0,
-                        "5-9": 0.0,
-                        "60-64": 0.0,
-                        "65-69": 0.0,
-                        "70-74": 0.0,
-                        "75-79": 0.0,
-                        "80-84": 0.0,
-                        "85-89": 0.0,
-                        "90-94": 0.0,
-                        "95-99": 0.0
-                    },
-                    "hasData": true
                 }
             ],
             "colorStops": [
@@ -1470,9 +1500,45 @@
             ]
         },
         "strength": {
-            "latestScore": -0.287187903025794,
-            "averageScore": -0.30780527100163213,
+            "latestScore": -0.23013794332837345,
+            "averageScore": -0.28156629109977405,
             "daily": [
+                {
+                    "label": "Nov 15",
+                    "dailyDuration": 0.0,
+                    "weeklySum": 150.82242024739585,
+                    "hrScore": 0.9769862056671627,
+                    "hrRescaled": 1.575344858320933,
+                    "hrColor": "#a8d3aa",
+                    "hasData": true
+                },
+                {
+                    "label": "Nov 14",
+                    "dailyDuration": 29.25596720377604,
+                    "weeklySum": 150.82242024739585,
+                    "hrScore": 0.9769862056671627,
+                    "hrRescaled": 1.575344858320933,
+                    "hrColor": "#a8d3aa",
+                    "hasData": true
+                },
+                {
+                    "label": "Nov 13",
+                    "dailyDuration": 0.0,
+                    "weeklySum": 172.51980183919272,
+                    "hrScore": 0.972853371078249,
+                    "hrRescaled": 1.6786657230437747,
+                    "hrColor": "#98cb9b",
+                    "hasData": true
+                },
+                {
+                    "label": "Nov 12",
+                    "dailyDuration": 47.6065185546875,
+                    "weeklySum": 207.07158406575525,
+                    "hrScore": 0.9662720792255703,
+                    "hrRescaled": 1.8431980193607407,
+                    "hrColor": "#80be82",
+                    "hasData": true
+                },
                 {
                     "label": "Nov 11",
                     "dailyDuration": 29.709950764973957,
@@ -1498,42 +1564,6 @@
                     "hrScore": 0.9690544259207589,
                     "hrRescaled": 1.7736393519810278,
                     "hrColor": "#8ac48d",
-                    "hasData": true
-                },
-                {
-                    "label": "Nov 08",
-                    "dailyDuration": 0.0,
-                    "weeklySum": 192.46426391601565,
-                    "hrScore": 0.9690544259207589,
-                    "hrRescaled": 1.7736393519810278,
-                    "hrColor": "#8ac48d",
-                    "hasData": true
-                },
-                {
-                    "label": "Nov 07",
-                    "dailyDuration": 50.953348795572914,
-                    "weeklySum": 192.46426391601565,
-                    "hrScore": 0.9690544259207589,
-                    "hrRescaled": 1.7736393519810278,
-                    "hrColor": "#8ac48d",
-                    "hasData": true
-                },
-                {
-                    "label": "Nov 06",
-                    "dailyDuration": 34.5517822265625,
-                    "weeklySum": 195.0982157389323,
-                    "hrScore": 0.9685527208116319,
-                    "hrRescaled": 1.7861819797092016,
-                    "hrColor": "#88c38b",
-                    "hasData": true
-                },
-                {
-                    "label": "Nov 05",
-                    "dailyDuration": 21.308583577473957,
-                    "weeklySum": 197.63773396809898,
-                    "hrScore": 0.9680690030536954,
-                    "hrRescaled": 1.7982749236576152,
-                    "hrColor": "#86c289",
                     "hasData": true
                 }
             ],
@@ -1563,12 +1593,12 @@
         "scoreBars": {
             "sleep": {
                 "recent": {
-                    "value": 1.0632933629980463,
-                    "displayValue": 1.0472525650335238
+                    "value": 1.2658248552050775,
+                    "displayValue": 1.0112665999114532
                 },
                 "healthspan": {
-                    "value": 1.2716577766317214,
-                    "displayValue": 0.9897963730964704
+                    "value": 1.2830226854158533,
+                    "displayValue": 0.988606714450371
                 },
                 "showRecent": true,
                 "showHealthspan": true,
@@ -1577,12 +1607,12 @@
                 "components": {
                     "consistency": {
                         "recent": {
-                            "value": 1.0179507766884528,
-                            "displayValue": 1.0887985107267444
+                            "value": 1.1957444188669752,
+                            "displayValue": 1.0642697579374816
                         },
                         "healthspan": {
-                            "value": 1.28499709693414,
-                            "displayValue": 1.0263909389171844
+                            "value": 1.3003862981542929,
+                            "displayValue": 1.0254867982581946
                         },
                         "showRecent": true,
                         "showHealthspan": true,
@@ -1591,12 +1621,12 @@
                     },
                     "duration": {
                         "recent": {
-                            "value": 1.6304533517435564,
-                            "displayValue": 0.9600848291639593
+                            "value": 1.7675772585198628,
+                            "displayValue": 0.9484884616354103
                         },
                         "healthspan": {
-                            "value": 1.5798127982792232,
-                            "displayValue": 0.9635606136989985
+                            "value": 1.584854137258856,
+                            "displayValue": 0.9632077199704243
                         },
                         "showRecent": true,
                         "showHealthspan": true,
@@ -1607,12 +1637,12 @@
             },
             "aerobic": {
                 "recent": {
-                    "value": 1.5053034744029365,
-                    "displayValue": 0.6018013711620576
+                    "value": 1.5318437076051503,
+                    "displayValue": 0.5978131314827675
                 },
                 "healthspan": {
-                    "value": 1.793779056288935,
-                    "displayValue": 0.5510853458473217
+                    "value": 1.7876863675627208,
+                    "displayValue": 0.5514959241230226
                 },
                 "showRecent": true,
                 "showHealthspan": true,
@@ -1621,12 +1651,12 @@
             },
             "anaerobic": {
                 "recent": {
-                    "value": 1.5074292586989047,
-                    "displayValue": 0.8989604210769492
+                    "value": 1.5079830065170374,
+                    "displayValue": 0.899985533014384
                 },
                 "healthspan": {
-                    "value": 1.2772819117063066,
-                    "displayValue": 0.9486091311143005
+                    "value": 1.2922354546314927,
+                    "displayValue": 0.9463865412609467
                 },
                 "showRecent": true,
                 "showHealthspan": true,
@@ -1651,21 +1681,21 @@
     },
     "healthspan": {
         "sleep": {
-            "latestScore": -0.1836554850000205,
-            "averageScore": 0.05389885158537222,
+            "latestScore": -0.6932176496981235,
+            "averageScore": 0.04534021745606909,
             "daily": [
                 {
                     "label": "Week of Nov 03",
-                    "consistencyScore": 1.0555209155913958,
+                    "consistencyScore": 1.0007292849786962,
                     "durationScore": 0.93,
-                    "consistencyRescaled": 1.0231101285196742,
+                    "consistencyRescaled": 1.471212203432183,
                     "durationRescaled": 2.0,
-                    "consistencyColor": "#e53935",
+                    "consistencyColor": "#fefcfc",
                     "durationColor": "#43a047",
-                    "sleepTime": "23:57",
-                    "wakeTime": "07:37",
-                    "sleepDuration": 7.888333333333333,
-                    "timeInBed": 8.121666666666668,
+                    "sleepTime": "00:13",
+                    "wakeTime": "08:03",
+                    "sleepDuration": 8.07813492063492,
+                    "timeInBed": 8.392420634920635,
                     "awakeCount": 1,
                     "hasData": true
                 },
@@ -1986,16 +2016,16 @@
                 },
                 {
                     "label": "Week of Jun 02",
-                    "consistencyScore": 0.9660156803937193,
-                    "durationScore": 0.9808814484126984,
-                    "consistencyRescaled": 1.6796863921256135,
-                    "durationRescaled": 1.3815972222222221,
+                    "consistencyScore": 0.965974402091604,
+                    "durationScore": 1.0133333333333334,
+                    "consistencyRescaled": 1.68051195816792,
+                    "durationRescaled": 1.0,
                     "consistencyColor": "#7fbe81",
-                    "durationColor": "#b7dab8",
+                    "durationColor": "#f8cac9",
                     "sleepTime": "00:05",
                     "wakeTime": "06:49",
-                    "sleepDuration": 7.215753968253969,
-                    "timeInBed": 7.689563492063492,
+                    "sleepDuration": 6.95,
+                    "timeInBed": 7.344444444444444,
                     "awakeCount": 1,
                     "hasData": true
                 }
@@ -2117,7 +2147,7 @@
                 },
                 {
                     "date": "Week of Jun 02",
-                    "vo2": 56.65714285714286
+                    "vo2": 56.6
                 }
             ],
             "zones": [
@@ -2171,8 +2201,8 @@
             "daily": [
                 {
                     "label": "Week of Nov 03",
-                    "dailySteps": 11763,
-                    "rollingAvgSteps": 12012,
+                    "dailySteps": 14857,
+                    "rollingAvgSteps": 12952,
                     "hazardRatio": 1.0,
                     "hazardRatioRescaled": 1.0,
                     "hrColor": "#ffffff",
@@ -2369,8 +2399,8 @@
                 },
                 {
                     "label": "Week of Jun 02",
-                    "dailySteps": 14008,
-                    "rollingAvgSteps": 14381,
+                    "dailySteps": 18277,
+                    "rollingAvgSteps": 13916,
                     "hazardRatio": 1.0,
                     "hazardRatioRescaled": 1.0,
                     "hrColor": "#ffffff",
@@ -2401,20 +2431,20 @@
             ]
         },
         "heartRate": {
-            "latestScore": -0.20786146234194725,
-            "averageScore": -0.2011786488491918,
+            "latestScore": -0.29362286970863183,
+            "averageScore": -0.19576186542174856,
             "daily": [
                 {
                     "label": "Week of Nov 03",
-                    "mpaTime": 36.0,
-                    "vpaTime": 6.0,
-                    "adjVpaTime": 24.0,
-                    "rolling7Day": 164.66666666666666,
-                    "hazardRatio": 1.0207861462341947,
-                    "hazardRatioRescaled": 0.9096254511556755,
-                    "restingHR": 48.0,
+                    "mpaTime": 72.0,
+                    "vpaTime": 10.0,
+                    "adjVpaTime": 46.0,
+                    "rolling7Day": 148.28571428571428,
+                    "hazardRatio": 1.0293622869708632,
+                    "hazardRatioRescaled": 0.8723378827353778,
+                    "restingHR": 46.714285714285715,
                     "maxHR": 195.0,
-                    "hrReserve": 147.0,
+                    "hrReserve": 148.28571428571428,
                     "zoneTimes": {},
                     "hasData": true
                 },
@@ -2714,15 +2744,15 @@
                 },
                 {
                     "label": "Week of Jun 02",
-                    "mpaTime": 130.0,
+                    "mpaTime": 56.0,
                     "vpaTime": 12.0,
-                    "adjVpaTime": 77.0,
-                    "rolling7Day": 79.71428571428571,
-                    "hazardRatio": 1.0776906097018248,
-                    "hazardRatioRescaled": 0.6622147404268491,
-                    "restingHR": 45.57142857142857,
+                    "adjVpaTime": 40.0,
+                    "rolling7Day": 100.66666666666667,
+                    "hazardRatio": 1.0566558670820354,
+                    "hazardRatioRescaled": 0.7536701431215854,
+                    "restingHR": 46.333333333333336,
                     "maxHR": 195.0,
-                    "hrReserve": 149.42857142857142,
+                    "hrReserve": 148.66666666666666,
                     "zoneTimes": {},
                     "hasData": true
                 }
@@ -2751,13 +2781,13 @@
             ]
         },
         "rhr": {
-            "latestScore": -1.7209999999999992,
-            "averageScore": -1.7194534161490682,
+            "latestScore": -1.8148571428571425,
+            "averageScore": -1.7208136645962735,
             "daily": [
                 {
                     "label": "Week of Nov 03",
-                    "rhr": 48,
-                    "hrScore": 0.8279000000000001,
+                    "rhr": 46,
+                    "hrScore": 0.8185142857142857,
                     "hrColor": "#43a047",
                     "hasData": true
                 },
@@ -2910,8 +2940,8 @@
                 },
                 {
                     "label": "Week of Jun 02",
-                    "rhr": 45,
-                    "hrScore": 0.8143428571428571,
+                    "rhr": 46,
+                    "hrScore": 0.8206000000000001,
                     "hrColor": "#43a047",
                     "hasData": true
                 }
@@ -2940,16 +2970,16 @@
             ]
         },
         "strength": {
-            "latestScore": -0.3570751010147999,
-            "averageScore": -0.2084677944906066,
+            "latestScore": -0.3305807596150445,
+            "averageScore": -0.20759387574096566,
             "daily": [
                 {
                     "label": "Week of Nov 03",
-                    "dailyDuration": 35.65304429796007,
-                    "weeklySum": 224.41601630316845,
-                    "hrScore": 0.96429248989852,
-                    "hrRescaled": 1.892687752536996,
-                    "hrColor": "#78bb7b",
+                    "dailyDuration": 27.49489484514509,
+                    "weeklySum": 206.53415091378352,
+                    "hrScore": 0.9669419240384955,
+                    "hrRescaled": 1.8264518990376106,
+                    "hrColor": "#82c085",
                     "hasData": true
                 },
                 {
@@ -3143,11 +3173,11 @@
                 },
                 {
                     "label": "Week of Jun 02",
-                    "dailyDuration": 19.345338367280505,
-                    "weeklySum": 132.06040823800225,
-                    "hrScore": 0.9805599222403805,
-                    "hrRescaled": 1.4860019439904875,
-                    "hrColor": "#b5dab7",
+                    "dailyDuration": 16.118500434027776,
+                    "weeklySum": 135.41736857096356,
+                    "hrScore": 0.9799205012245783,
+                    "hrRescaled": 1.5019874693855424,
+                    "hrColor": "#b3d8b5",
                     "hasData": true
                 }
             ],
@@ -3175,16 +3205,16 @@
             ]
         },
         "bodyComp": {
-            "latestScore": -2.166791481581032,
-            "averageScore": -2.227234005165556,
+            "latestScore": -2.178974399069553,
+            "averageScore": -2.2284522969144085,
             "daily": [
                 {
                     "label": "Week of Nov 03",
-                    "weight": 89.51825000000001,
-                    "bodyFat": 18.400000000000002,
-                    "ffmi": 20.667165926324127,
-                    "fmi": 4.6605417468311465,
-                    "hrScore": 0.7833208518418968,
+                    "weight": 89.67382142857143,
+                    "bodyFat": 18.35,
+                    "ffmi": 20.715897596278214,
+                    "fmi": 4.655826438514519,
+                    "hrScore": 0.7821025600930447,
                     "hrColor": "#43a047",
                     "hasData": true
                 },
@@ -3305,12 +3335,12 @@
         "scoreBars": {
             "sleep": {
                 "recent": {
-                    "value": 1.0632933629980463,
-                    "displayValue": 1.0472525650335238
+                    "value": 1.2658248552050775,
+                    "displayValue": 1.0112665999114532
                 },
                 "healthspan": {
-                    "value": 1.2716577766317214,
-                    "displayValue": 0.9897963730964704
+                    "value": 1.2830226854158533,
+                    "displayValue": 0.988606714450371
                 },
                 "showRecent": true,
                 "showHealthspan": true,
@@ -3319,12 +3349,12 @@
                 "components": {
                     "consistency": {
                         "recent": {
-                            "value": 1.0179507766884528,
-                            "displayValue": 1.0887985107267444
+                            "value": 1.1957444188669752,
+                            "displayValue": 1.0642697579374816
                         },
                         "healthspan": {
-                            "value": 1.28499709693414,
-                            "displayValue": 1.0263909389171844
+                            "value": 1.3003862981542929,
+                            "displayValue": 1.0254867982581946
                         },
                         "showRecent": true,
                         "showHealthspan": true,
@@ -3333,12 +3363,12 @@
                     },
                     "duration": {
                         "recent": {
-                            "value": 1.6304533517435564,
-                            "displayValue": 0.9600848291639593
+                            "value": 1.7675772585198628,
+                            "displayValue": 0.9484884616354103
                         },
                         "healthspan": {
-                            "value": 1.5798127982792232,
-                            "displayValue": 0.9635606136989985
+                            "value": 1.584854137258856,
+                            "displayValue": 0.9632077199704243
                         },
                         "showRecent": true,
                         "showHealthspan": true,
@@ -3349,12 +3379,12 @@
             },
             "aerobic": {
                 "recent": {
-                    "value": 1.5053034744029365,
-                    "displayValue": 0.6018013711620576
+                    "value": 1.5318437076051503,
+                    "displayValue": 0.5978131314827675
                 },
                 "healthspan": {
-                    "value": 1.793779056288935,
-                    "displayValue": 0.5510853458473217
+                    "value": 1.7876863675627208,
+                    "displayValue": 0.5514959241230226
                 },
                 "showRecent": true,
                 "showHealthspan": true,
@@ -3363,12 +3393,12 @@
             },
             "anaerobic": {
                 "recent": {
-                    "value": 1.5074292586989047,
-                    "displayValue": 0.8989604210769492
+                    "value": 1.5079830065170374,
+                    "displayValue": 0.899985533014384
                 },
                 "healthspan": {
-                    "value": 1.2772819117063066,
-                    "displayValue": 0.9486091311143005
+                    "value": 1.2922354546314927,
+                    "displayValue": 0.9463865412609467
                 },
                 "showRecent": true,
                 "showHealthspan": true,
@@ -3392,8 +3422,10 @@
         }
     },
     "masterScore": {
-        "recent": 1.3412344582008362,
-        "healthspan": 1.4383227867054444
+        "recent": 1.429974109860491,
+        "healthspan": 1.4427682489445661,
+        "recentRaw": 0.5440848615775254,
+        "healthspanRaw": 0.5145945479296343
     }
 };
 
@@ -3709,8 +3741,8 @@ const STEPS_BAR_TINT_RATIO = 0.35;
 const SCALE_FALLBACK_COLOR = '#616161';
 
 const DAILY_COLOR_PALETTE = {
-    stepsLine: '#1565c0',
-    activityLine: '#1e88e5',
+    stepsLine: '#6f42c1',
+    activityLine: '#6f42c1',
     strengthLine: '#6f42c1',
     strengthBar: '#29b6f6',
     mpaBar: '#64b5f6',
@@ -3838,6 +3870,75 @@ function getScalePosition(rawValue, overrides = {}) {
     return ((clampedValue - min) / (max - min)) * 100;
 }
 
+let markerTooltipElement = null;
+
+function getMarkerTooltipElement() {
+    if (!markerTooltipElement) {
+        markerTooltipElement = document.createElement('div');
+        markerTooltipElement.className = 'scale-marker-tooltip';
+        document.body.appendChild(markerTooltipElement);
+    }
+    return markerTooltipElement;
+}
+
+function hideMarkerTooltip() {
+    if (!markerTooltipElement) {
+        return;
+    }
+    markerTooltipElement.classList.remove('visible');
+}
+
+function formatMarkerTooltip(pointer) {
+    const rawValue = (pointer.dataset.tooltipValue || '').trim();
+    if (rawValue) {
+        return rawValue;
+    }
+    const rescaledValue = (pointer.dataset.rescaledValue || '').trim();
+    return rescaledValue;
+}
+
+function positionMarkerTooltip(pointer, event) {
+    const tooltip = getMarkerTooltipElement();
+    const rect = pointer.getBoundingClientRect();
+    const x = event ? event.clientX : rect.left + rect.width / 2;
+    const y = event ? event.clientY : rect.top;
+    tooltip.style.left = `${x}px`;
+    tooltip.style.top = `${y - 12}px`;
+}
+
+function attachMarkerTooltip(pointer) {
+    if (!pointer || pointer.dataset.markerTooltipAttached === 'true') {
+        return;
+    }
+
+    pointer.addEventListener('mouseenter', event => {
+        const tooltipText = formatMarkerTooltip(pointer);
+        const tooltip = getMarkerTooltipElement();
+        if (!tooltipText) {
+            hideMarkerTooltip();
+            return;
+        }
+        tooltip.textContent = tooltipText;
+        positionMarkerTooltip(pointer, event);
+        tooltip.classList.add('visible');
+    });
+
+    pointer.addEventListener('mousemove', event => {
+        if (markerTooltipElement && markerTooltipElement.classList.contains('visible')) {
+            positionMarkerTooltip(pointer, event);
+        }
+    });
+
+    pointer.addEventListener('mouseleave', hideMarkerTooltip);
+
+    pointer.dataset.markerTooltipAttached = 'true';
+}
+
+if (typeof window !== 'undefined') {
+    window.addEventListener('scroll', hideMarkerTooltip, true);
+    window.addEventListener('resize', hideMarkerTooltip);
+}
+
 function updatePointer(pointerId, rawValue, overrides = {}, extra = {}) {
     const pointer = document.getElementById(pointerId);
     if (!pointer) {
@@ -3852,6 +3953,7 @@ function updatePointer(pointerId, rawValue, overrides = {}, extra = {}) {
 
     if (value === null || position === null || Number.isNaN(position)) {
         pointer.classList.add('hidden');
+        hideMarkerTooltip();
         return;
     }
 
@@ -3879,6 +3981,10 @@ function updatePointer(pointerId, rawValue, overrides = {}, extra = {}) {
     const clampedValue = clampValue(value, config.min, config.max);
     const labelValue = displayOverride !== null ? displayOverride : clampedValue;
     const readableColor = getReadableTextColor(color);
+    const tooltipValue =
+        displayOverride !== null && !Number.isNaN(displayOverride)
+            ? displayOverride
+            : value;
 
     if (isMasterPointer) {
         pointer.style.borderBottomColor = 'transparent';
@@ -3889,14 +3995,25 @@ function updatePointer(pointerId, rawValue, overrides = {}, extra = {}) {
             badge.style.color = readableColor;
         }
     } else if (pointer.classList.contains('scale-marker')) {
+        const isRecentMarker = pointer.classList.contains('marker-recent');
         const baseLabel =
             pointer.dataset.label ||
             pointer.textContent.trim() ||
-            (pointer.classList.contains('marker-recent') ? 'R' : 'HS');
+            (isRecentMarker ? 'PoA' : 'HS');
+        pointer.dataset.label = baseLabel;
         pointer.textContent = baseLabel;
+        pointer.dataset.tooltipValue =
+            tooltipValue !== null && !Number.isNaN(tooltipValue)
+                ? tooltipValue.toFixed(decimals)
+                : '';
+        pointer.dataset.rescaledValue =
+            value !== null && !Number.isNaN(value) ? value.toFixed(decimals) : '';
         pointer.style.backgroundColor = color;
         pointer.style.color = readableColor;
         pointer.style.borderColor = color;
+        pointer.removeAttribute('title');
+        pointer.removeAttribute('aria-label');
+        attachMarkerTooltip(pointer);
     } else if (pointer.classList.contains('pointer-avg')) {
         pointer.style.borderTopColor = color;
         pointer.style.borderBottomColor = 'transparent';
@@ -4189,6 +4306,8 @@ function updateMasterScoreOverview(masterScore) {
 
     const recentValue = toNumberOrNull(masterScore.recent);
     const healthspanValue = toNumberOrNull(masterScore.healthspan);
+    const recentRaw = toNumberOrNull(masterScore.recentRaw);
+    const healthspanRaw = toNumberOrNull(masterScore.healthspanRaw);
     const hasData = recentValue !== null || healthspanValue !== null;
 
     container.style.display = hasData ? '' : 'none';
@@ -4197,10 +4316,12 @@ function updateMasterScoreOverview(masterScore) {
         {
             id: 'master-marker-recent',
             value: recentValue,
+            raw: recentRaw,
         },
         {
             id: 'master-marker-healthspan',
             value: healthspanValue,
+            raw: healthspanRaw,
         },
     ];
 
@@ -4229,7 +4350,7 @@ function updateMasterScoreOverview(masterScore) {
                 ?.position ?? null;
 
         updatePointer(marker.id, marker.value, {}, {
-            displayValue: marker.value,
+            displayValue: marker.raw,
             anchor: anchorPosition,
             offset: offsets[marker.id] || 0,
         });
@@ -4292,7 +4413,7 @@ function createStepsCharts(data) {
                     data: reversedDaily.map(d => d.rollingAvgSteps),
                     type: 'line',
                     borderColor: DAILY_COLOR_PALETTE.stepsLine,
-                    backgroundColor: 'rgba(21, 101, 192, 0.12)',
+                    backgroundColor: 'rgba(111, 66, 193, 0.12)',
                     borderWidth: 2,
                     fill: false,
                     tension: 0.4,
@@ -4404,7 +4525,7 @@ function createHeartRateCharts(data) {
                         data: activityRollingAvg,
                         type: 'line',
                         borderColor: DAILY_COLOR_PALETTE.activityLine,
-                        backgroundColor: 'rgba(30, 136, 229, 0.12)',
+                        backgroundColor: 'rgba(111, 66, 193, 0.12)',
                         borderWidth: 2,
                         fill: false,
                         tension: 0.4,
@@ -4652,13 +4773,32 @@ function createSleepCharts(data) {
                                 return context[0].label;
                             },
                             label: function(context) {
-                                const window = sleepWindows[context.dataIndex];
-                                const duration = Math.round(window.width / 60 * 10) / 10;
-                                return [
-                                    `Sleep: ${window.sleepTime}`,
-                                    `Wake: ${window.wakeTime}`,
-                                    `Duration: ${duration}h`
-                                ];
+                                const entry = reversedDaily[context.dataIndex] || {};
+                                const lines = [];
+
+                                if (entry.sleepTime) {
+                                    lines.push(`Sleep Time: ${entry.sleepTime}`);
+                                }
+
+                                if (entry.wakeTime) {
+                                    lines.push(`Wake Time: ${entry.wakeTime}`);
+                                }
+
+                                const consistencyValue = toNumberOrNull(entry.consistencyScore);
+                                if (consistencyValue !== null) {
+                                    lines.push(`Sleep Consistency Index: ${consistencyValue.toFixed(2)}`);
+                                }
+
+                                const durationValue = entry.sleepDuration;
+                                if (typeof durationValue === 'number' && !Number.isNaN(durationValue)) {
+                                    lines.push(`Duration: ${durationValue.toFixed(2)}h`);
+                                }
+
+                                if (!lines.length) {
+                                    lines.push('No data');
+                                }
+
+                                return lines;
                             }
                         }
                     }
@@ -4733,7 +4873,21 @@ function createSleepCharts(data) {
                 maintainAspectRatio: false,
                 plugins: {
                     legend: { display: false },
-                    datalabels: { display: false }
+                    datalabels: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            title: function(context) {
+                                return context.length ? context[0].label : '';
+                            },
+                            label: function(context) {
+                                const durationValue = context.parsed.y;
+                                if (typeof durationValue === 'number' && !Number.isNaN(durationValue)) {
+                                    return `Duration: ${durationValue.toFixed(2)}h`;
+                                }
+                                return 'No data';
+                            }
+                        }
+                    }
                 },
                 scales: {
                     x: {
