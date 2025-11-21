@@ -198,6 +198,14 @@
             border-radius: 8px;
         }
 
+        /* Component sliders grid - 2 rows of 2 columns */
+        .component-sliders-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            grid-template-rows: repeat(2, auto);
+            gap: 20px;
+        }
+
         .component-slider {
             flex: 1;
         }
@@ -479,7 +487,7 @@
 
             <div id="anaerobic-group-content" class="group-content collapsed">
                 <div class="component-sliders">
-                    <div class="component-slider">
+                    <div class="component-slider" style="max-width: 50%; margin: 0 auto;">
                         <h4>Strength Time</h4>
                         <div class="score-scale-container">
                             <div class="scale-wrapper">
@@ -5171,6 +5179,32 @@
                 "showHealthspan": true,
                 "source": "StepsDaily",
                 "displaySource": "StepsDaily"
+            },
+            "vo2": {
+                "healthspan": {
+                    "value": 2.0,
+                    "displayValue": 0.54
+                },
+                "showHealthspan": true
+            },
+            "rhr": {
+                "healthspan": {
+                    "value": 1.8899541809851086,
+                    "displayValue": 0.827348888888889
+                },
+                "showHealthspan": true
+            },
+            "heartRateActivity": {
+                "recent": {
+                    "value": 0.8159781373744134,
+                    "displayValue": 1.042325028403885
+                },
+                "healthspan": {
+                    "value": 0.9674600564622439,
+                    "displayValue": 1.0201976276922582
+                },
+                "showRecent": true,
+                "showHealthspan": true
             }
         }
     },
@@ -5988,17 +6022,19 @@ function updateHealthspanGroupBorder(groupId, entry, overrides = {}) {
         return;
     }
 
-    const config = { ...DEFAULT_SCALE, ...overrides };
-    const marker = selectMarker(entry || null, 'healthspan');
+    // Use the same logic as daily controls
+    const recentValue =
+        entry && entry.recent && Object.prototype.hasOwnProperty.call(entry.recent, 'value')
+            ? entry.recent.value
+            : null;
+    const healthspanValue =
+        entry &&
+        entry.healthspan &&
+        Object.prototype.hasOwnProperty.call(entry.healthspan, 'value')
+            ? entry.healthspan.value
+            : null;
 
-    if (!marker || marker.pointer === null) {
-        element.style.borderColor = DEFAULT_GROUP_BORDER_COLOR;
-        element.style.boxShadow = '';
-        return;
-    }
-
-    const clampedValue = clampValue(marker.pointer, config.min, config.max);
-    const color = getScaleColor(clampedValue, config);
+    const color = computeDailyControlsBorderColor(recentValue, healthspanValue);
     element.style.borderColor = color;
 
     const rgb = hexToRgb(color);
@@ -6063,10 +6099,25 @@ function updateGroupTickers(tabName, data) {
         const aerobicRecentMarker = selectMarker(aerobicEntry, 'recent');
         applyMarker('healthspan-aerobic-category-marker-recent', aerobicRecentMarker, showAerobicRecent);
         applyMarker('healthspan-aerobic-category-marker-healthspan', aerobicHSMarker, showAerobicHS);
-        applyMarker('healthspan-vo2-marker-healthspan', aerobicHSMarker, showAerobicHS);
-        applyMarker('healthspan-heart-rate-marker-recent', aerobicRecentMarker, showAerobicRecent);
-        applyMarker('healthspan-heart-rate-marker-healthspan', aerobicHSMarker, showAerobicHS);
-        applyMarker('healthspan-rhr-marker-healthspan', aerobicHSMarker, showAerobicHS);
+        
+        // Use separate markers for VO2, RHR, and heart rate activity
+        const vo2Entry = scoreBars.vo2 || null;
+        const vo2HSMarker = selectMarker(vo2Entry, 'healthspan');
+        const showVo2HS = !!(vo2Entry && vo2Entry.showHealthspan);
+        applyMarker('healthspan-vo2-marker-healthspan', vo2HSMarker, showVo2HS);
+        
+        const rhrEntry = scoreBars.rhr || null;
+        const rhrHSMarker = selectMarker(rhrEntry, 'healthspan');
+        const showRhrHS = !!(rhrEntry && rhrEntry.showHealthspan);
+        applyMarker('healthspan-rhr-marker-healthspan', rhrHSMarker, showRhrHS);
+        
+        const hrActivityEntry = scoreBars.heartRateActivity || null;
+        const hrActivityHSMarker = selectMarker(hrActivityEntry, 'healthspan');
+        const hrActivityRecentMarker = selectMarker(hrActivityEntry, 'recent');
+        const showHrActivityHS = !!(hrActivityEntry && hrActivityEntry.showHealthspan);
+        const showHrActivityRecent = !!(hrActivityEntry && hrActivityEntry.showRecent);
+        applyMarker('healthspan-heart-rate-marker-recent', hrActivityRecentMarker, showHrActivityRecent);
+        applyMarker('healthspan-heart-rate-marker-healthspan', hrActivityHSMarker, showHrActivityHS);
 
         updateBarMarkers('healthspan-steps', scoreBars.steps || null, STEP_SCALE);
 
