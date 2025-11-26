@@ -773,13 +773,20 @@
                     </div>
                 </div>
 
-                <!-- Body Composition Chart -->
+                <!-- Body Composition Charts -->
                 <div class="metric-wrapper">
                     <div class="chart-wrapper">
-                        <h4>Weekly Body Composition</h4>
-                        <p class="chart-subtitle">Weekly FFMI and FMI trends.</p>
-                        <div style="height: 300px; position: relative;">
-                            <canvas id="healthspan-body-comp-chart"></canvas>
+                        <h4>Fat-Free Mass Index (FFMI)</h4>
+                        <p class="chart-subtitle">Weekly FFMI trends.</p>
+                        <div style="height: 150px; position: relative;">
+                            <canvas id="healthspan-ffmi-chart"></canvas>
+                        </div>
+                    </div>
+                    <div class="chart-wrapper">
+                        <h4>Fat Mass Index (FMI)</h4>
+                        <p class="chart-subtitle">Weekly FMI trends.</p>
+                        <div style="height: 150px; position: relative;">
+                            <canvas id="healthspan-fmi-chart"></canvas>
                         </div>
                     </div>
                 </div>
@@ -1125,7 +1132,7 @@
                     "mpaTime": 84.0,
                     "vpaTime": 2.0,
                     "adjVpaTime": 44.0,
-                    "rolling7Day": 234.0,
+                    "rolling7Day": 33.42857142857143,
                     "hazardRatio": 0.9957142857142857,
                     "hazardRatioRescaled": 1.0476190476190483,
                     "restingHR": 56.0,
@@ -1183,7 +1190,7 @@
                     "mpaTime": 46.0,
                     "vpaTime": 16.0,
                     "adjVpaTime": 39.0,
-                    "rolling7Day": 160.0,
+                    "rolling7Day": 22.857142857142858,
                     "hazardRatio": 1.0223364485981308,
                     "hazardRatioRescaled": 0.9028850060950835,
                     "restingHR": 47.0,
@@ -1241,7 +1248,7 @@
                     "mpaTime": 0.0,
                     "vpaTime": 0.0,
                     "adjVpaTime": 0.0,
-                    "rolling7Day": 100.0,
+                    "rolling7Day": 14.285714285714286,
                     "hazardRatio": 1.055981308411215,
                     "hazardRatioRescaled": 0.7566030069077605,
                     "restingHR": 47.0,
@@ -1299,7 +1306,7 @@
                     "mpaTime": 0.0,
                     "vpaTime": 0.0,
                     "adjVpaTime": 0.0,
-                    "rolling7Day": 100.0,
+                    "rolling7Day": 14.285714285714286,
                     "hazardRatio": 1.055981308411215,
                     "hazardRatioRescaled": 0.7566030069077605,
                     "restingHR": 51.0,
@@ -1357,7 +1364,7 @@
                     "mpaTime": 0.0,
                     "vpaTime": 0.0,
                     "adjVpaTime": 0.0,
-                    "rolling7Day": 102.0,
+                    "rolling7Day": 14.571428571428571,
                     "hazardRatio": 1.0548598130841123,
                     "hazardRatioRescaled": 0.761479073547338,
                     "restingHR": 56.0,
@@ -1415,7 +1422,7 @@
                     "mpaTime": 46.0,
                     "vpaTime": 10.0,
                     "adjVpaTime": 33.0,
-                    "rolling7Day": 122.0,
+                    "rolling7Day": 17.428571428571427,
                     "hazardRatio": 1.043644859813084,
                     "hazardRatioRescaled": 0.8102397399431127,
                     "restingHR": 49.0,
@@ -1473,7 +1480,7 @@
                     "mpaTime": 2.0,
                     "vpaTime": 0.0,
                     "adjVpaTime": 1.0,
-                    "rolling7Day": 78.0,
+                    "rolling7Day": 11.142857142857142,
                     "hazardRatio": 1.0683177570093458,
                     "hazardRatioRescaled": 0.7029662738724094,
                     "restingHR": 48.0,
@@ -2974,7 +2981,7 @@
                     "mpaTime": 34.0,
                     "vpaTime": 0.0,
                     "adjVpaTime": 17.0,
-                    "rolling7Day": 109.33333333333333,
+                    "rolling7Day": 1.619047619047619,
                     "hazardRatio": 1.050747663551402,
                     "hazardRatioRescaled": 0.779357984559122,
                     "restingHR": 47.0,
@@ -3032,7 +3039,7 @@
                     "mpaTime": 152.0,
                     "vpaTime": 32.0,
                     "adjVpaTime": 108.0,
-                    "rolling7Day": 200.57142857142858,
+                    "rolling7Day": 3.7551020408163263,
                     "hazardRatio": 1.0055281551873085,
                     "hazardRatioRescaled": 0.9759645426638758,
                     "restingHR": 48.285714285714285,
@@ -3090,7 +3097,7 @@
                     "mpaTime": 72.0,
                     "vpaTime": 10.0,
                     "adjVpaTime": 46.0,
-                    "rolling7Day": 148.28571428571428,
+                    "rolling7Day": 1.673469387755102,
                     "hazardRatio": 1.0293622869708632,
                     "hazardRatioRescaled": 0.8723378827353778,
                     "restingHR": 46.714285714285715,
@@ -3148,7 +3155,7 @@
                     "mpaTime": 164.0,
                     "vpaTime": 4.0,
                     "adjVpaTime": 86.0,
-                    "rolling7Day": 109.42857142857143,
+                    "rolling7Day": 3.4285714285714284,
                     "hazardRatio": 1.0547380507343125,
                     "hazardRatioRescaled": 0.7620084750682068,
                     "restingHR": 46.714285714285715,
@@ -3206,7 +3213,7 @@
                     "mpaTime": 30.0,
                     "vpaTime": 14.0,
                     "adjVpaTime": 29.0,
-                    "rolling7Day": 60.285714285714285,
+                    "rolling7Day": 0.8979591836734694,
                     "hazardRatio": 1.1063328882955052,
                     "hazardRatioRescaled": 0.5376830943673688,
                     "restingHR": 50.142857142857146,
@@ -3264,7 +3271,7 @@
                     "mpaTime": 38.0,
                     "vpaTime": 6.0,
                     "adjVpaTime": 25.0,
-                    "rolling7Day": 124.28571428571429,
+                    "rolling7Day": 0.8979591836734694,
                     "hazardRatio": 1.0535959056519804,
                     "hazardRatioRescaled": 0.7669743232522591,
                     "restingHR": 52.857142857142854,
@@ -3322,7 +3329,7 @@
                     "mpaTime": 164.0,
                     "vpaTime": 36.0,
                     "adjVpaTime": 118.0,
-                    "rolling7Day": 233.71428571428572,
+                    "rolling7Day": 4.081632653061225,
                     "hazardRatio": 0.9987682155990779,
                     "hazardRatioRescaled": 1.0503472906707731,
                     "restingHR": 48.285714285714285,
@@ -3380,7 +3387,7 @@
                     "mpaTime": 254.0,
                     "vpaTime": 16.0,
                     "adjVpaTime": 143.0,
-                    "rolling7Day": 249.71428571428572,
+                    "rolling7Day": 5.5102040816326525,
                     "hazardRatio": 0.9925974600366462,
                     "hazardRatioRescaled": 1.082818787316605,
                     "restingHR": 48.0,
@@ -3438,7 +3445,7 @@
                     "mpaTime": 244.0,
                     "vpaTime": 30.0,
                     "adjVpaTime": 152.0,
-                    "rolling7Day": 310.2857142857143,
+                    "rolling7Day": 5.591836734693878,
                     "hazardRatio": 0.9844253490870031,
                     "hazardRatioRescaled": 1.1730516768110757,
                     "restingHR": 47.42857142857143,
@@ -3496,7 +3503,7 @@
                     "mpaTime": 80.0,
                     "vpaTime": 34.0,
                     "adjVpaTime": 74.0,
-                    "rolling7Day": 130.28571428571428,
+                    "rolling7Day": 2.326530612244898,
                     "hazardRatio": 1.0394557449147885,
                     "hazardRatioRescaled": 0.8284532829791809,
                     "restingHR": 49.42857142857143,
@@ -3554,7 +3561,7 @@
                     "mpaTime": 52.0,
                     "vpaTime": 36.0,
                     "adjVpaTime": 62.0,
-                    "rolling7Day": 278.57142857142856,
+                    "rolling7Day": 1.7959183673469388,
                     "hazardRatio": 0.9943848272215919,
                     "hazardRatioRescaled": 1.1034761849639354,
                     "restingHR": 47.42857142857143,
@@ -3612,7 +3619,7 @@
                     "mpaTime": 430.0,
                     "vpaTime": 40.0,
                     "adjVpaTime": 255.0,
-                    "rolling7Day": 475.7142857142857,
+                    "rolling7Day": 9.591836734693876,
                     "hazardRatio": 0.9654731562562581,
                     "hazardRatioRescaled": 1.383631597152689,
                     "restingHR": 48.285714285714285,
@@ -3670,7 +3677,7 @@
                     "mpaTime": 276.0,
                     "vpaTime": 56.0,
                     "adjVpaTime": 194.0,
-                    "rolling7Day": 324.85714285714283,
+                    "rolling7Day": 6.775510204081633,
                     "hazardRatio": 0.9824597207303974,
                     "hazardRatioRescaled": 1.1948919918844734,
                     "restingHR": 47.142857142857146,
@@ -3728,7 +3735,7 @@
                     "mpaTime": 222.0,
                     "vpaTime": 28.0,
                     "adjVpaTime": 139.0,
-                    "rolling7Day": 268.0,
+                    "rolling7Day": 5.1020408163265305,
                     "hazardRatio": 0.9920002846195045,
                     "hazardRatioRescaled": 1.105102100579177,
                     "restingHR": 47.0,
@@ -3786,7 +3793,7 @@
                     "mpaTime": 276.0,
                     "vpaTime": 58.0,
                     "adjVpaTime": 196.0,
-                    "rolling7Day": 465.14285714285717,
+                    "rolling7Day": 6.816326530612245,
                     "hazardRatio": 0.9666478089897869,
                     "hazardRatioRescaled": 1.3705799001134804,
                     "restingHR": 46.714285714285715,
@@ -3844,7 +3851,7 @@
                     "mpaTime": 280.0,
                     "vpaTime": 32.0,
                     "adjVpaTime": 172.0,
-                    "rolling7Day": 299.14285714285717,
+                    "rolling7Day": 6.36734693877551,
                     "hazardRatio": 0.9867852404119544,
                     "hazardRatioRescaled": 1.1542191247208269,
                     "restingHR": 46.57142857142857,
@@ -3902,7 +3909,7 @@
                     "mpaTime": 174.0,
                     "vpaTime": 6.0,
                     "adjVpaTime": 93.0,
-                    "rolling7Day": 167.71428571428572,
+                    "rolling7Day": 3.673469387755102,
                     "hazardRatio": 1.0189248409644232,
                     "hazardRatioRescaled": 0.9177180827633774,
                     "restingHR": 49.42857142857143,
@@ -3960,7 +3967,7 @@
                     "mpaTime": 104.0,
                     "vpaTime": 44.0,
                     "adjVpaTime": 96.0,
-                    "rolling7Day": 151.42857142857142,
+                    "rolling7Day": 3.020408163265306,
                     "hazardRatio": 1.0275237571664182,
                     "hazardRatioRescaled": 0.8803314905807912,
                     "restingHR": 49.142857142857146,
@@ -4018,7 +4025,7 @@
                     "mpaTime": 188.0,
                     "vpaTime": 20.0,
                     "adjVpaTime": 114.0,
-                    "rolling7Day": 252.28571428571428,
+                    "rolling7Day": 4.244897959183674,
                     "hazardRatio": 0.993929449792706,
                     "hazardRatioRescaled": 1.079279534336315,
                     "restingHR": 46.0,
@@ -4076,7 +4083,7 @@
                     "mpaTime": 176.0,
                     "vpaTime": 42.0,
                     "adjVpaTime": 130.0,
-                    "rolling7Day": 229.14285714285714,
+                    "rolling7Day": 4.448979591836735,
                     "hazardRatio": 0.9991062731044213,
                     "hazardRatioRescaled": 1.0464317475839635,
                     "restingHR": 46.285714285714285,
@@ -4134,7 +4141,7 @@
                     "mpaTime": 130.0,
                     "vpaTime": 20.0,
                     "adjVpaTime": 85.0,
-                    "rolling7Day": 226.28571428571428,
+                    "rolling7Day": 3.061224489795918,
                     "hazardRatio": 0.9997224703949461,
                     "hazardRatioRescaled": 1.0289087559620655,
                     "restingHR": 45.57142857142857,
@@ -4192,7 +4199,7 @@
                     "mpaTime": 282.0,
                     "vpaTime": 42.0,
                     "adjVpaTime": 183.0,
-                    "rolling7Day": 298.85714285714283,
+                    "rolling7Day": 6.612244897959184,
                     "hazardRatio": 0.9898655851912828,
                     "hazardRatioRescaled": 1.1417707112928508,
                     "restingHR": 49.42857142857143,
@@ -4250,7 +4257,7 @@
                     "mpaTime": 72.0,
                     "vpaTime": 0.0,
                     "adjVpaTime": 36.0,
-                    "rolling7Day": 34.857142857142854,
+                    "rolling7Day": 1.469387755102041,
                     "hazardRatio": 1.1556380952380951,
                     "hazardRatioRescaled": 0.3233126293995859,
                     "restingHR": 49.0,
@@ -5646,7 +5653,8 @@ function initializeChartsForTab(tabName) {
             createHealthSpanStrengthCharts(data.strength);
         }
         if (data.bodyComp) {
-            createHealthSpanBodyCompCharts(data.bodyComp);
+            createHealthSpanFFMICharts(data.bodyComp);
+            createHealthSpanFMICharts(data.bodyComp);
         }
 
         // Update group tickers
@@ -7354,23 +7362,29 @@ function createHealthSpanVO2Charts(data) {
                 getRescaledValue(d, 'hrRescaledFinal', 'hrRescaled')
             )
         );
+        const labels = reversedDaily.map(d => d.date);
+        const referenceLineDatasets = createReferenceLineDatasets(data.referenceLines, labels);
 
         new Chart(vo2Ctx, {
             type: 'line',
             data: {
-                labels: reversedDaily.map(d => d.date),
-                datasets: [{
-                    label: 'VO2 Max',
-                    data: reversedDaily.map(d => d.vo2),
-                    borderColor: '#FF9800',
-                    backgroundColor: 'rgba(255, 152, 0, 0.1)',
-                    fill: true,
-                    pointBackgroundColor: pointColors,
-                    pointBorderColor: pointColors,
-                    pointRadius: 5,
-                    pointHoverRadius: 7,
-                    tension: 0.2
-                }]
+                labels: labels,
+                datasets: [
+                    ...referenceLineDatasets,
+                    {
+                        label: 'VO2 Max',
+                        data: reversedDaily.map(d => d.vo2),
+                        borderColor: '#FF9800',
+                        backgroundColor: 'rgba(255, 152, 0, 0.1)',
+                        fill: true,
+                        pointBackgroundColor: pointColors,
+                        pointBorderColor: pointColors,
+                        pointRadius: 5,
+                        pointHoverRadius: 7,
+                        tension: 0.2,
+                        order: 1
+                    }
+                ]
             },
             options: {
                 responsive: true,
@@ -7778,63 +7792,43 @@ function createHealthSpanStrengthCharts(data) {
     }
 }
 
-function createHealthSpanBodyCompCharts(data) {
-    const bodyCompCtx = document.getElementById('healthspan-body-comp-chart');
-    if (bodyCompCtx && data.daily) {
+function createHealthSpanFFMICharts(data) {
+    const ffmiCtx = document.getElementById('healthspan-ffmi-chart');
+    if (ffmiCtx && data.daily) {
         const reversedDaily = data.daily.slice().reverse();
-        const ffmValues = reversedDaily.map(d => toNumberOrNull(d.ffm ?? d.ffmFinal));
-        const fmValues = reversedDaily.map(d => toNumberOrNull(d.fm ?? d.fmFinal));
-        const ffmColors = reversedDaily.map(d =>
+        const ffmiValues = reversedDaily.map(d => {
+            const value = d.ffmi ?? (d.ffmiFinal !== undefined ? d.ffmiFinal : null);
+            return toNumberOrNull(value);
+        });
+        const ffmiColors = reversedDaily.map(d =>
             getColorForRescaledValue(
                 getRescaledValue(d, 'hrRescaledFinal', 'hrRescaled')
             )
         );
-        const fmColors = reversedDaily.map(d =>
-            getColorForRescaledValue(
-                getRescaledValue(d, 'fmiHrRescaledFinal', 'fmiHrRescaled')
-            )
-        );
-        const FFM_LABEL = 'Fat-Free Mass (kg)';
-        const FM_LABEL = 'Fat Mass (kg)';
 
-        new Chart(bodyCompCtx, {
+        new Chart(ffmiCtx, {
             type: 'line',
             data: {
                 labels: reversedDaily.map(d => d.label),
-                datasets: [
-                    {
-                        label: FFM_LABEL,
-                        data: ffmValues,
-                        borderColor: PRIMARY_BLUE_DARK,
-                        backgroundColor: PRIMARY_BLUE_FILL,
-                        pointBackgroundColor: ffmColors,
-                        pointBorderColor: ffmColors,
-                        pointRadius: 4,
-                        pointHoverRadius: 6,
-                        fill: false,
-                        tension: 0.15,
-                        spanGaps: true
-                    },
-                    {
-                        label: FM_LABEL,
-                        data: fmValues,
-                        borderColor: '#9C27B0',
-                        backgroundColor: 'rgba(156, 39, 176, 0.12)',
-                        pointBackgroundColor: fmColors,
-                        pointBorderColor: fmColors,
-                        pointRadius: 4,
-                        pointHoverRadius: 6,
-                        fill: false,
-                        tension: 0.15,
-                        spanGaps: true
-                    }
-                ]
+                datasets: [{
+                    label: 'FFMI',
+                    data: ffmiValues,
+                    borderColor: PRIMARY_BLUE_DARK,
+                    backgroundColor: PRIMARY_BLUE_FILL,
+                    pointBackgroundColor: ffmiColors,
+                    pointBorderColor: ffmiColors,
+                    pointRadius: 4,
+                    pointHoverRadius: 6,
+                    fill: false,
+                    tension: 0.15,
+                    spanGaps: true
+                }]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
                 plugins: {
-                    legend: { display: true },
+                    legend: { display: false },
                     datalabels: { display: false },
                     tooltip: {
                         callbacks: {
@@ -7843,30 +7837,11 @@ function createHealthSpanBodyCompCharts(data) {
                             },
                             label: function(context) {
                                 const entry = reversedDaily[context.dataIndex];
-                                const datasetLabel = context.dataset.label || '';
-                                const value = context.formattedValue;
-                                const lines = [`${datasetLabel}: ${value} kg`];
-
-                                if (datasetLabel === FFM_LABEL) {
-                                    const hrScore = getScoreValue(
-                                        entry,
-                                        'hrScoreFinal',
-                                        'hrScore'
-                                    );
-                                    if (hrScore !== null) {
-                                        lines.push(`FFMI Hazard Ratio (final day): ${formatScore(hrScore)}`);
-                                    }
-                                } else if (datasetLabel === FM_LABEL) {
-                                    const hrScore = getScoreValue(
-                                        entry,
-                                        'fmiHrScoreFinal',
-                                        'fmiHrScore'
-                                    );
-                                    if (hrScore !== null) {
-                                        lines.push(`FMI Hazard Ratio (final day): ${formatScore(hrScore)}`);
-                                    }
+                                const lines = [`FFMI: ${context.formattedValue}`];
+                                const hrScore = getScoreValue(entry, 'hrScoreFinal', 'hrScore');
+                                if (hrScore !== null) {
+                                    lines.push(`FFMI Hazard Ratio (final day): ${formatScore(hrScore)}`);
                                 }
-
                                 return lines;
                             }
                         }
@@ -7889,8 +7864,91 @@ function createHealthSpanBodyCompCharts(data) {
                         display: true,
                         title: {
                             display: true,
-                            text: 'Mass (kg)'
+                            text: 'FFMI'
+                        },
+                        beginAtZero: false
+                    }
+                }
+            }
+        });
+    }
+}
+
+function createHealthSpanFMICharts(data) {
+    const fmiCtx = document.getElementById('healthspan-fmi-chart');
+    if (fmiCtx && data.daily) {
+        const reversedDaily = data.daily.slice().reverse();
+        const fmiValues = reversedDaily.map(d => {
+            const value = d.fmi ?? (d.fmiFinal !== undefined ? d.fmiFinal : null);
+            return toNumberOrNull(value);
+        });
+        const fmiColors = reversedDaily.map(d =>
+            getColorForRescaledValue(
+                getRescaledValue(d, 'fmiHrRescaledFinal', 'fmiHrRescaled')
+            )
+        );
+
+        new Chart(fmiCtx, {
+            type: 'line',
+            data: {
+                labels: reversedDaily.map(d => d.label),
+                datasets: [{
+                    label: 'FMI',
+                    data: fmiValues,
+                    borderColor: '#9C27B0',
+                    backgroundColor: 'rgba(156, 39, 176, 0.12)',
+                    pointBackgroundColor: fmiColors,
+                    pointBorderColor: fmiColors,
+                    pointRadius: 4,
+                    pointHoverRadius: 6,
+                    fill: false,
+                    tension: 0.15,
+                    spanGaps: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    datalabels: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            title: function(context) {
+                                return context.length ? context[0].label : '';
+                            },
+                            label: function(context) {
+                                const entry = reversedDaily[context.dataIndex];
+                                const lines = [`FMI: ${context.formattedValue}`];
+                                const hrScore = getScoreValue(entry, 'fmiHrScoreFinal', 'fmiHrScore');
+                                if (hrScore !== null) {
+                                    lines.push(`FMI Hazard Ratio (final day): ${formatScore(hrScore)}`);
+                                }
+                                return lines;
+                            }
                         }
+                    }
+                },
+                scales: {
+                    x: {
+                        display: true,
+                        title: {
+                            display: true,
+                            text: 'Week'
+                        },
+                        offset: true,
+                        grid: {
+                            display: false
+                        }
+                    },
+                    y: {
+                        type: 'linear',
+                        display: true,
+                        title: {
+                            display: true,
+                            text: 'FMI'
+                        },
+                        beginAtZero: false
                     }
                 }
             }
