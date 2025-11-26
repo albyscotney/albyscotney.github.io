@@ -6313,41 +6313,46 @@ function createStepsCharts(data) {
         const reversedDaily = data.daily.slice().reverse();
         const stepsBarColor = reversedDaily.map(() => DAILY_COLOR_PALETTE.mpaBar);
         const stepsLineColor = PRIMARY_BLUE_DARK;
+        const labels = reversedDaily.map(d => d.label);
+        const referenceLineDatasets = createReferenceLineDatasets(data.referenceLines, labels);
 
         new Chart(stepsCtx, {
             type: 'bar',
             data: {
-                labels: reversedDaily.map(d => d.label),
-                datasets: [{
-                    label: 'Daily Steps',
-                    data: reversedDaily.map(d => d.dailySteps),
-                    backgroundColor: stepsBarColor,
-                    borderColor: DAILY_COLOR_PALETTE.mpaBar,
-                    borderWidth: 1,
-                    borderRadius: 4,
-                    borderSkipped: false,
-                    order: 1
-                }, {
-                    label: '7-Day Rolling Average',
-                    data: reversedDaily.map(d => d.rollingAvgSteps),
-                    type: 'line',
-                    borderColor: stepsLineColor,
-                    backgroundColor: PRIMARY_BLUE_FILL,
-                    borderWidth: 2,
-                    fill: false,
-                    tension: 0.4,
-                    pointRadius: 4,
-                    pointHoverRadius: 6,
-                    pointBackgroundColor: reversedDaily.map(d =>
-                        getColorForRescaledValue(d.hazardRatioRescaled, STEP_SCALE)
-                    ),
-                    pointBorderColor: reversedDaily.map(d =>
-                        getColorForRescaledValue(d.hazardRatioRescaled, STEP_SCALE)
-                    ),
-                    pointBorderWidth: 2,
-                    order: 99,
-                    z: 10
-                }]
+                labels: labels,
+                datasets: [
+                    ...referenceLineDatasets,
+                    {
+                        label: 'Daily Steps',
+                        data: reversedDaily.map(d => d.dailySteps),
+                        backgroundColor: stepsBarColor,
+                        borderColor: DAILY_COLOR_PALETTE.mpaBar,
+                        borderWidth: 1,
+                        borderRadius: 4,
+                        borderSkipped: false,
+                        order: 1
+                    }, {
+                        label: '7-Day Rolling Average',
+                        data: reversedDaily.map(d => d.rollingAvgSteps),
+                        type: 'line',
+                        borderColor: stepsLineColor,
+                        backgroundColor: PRIMARY_BLUE_FILL,
+                        borderWidth: 2,
+                        fill: false,
+                        tension: 0.4,
+                        pointRadius: 4,
+                        pointHoverRadius: 6,
+                        pointBackgroundColor: reversedDaily.map(d =>
+                            getColorForRescaledValue(d.hazardRatioRescaled, STEP_SCALE)
+                        ),
+                        pointBorderColor: reversedDaily.map(d =>
+                            getColorForRescaledValue(d.hazardRatioRescaled, STEP_SCALE)
+                        ),
+                        pointBorderWidth: 2,
+                        order: 99,
+                        z: 10
+                    }
+                ]
             },
             options: {
                 responsive: true,
@@ -6417,6 +6422,8 @@ function createHeartRateCharts(data) {
         const activityLinePointColors = reversedDaily.map(d =>
             getColorForRescaledValue(d.hazardRatioRescaled)
         );
+        const labels = reversedDaily.map(d => d.label);
+        const referenceLineDatasets = createReferenceLineDatasets(data.referenceLines, labels);
 
         // Debug: Log the rolling average data
         console.log('Daily Controls Rolling Average Data:', activityRollingAvg);
@@ -6425,8 +6432,9 @@ function createHeartRateCharts(data) {
         new Chart(activityCtx, {
             type: 'bar',
             data: {
-                labels: reversedDaily.map(d => d.label),
+                labels: labels,
                 datasets: [
+                    ...referenceLineDatasets,
                     {
                         label: 'MPA Time (min)',
                         data: reversedDaily.map(d => d.mpaTime),
@@ -6509,6 +6517,8 @@ function createStrengthCharts(data) {
         const strengthLinePointColors = reversedDaily.map(d =>
             getColorForRescaledValue(d.hrRescaled)
         );
+        const labels = reversedDaily.map(d => d.label);
+        const referenceLineDatasets = createReferenceLineDatasets(data.referenceLines, labels);
 
         // Debug: Log the strength rolling average data
         console.log('Strength Rolling Average Data:', strengthRollingAvg);
@@ -6517,33 +6527,36 @@ function createStrengthCharts(data) {
         new Chart(strengthCtx, {
             type: 'bar',
             data: {
-                labels: reversedDaily.map(d => d.label),
-                datasets: [{
-                    label: 'Strength Training (minutes)',
-                    data: reversedDaily.map(d => d.dailyDuration),
-                    backgroundColor: reversedDaily.map(() => DAILY_COLOR_PALETTE.mpaBar),
-                    borderColor: DAILY_COLOR_PALETTE.mpaBar,
-                    borderWidth: 1,
-                    borderRadius: 4,
-                    borderSkipped: false,
-                    order: 1
-                }, {
-                    label: '7-Day Rolling Average',
-                    data: strengthRollingAvg,
-                    type: 'line',
-                    borderColor: PRIMARY_BLUE_DARK,
-                    backgroundColor: PRIMARY_BLUE_FILL,
-                    borderWidth: 2,
-                    fill: false,
-                    tension: 0.4,
-                    pointRadius: 4,
-                    pointHoverRadius: 6,
-                    pointBackgroundColor: strengthLinePointColors,
-                    pointBorderColor: strengthLinePointColors,
-                    pointBorderWidth: 2,
-                    order: 99,
-                    z: 10
-                }]
+                labels: labels,
+                datasets: [
+                    ...referenceLineDatasets,
+                    {
+                        label: 'Strength Training (minutes)',
+                        data: reversedDaily.map(d => d.dailyDuration),
+                        backgroundColor: reversedDaily.map(() => DAILY_COLOR_PALETTE.mpaBar),
+                        borderColor: DAILY_COLOR_PALETTE.mpaBar,
+                        borderWidth: 1,
+                        borderRadius: 4,
+                        borderSkipped: false,
+                        order: 1
+                    }, {
+                        label: '7-Day Rolling Average',
+                        data: strengthRollingAvg,
+                        type: 'line',
+                        borderColor: PRIMARY_BLUE_DARK,
+                        backgroundColor: PRIMARY_BLUE_FILL,
+                        borderWidth: 2,
+                        fill: false,
+                        tension: 0.4,
+                        pointRadius: 4,
+                        pointHoverRadius: 6,
+                        pointBackgroundColor: strengthLinePointColors,
+                        pointBorderColor: strengthLinePointColors,
+                        pointBorderWidth: 2,
+                        order: 99,
+                        z: 10
+                    }
+                ]
             },
             options: {
                 responsive: true,
@@ -6608,6 +6621,75 @@ function createStrengthCharts(data) {
             }
         });
     }
+}
+
+// Helper function to create reference line datasets for charts
+function createReferenceLineDatasets(referenceLines, labels) {
+    if (!referenceLines || !referenceLines.worst || !referenceLines.neutral || !referenceLines.best) {
+        return [];
+    }
+    
+    const datasets = [];
+    const dataPoints = labels.map(() => null); // Create array with nulls for each label
+    
+    // Worst line (red)
+    if (referenceLines.worst && referenceLines.worst.value !== undefined && referenceLines.worst.value !== null) {
+        datasets.push({
+            type: 'line',
+            label: 'Worst',
+            data: labels.map(() => referenceLines.worst.value),
+            borderColor: referenceLines.worst.color || '#d32f2f',
+            backgroundColor: 'transparent',
+            borderWidth: 1,
+            borderDash: [5, 5],
+            pointRadius: 0,
+            pointHoverRadius: 0,
+            fill: false,
+            tension: 0,
+            order: 0, // Render behind main data
+            yAxisID: 'y'
+        });
+    }
+    
+    // Neutral line (white)
+    if (referenceLines.neutral && referenceLines.neutral.value !== undefined && referenceLines.neutral.value !== null) {
+        datasets.push({
+            type: 'line',
+            label: 'Neutral',
+            data: labels.map(() => referenceLines.neutral.value),
+            borderColor: referenceLines.neutral.color || '#ffffff',
+            backgroundColor: 'transparent',
+            borderWidth: 1,
+            borderDash: [5, 5],
+            pointRadius: 0,
+            pointHoverRadius: 0,
+            fill: false,
+            tension: 0,
+            order: 0,
+            yAxisID: 'y'
+        });
+    }
+    
+    // Best line (green)
+    if (referenceLines.best && referenceLines.best.value !== undefined && referenceLines.best.value !== null) {
+        datasets.push({
+            type: 'line',
+            label: 'Best',
+            data: labels.map(() => referenceLines.best.value),
+            borderColor: referenceLines.best.color || '#388e3c',
+            backgroundColor: 'transparent',
+            borderWidth: 1,
+            borderDash: [5, 5],
+            pointRadius: 0,
+            pointHoverRadius: 0,
+            fill: false,
+            tension: 0,
+            order: 0,
+            yAxisID: 'y'
+        });
+    }
+    
+    return datasets;
 }
 
 function createSleepCharts(data) {
@@ -6777,19 +6859,26 @@ function createSleepCharts(data) {
             getColorForRescaledValue(d.durationRescaled)
         );
 
+        const labels = reversedDaily.map(d => d.label);
+        const referenceLineDatasets = createReferenceLineDatasets(data.referenceLines, labels);
+
         new Chart(sleepDurationCtx, {
             type: 'bar',
             data: {
-                labels: reversedDaily.map(d => d.label),
-                datasets: [{
-                    label: 'Sleep Duration (hours)',
-                    data: reversedDaily.map(d => d.sleepDuration),
-                    backgroundColor: durationColors,
-                    borderColor: durationColors,
-                    borderWidth: 1,
-                    borderRadius: 4,
-                    borderSkipped: false
-                }]
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'Sleep Duration (hours)',
+                        data: reversedDaily.map(d => d.sleepDuration),
+                        backgroundColor: durationColors,
+                        borderColor: durationColors,
+                        borderWidth: 1,
+                        borderRadius: 4,
+                        borderSkipped: false,
+                        order: 1 // Render on top of reference lines
+                    },
+                    ...referenceLineDatasets
+                ]
             },
             options: {
                 responsive: true,
@@ -7015,20 +7104,26 @@ function createHealthSpanSleepCharts(data) {
                 getRescaledValue(d, 'durationRescaledFinal', 'durationRescaled')
             )
         );
+        const labels = reversedDaily.map(d => d.label);
+        const referenceLineDatasets = createReferenceLineDatasets(data.referenceLines, labels);
 
         new Chart(sleepDurationCtx, {
             type: 'bar',
             data: {
-                labels: reversedDaily.map(d => d.label),
-                datasets: [{
-                    label: 'Sleep Duration (hours)',
-                    data: reversedDaily.map(d => d.sleepDuration),
-                    backgroundColor: durationColors,
-                    borderColor: durationColors,
-                    borderWidth: 1,
-                    borderRadius: 4,
-                    borderSkipped: false
-                }]
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'Sleep Duration (hours)',
+                        data: reversedDaily.map(d => d.sleepDuration),
+                        backgroundColor: durationColors,
+                        borderColor: durationColors,
+                        borderWidth: 1,
+                        borderRadius: 4,
+                        borderSkipped: false,
+                        order: 1
+                    },
+                    ...referenceLineDatasets
+                ]
             },
             options: {
                 responsive: true,
@@ -7163,20 +7258,26 @@ function createHealthSpanStepsCharts(data) {
                 STEP_SCALE
             )
         );
+        const labels = reversedDaily.map(d => d.label);
+        const referenceLineDatasets = createReferenceLineDatasets(data.referenceLines, labels);
 
         new Chart(stepsCtx, {
             type: 'bar',
             data: {
-                labels: reversedDaily.map(d => d.label),
-                datasets: [{
-                    label: 'Weekly Steps',
-                    data: reversedDaily.map(d => d.dailySteps),
-                    backgroundColor: barColors,
-                    borderColor: barColors,
-                    borderWidth: 1,
-                    borderRadius: 4,
-                    borderSkipped: false
-                }]
+                labels: labels,
+                datasets: [
+                    ...referenceLineDatasets,
+                    {
+                        label: 'Weekly Steps',
+                        data: reversedDaily.map(d => d.dailySteps),
+                        backgroundColor: barColors,
+                        borderColor: barColors,
+                        borderWidth: 1,
+                        borderRadius: 4,
+                        borderSkipped: false,
+                        order: 1
+                    }
+                ]
             },
             options: {
                 responsive: true,
@@ -7257,6 +7358,8 @@ function createHealthSpanHeartRateCharts(data) {
                 getRescaledValue(d, 'hazardRatioRescaledFinal', 'hazardRatioRescaled')
             )
         );
+        const labels = reversedDaily.map(d => d.label);
+        const referenceLineDatasets = createReferenceLineDatasets(data.referenceLines, labels);
 
         // Debug: Log the rolling average data
         console.log('Healthspan Rolling Average Data:', activityRollingAvg);
@@ -7265,8 +7368,9 @@ function createHealthSpanHeartRateCharts(data) {
         new Chart(activityCtx, {
             type: 'bar',
             data: {
-                labels: reversedDaily.map(d => d.label),
+                labels: labels,
                 datasets: [
+                    ...referenceLineDatasets,
                     {
                         label: 'MPA Time (min)',
                         data: reversedDaily.map(d => d.mpaTime),
@@ -7369,23 +7473,29 @@ function createHealthSpanRHRCharts(data) {
                 getRescaledValue(d, 'hrRescaledFinal', 'hrRescaled')
             )
         );
+        const labels = reversedDaily.map(d => d.label);
+        const referenceLineDatasets = createReferenceLineDatasets(data.referenceLines, labels);
 
         new Chart(rhrCtx, {
             type: 'line',
             data: {
-                labels: reversedDaily.map(d => d.label),
-                datasets: [{
-                    label: 'Resting Heart Rate (BPM)',
-                    data: reversedDaily.map(d => d.rhr),
-                    borderColor: '#E91E63',
-                    backgroundColor: 'rgba(233, 30, 99, 0.1)',
-                    fill: true,
-                    pointBackgroundColor: pointColors,
-                    pointBorderColor: pointColors,
-                    pointRadius: 4,
-                    pointHoverRadius: 6,
-                    tension: 0.15
-                }]
+                labels: labels,
+                datasets: [
+                    ...referenceLineDatasets,
+                    {
+                        label: 'Resting Heart Rate (BPM)',
+                        data: reversedDaily.map(d => d.rhr),
+                        borderColor: '#E91E63',
+                        backgroundColor: 'rgba(233, 30, 99, 0.1)',
+                        fill: true,
+                        pointBackgroundColor: pointColors,
+                        pointBorderColor: pointColors,
+                        pointRadius: 4,
+                        pointHoverRadius: 6,
+                        tension: 0.15,
+                        order: 1
+                    }
+                ]
             },
             options: {
                 responsive: true,
@@ -7428,20 +7538,26 @@ function createHealthSpanStrengthCharts(data) {
                 getRescaledValue(d, 'hrRescaledFinal', 'hrRescaled')
             )
         );
+        const labels = reversedDaily.map(d => d.label);
+        const referenceLineDatasets = createReferenceLineDatasets(data.referenceLines, labels);
 
         new Chart(strengthCtx, {
             type: 'bar',
             data: {
-                labels: reversedDaily.map(d => d.label),
-                datasets: [{
-                    label: 'Strength Training (minutes)',
-                    data: reversedDaily.map(d => d.dailyDuration),
-                    backgroundColor: barColors,
-                    borderColor: barColors,
-                    borderWidth: 1,
-                    borderRadius: 4,
-                    borderSkipped: false
-                }]
+                labels: labels,
+                datasets: [
+                    ...referenceLineDatasets,
+                    {
+                        label: 'Strength Training (minutes)',
+                        data: reversedDaily.map(d => d.dailyDuration),
+                        backgroundColor: barColors,
+                        borderColor: barColors,
+                        borderWidth: 1,
+                        borderRadius: 4,
+                        borderSkipped: false,
+                        order: 1
+                    }
+                ]
             },
             options: {
                 responsive: true,
