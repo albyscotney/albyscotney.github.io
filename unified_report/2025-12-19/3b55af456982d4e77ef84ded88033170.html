@@ -1767,12 +1767,12 @@
             },
             "anaerobic": {
                 "recent": {
-                    "value": 1.7690047781972758,
-                    "displayValue": 0.6633101866342969
+                    "value": 1.7688541055735432,
+                    "displayValue": 0.6634193971506032
                 },
                 "healthspan": {
-                    "value": 1.4767957289050568,
-                    "displayValue": 0.7919008094758117
+                    "value": 1.4767706168011014,
+                    "displayValue": 0.7919190112285294
                 },
                 "showRecent": true,
                 "showHealthspan": true,
@@ -4939,29 +4939,29 @@
             }
         },
         "bodyComp": {
-            "latestScore": -2.2403105364418296,
-            "averageScore": -2.2205047973927017,
+            "latestScore": -2.2396733231477297,
+            "averageScore": -2.2204623165064277,
             "daily": [
                 {
                     "label": "Week of Dec 08",
-                    "weight": 91.01466666666666,
-                    "bodyFat": 18.74,
-                    "ffmi": 20.925353779990946,
-                    "fmi": 4.82574022936472,
-                    "hrScore": 0.775968946355817,
+                    "weight": 91.1268,
+                    "bodyFat": 18.710666666666665,
+                    "ffmi": 20.958693292590915,
+                    "fmi": 4.824126988079071,
+                    "hrScore": 0.776032667685227,
                     "hrColor": "#43a047",
-                    "ffm": 73.9585704,
-                    "fm": 17.056096266666668,
-                    "hrScoreFinal": 0.7746231326392032,
-                    "hrRescaled": 1.861657898631473,
-                    "hrRescaledFinal": 1.8668341052338338,
+                    "ffm": 74.07640557333333,
+                    "fm": 17.050394426666667,
+                    "hrScoreFinal": 0.7748355370705698,
+                    "hrRescaled": 1.8614128165952806,
+                    "hrRescaledFinal": 1.866017165113193,
                     "hrColorFinal": "#43a047",
                     "fmiHrScore": 0.8699999999999999,
                     "fmiHrScoreFinal": 0.87,
                     "fmiHrRescaled": 2.0,
                     "fmiHrRescaledFinal": 2.0,
-                    "ffmFinal": null,
-                    "fmFinal": null,
+                    "ffmFinal": 74.2456511111111,
+                    "fmFinal": 17.027682222222218,
                     "hasData": true
                 },
                 {
@@ -5401,12 +5401,12 @@
             },
             "anaerobic": {
                 "recent": {
-                    "value": 1.7690047781972758,
-                    "displayValue": 0.6633101866342969
+                    "value": 1.7688541055735432,
+                    "displayValue": 0.6634193971506032
                 },
                 "healthspan": {
-                    "value": 1.4767957289050568,
-                    "displayValue": 0.7919008094758117
+                    "value": 1.4767706168011014,
+                    "displayValue": 0.7919190112285294
                 },
                 "showRecent": true,
                 "showHealthspan": true,
@@ -5472,10 +5472,10 @@
         }
     },
     "masterScore": {
-        "recent": 1.5765415214057168,
-        "healthspan": 1.4647463616020402,
-        "recentRaw": 0.44094851257569223,
-        "healthspanRaw": 0.4704592038681008
+        "recent": 1.576496760194065,
+        "healthspan": 1.4647380591512964,
+        "recentRaw": 0.4410211124176564,
+        "healthspanRaw": 0.47047001732098553
     }
 };
 
@@ -6068,7 +6068,7 @@ function updatePointer(pointerId, rawValue, overrides = {}, extra = {}) {
         displayOverride !== null && !Number.isNaN(displayOverride)
             ? displayOverride
             : value;
-    
+
     // Debug logging for consistency markers
     if (pointer.id && pointer.id.includes('consistency')) {
         console.log('Tooltip value debug:', {
@@ -6391,18 +6391,18 @@ function updateGroupTickers(tabName, data) {
         const aerobicRecentMarker = selectMarker(aerobicEntry, 'recent');
         applyMarker('healthspan-aerobic-category-marker-recent', aerobicRecentMarker, showAerobicRecent);
         applyMarker('healthspan-aerobic-category-marker-healthspan', aerobicHSMarker, showAerobicHS);
-        
+
         // Use separate markers for VO2, RHR, and heart rate activity
         const vo2Entry = scoreBars.vo2 || null;
         const vo2HSMarker = selectMarker(vo2Entry, 'healthspan');
         const showVo2HS = !!(vo2Entry && vo2Entry.showHealthspan);
         applyMarker('healthspan-vo2-marker-healthspan', vo2HSMarker, showVo2HS);
-        
+
         const rhrEntry = scoreBars.rhr || null;
         const rhrHSMarker = selectMarker(rhrEntry, 'healthspan');
         const showRhrHS = !!(rhrEntry && rhrEntry.showHealthspan);
         applyMarker('healthspan-rhr-marker-healthspan', rhrHSMarker, showRhrHS);
-        
+
         const hrActivityEntry = scoreBars.heartRateActivity || null;
         const hrActivityHSMarker = selectMarker(hrActivityEntry, 'healthspan');
         const hrActivityRecentMarker = selectMarker(hrActivityEntry, 'recent');
@@ -6880,10 +6880,10 @@ function createReferenceLineDatasets(referenceLines, labels) {
         });
         return [];
     }
-    
+
     const datasets = [];
     const dataPoints = labels.map(() => null); // Create array with nulls for each label
-    
+
     // Worst line (red)
     if (referenceLines.worst && referenceLines.worst.value !== undefined && referenceLines.worst.value !== null) {
         datasets.push({
@@ -6902,7 +6902,7 @@ function createReferenceLineDatasets(referenceLines, labels) {
             yAxisID: 'y'
         });
     }
-    
+
     // Neutral line (white)
     if (referenceLines.neutral && referenceLines.neutral.value !== undefined && referenceLines.neutral.value !== null) {
         datasets.push({
@@ -6921,7 +6921,7 @@ function createReferenceLineDatasets(referenceLines, labels) {
             yAxisID: 'y'
         });
     }
-    
+
     // Best line (green)
     if (referenceLines.best && referenceLines.best.value !== undefined && referenceLines.best.value !== null) {
         datasets.push({
@@ -6940,7 +6940,7 @@ function createReferenceLineDatasets(referenceLines, labels) {
             yAxisID: 'y'
         });
     }
-    
+
     return datasets;
 }
 
