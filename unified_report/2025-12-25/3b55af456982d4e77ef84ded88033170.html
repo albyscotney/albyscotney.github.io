@@ -214,7 +214,6 @@
             margin: 0 0 10px 0;
             font-size: 0.9em;
             color: #ccc;
-            text-align: center;
         }
 
         .component-slider .score-scale-container {
@@ -242,8 +241,8 @@
     }
     .scale-marker {
         position: absolute;
-        top: 0;
-        transform: translateX(-50%);
+        top: 32px;
+        transform: translate(-50%, -50%);
         display: inline-flex;
         align-items: center;
         justify-content: center;
@@ -371,8 +370,8 @@
                 </div>
                 <div class="metric-wrapper">
                     <div class="chart-wrapper">
-                        <h4>Consistency</h4>
-                        <p class="chart-subtitle">Daily sleep windows.</p>
+                        <h4>Sleep Windows</h4>
+                        <p class="chart-subtitle">Sleep periods showing time in bed. Color indicates sleep consistency.</p>
                         <div style="height: 300px; position: relative;">
                             <canvas id="sleep-windows-chart"></canvas>
                         </div>
@@ -381,8 +380,8 @@
 
                 <div class="metric-wrapper">
                     <div class="chart-wrapper">
-                        <h4>Duration</h4>
-                        <p class="chart-subtitle">Daily sleep duration.</p>
+                        <h4>Sleep Duration</h4>
+                        <p class="chart-subtitle">Total hours slept each day.</p>
                         <div style="height: 300px; position: relative;">
                             <canvas id="sleep-duration-chart"></canvas>
                         </div>
@@ -443,8 +442,8 @@
                 </div>
                 <div class="metric-wrapper">
                     <div class="chart-wrapper">
-                        <h4>Steps</h4>
-                        <p class="chart-subtitle">Daily steps with 7-day rolling average.</p>
+                        <h4>Daily Steps</h4>
+                        <p class="chart-subtitle">Daily steps. Color indicates health risk based on steps.</p>
                         <div style="height: 300px; position: relative;">
                             <canvas id="steps-chart"></canvas>
                         </div>
@@ -453,8 +452,8 @@
 
                 <div class="metric-wrapper">
                     <div class="chart-wrapper">
-                        <h4>Activity Time</h4>
-                        <p class="chart-subtitle">Daily moderate and vigorous minutes with 7-day rolling total.</p>
+                        <h4>Activity Time Distribution</h4>
+                        <p class="chart-subtitle">Time spent in moderate (MPA) and vigorous (VPA) physical activity.</p>
                         <div style="height: 300px; position: relative;">
                             <canvas id="heart-rate-activity-chart"></canvas>
                         </div>
@@ -489,7 +488,7 @@
             <div id="anaerobic-group-content" class="group-content collapsed">
                 <div class="component-sliders">
                     <div class="component-slider" style="max-width: 50%; margin: 0 auto;">
-                        <h4>Strength Training</h4>
+                        <h4>Strength Time</h4>
                         <div class="score-scale-container">
                             <div class="scale-wrapper">
                                 <div class="score-scale-bar gradient-scale"></div>
@@ -504,7 +503,7 @@
                 <div class="metric-wrapper">
                     <div class="chart-wrapper">
                         <h4>Strength Training</h4>
-                        <p class="chart-subtitle">Daily strength minutes with 7-day rolling total.</p>
+                        <p class="chart-subtitle">Daily strength training duration with 7-day rolling sum.</p>
                         <div style="height: 300px; position: relative;">
                             <canvas id="strength-chart"></canvas>
                         </div>
@@ -543,7 +542,7 @@
                 <!-- Individual component sliders when expanded -->
                 <div class="component-sliders">
                     <div class="component-slider">
-                        <h4>Consistency</h4>
+                        <h4>Sleep Window</h4>
                         <div class="score-scale-container">
                             <div class="scale-wrapper">
                                 <div class="score-scale-bar gradient-scale"></div>
@@ -555,7 +554,7 @@
                         </div>
                     </div>
                     <div class="component-slider">
-                        <h4>Duration</h4>
+                        <h4>Sleep Duration</h4>
                         <div class="score-scale-container">
                             <div class="scale-wrapper">
                                 <div class="score-scale-bar gradient-scale"></div>
@@ -571,8 +570,8 @@
                 <!-- Sleep Window Chart -->
                 <div class="metric-wrapper">
                     <div class="chart-wrapper">
-                        <h4>Consistency</h4>
-                        <p class="chart-subtitle">Weekly sleep windows.</p>
+                        <h4>Sleep Windows (Weekly)</h4>
+                        <p class="chart-subtitle">Weekly sleep periods showing time in bed. Color indicates sleep consistency.</p>
                         <div style="height: 300px; position: relative;">
                             <canvas id="healthspan-sleep-windows-chart"></canvas>
                         </div>
@@ -582,8 +581,8 @@
                 <!-- Sleep Duration Chart -->
                 <div class="metric-wrapper">
                     <div class="chart-wrapper">
-                        <h4>Duration</h4>
-                        <p class="chart-subtitle">Weekly sleep duration.</p>
+                        <h4>Sleep Duration (Weekly)</h4>
+                        <p class="chart-subtitle">Average hours slept per week.</p>
                         <div style="height: 300px; position: relative;">
                             <canvas id="healthspan-sleep-duration-chart"></canvas>
                         </div>
@@ -619,7 +618,7 @@
                 <!-- Individual component sliders when expanded -->
                 <div class="component-sliders component-sliders-grid">
                     <div class="component-slider">
-                        <h4>Oxygen Uptake</h4>
+                        <h4>VO2 Max</h4>
                         <div class="score-scale-container">
                             <div class="scale-wrapper">
                                 <div class="score-scale-bar gradient-scale"></div>
@@ -666,11 +665,11 @@
                     </div>
                 </div>
 
-                <!-- Oxygen Uptake Chart -->
+                <!-- VO2 Max Chart -->
                 <div class="metric-wrapper">
                     <div class="chart-wrapper">
-                        <h4>Oxygen Uptake</h4>
-                        <p class="chart-subtitle">Weekly oxygen uptake trend.</p>
+                        <h4>VO2 Max Trend (Weekly)</h4>
+                        <p class="chart-subtitle">Weekly VO2 max over time. Higher is better.</p>
                         <div style="height: 300px; position: relative;">
                             <canvas id="healthspan-vo2-chart"></canvas>
                         </div>
@@ -680,8 +679,8 @@
                 <!-- Steps Chart -->
                 <div class="metric-wrapper">
                     <div class="chart-wrapper">
-                        <h4>Steps</h4>
-                        <p class="chart-subtitle">Weekly average daily steps.</p>
+                        <h4>Weekly Steps</h4>
+                        <p class="chart-subtitle">Average daily steps per week.</p>
                         <div style="height: 300px; position: relative;">
                             <canvas id="healthspan-steps-chart"></canvas>
                         </div>
@@ -691,8 +690,8 @@
                 <!-- Heart Rate Activity Chart -->
                 <div class="metric-wrapper">
                     <div class="chart-wrapper">
-                        <h4>Activity Time</h4>
-                        <p class="chart-subtitle">Weekly moderate and vigorous minutes with 7-day rolling total.</p>
+                        <h4>Weekly Activity Time</h4>
+                        <p class="chart-subtitle">Weekly time spent in moderate and vigorous physical activity.</p>
                         <div style="height: 300px; position: relative;">
                             <canvas id="healthspan-heart-rate-activity-chart"></canvas>
                         </div>
@@ -702,8 +701,8 @@
                 <!-- Resting Heart Rate Chart -->
                 <div class="metric-wrapper">
                     <div class="chart-wrapper">
-                        <h4>Resting Heart Rate</h4>
-                        <p class="chart-subtitle">Weekly average resting heart rate.</p>
+                        <h4>Weekly Resting Heart Rate</h4>
+                        <p class="chart-subtitle">Average resting heart rate per week.</p>
                         <div style="height: 300px; position: relative;">
                             <canvas id="healthspan-rhr-chart"></canvas>
                         </div>
@@ -766,8 +765,8 @@
                 <!-- Strength Training Chart -->
                 <div class="metric-wrapper">
                     <div class="chart-wrapper">
-                        <h4>Strength Training</h4>
-                        <p class="chart-subtitle">Average daily strength minutes per week.</p>
+                        <h4>Weekly Strength Training</h4>
+                        <p class="chart-subtitle">Weekly strength training duration.</p>
                         <div style="height: 300px; position: relative;">
                             <canvas id="healthspan-strength-chart"></canvas>
                         </div>
@@ -777,15 +776,15 @@
                 <!-- Body Composition Charts -->
                 <div class="metric-wrapper">
                     <div class="chart-wrapper">
-                        <h4>Fat-Free Mass Index</h4>
-                        <p class="chart-subtitle">Weekly fat-free mass trend.</p>
+                        <h4>Fat-Free Mass Index (FFMI)</h4>
+                        <p class="chart-subtitle">Weekly FFMI trends.</p>
                         <div style="height: 150px; position: relative;">
                             <canvas id="healthspan-ffmi-chart"></canvas>
                         </div>
                     </div>
                     <div class="chart-wrapper">
-                        <h4>Fat Mass Index</h4>
-                        <p class="chart-subtitle">Weekly fat mass trend.</p>
+                        <h4>Fat Mass Index (FMI)</h4>
+                        <p class="chart-subtitle">Weekly FMI trends.</p>
                         <div style="height: 150px; position: relative;">
                             <canvas id="healthspan-fmi-chart"></canvas>
                         </div>
@@ -803,9 +802,32 @@
         const chartData = {
     "daily-controls": {
         "sleep": {
-            "latestScore": -0.05403631034276546,
-            "averageScore": -0.9769941437091656,
+            "latestScore": 0.8751152887075353,
+            "averageScore": -0.6855491024652316,
             "daily": [
+                {
+                    "label": "Dec 24",
+                    "consistencyScore": 0.9916312056737588,
+                    "durationScore": 1.096689497716895,
+                    "consistencyRescaled": 1.1673758865248232,
+                    "durationRescaled": 0.12100456621004563,
+                    "consistencyColor": "#dfefe0",
+                    "durationColor": "#e53935",
+                    "sleepTime": "00:01",
+                    "wakeTime": "05:44",
+                    "sleepDuration": 5.716666666666667,
+                    "timeInBed": 6.916666666666667,
+                    "awakeCount": 3,
+                    "consistencyScoreFinal": null,
+                    "consistencyRescaledFinal": null,
+                    "consistencyColorFinal": "#9e9e9e",
+                    "durationScoreFinal": null,
+                    "durationRescaledFinal": null,
+                    "durationColorFinal": "#9e9e9e",
+                    "sleepHrScoreFinal": null,
+                    "sleepHrRescaledFinal": null,
+                    "hasData": true
+                },
                 {
                     "label": "Dec 23",
                     "consistencyScore": 0.9550218340611353,
@@ -943,29 +965,6 @@
                     "sleepHrScoreFinal": null,
                     "sleepHrRescaledFinal": null,
                     "hasData": true
-                },
-                {
-                    "label": "Dec 17",
-                    "consistencyScore": 0.95,
-                    "durationScore": 0.93,
-                    "consistencyRescaled": 2.0,
-                    "durationRescaled": 2.0,
-                    "consistencyColor": "#43a047",
-                    "durationColor": "#43a047",
-                    "sleepTime": "00:54",
-                    "wakeTime": "09:07",
-                    "sleepDuration": 8.216666666666667,
-                    "timeInBed": 8.233333333333334,
-                    "awakeCount": 0,
-                    "consistencyScoreFinal": null,
-                    "consistencyRescaledFinal": null,
-                    "consistencyColorFinal": "#9e9e9e",
-                    "durationScoreFinal": null,
-                    "durationRescaledFinal": null,
-                    "durationColorFinal": "#9e9e9e",
-                    "sleepHrScoreFinal": null,
-                    "sleepHrRescaledFinal": null,
-                    "hasData": true
                 }
             ],
             "colorStops": [
@@ -1009,6 +1008,17 @@
             "latestScore": 0.0,
             "averageScore": 1.0638928571428585,
             "daily": [
+                {
+                    "label": "Dec 24",
+                    "dailySteps": 10220,
+                    "rollingAvgSteps": 9232,
+                    "hazardRatio": 1.0,
+                    "hazardRatioRescaled": 1.0,
+                    "hrColor": "#ffffff",
+                    "hazardRatioFinal": null,
+                    "hazardRatioRescaledFinal": null,
+                    "hasData": true
+                },
                 {
                     "label": "Dec 23",
                     "dailySteps": 8245,
@@ -1074,17 +1084,6 @@
                     "hazardRatioFinal": null,
                     "hazardRatioRescaledFinal": null,
                     "hasData": true
-                },
-                {
-                    "label": "Dec 17",
-                    "dailySteps": 4486,
-                    "rollingAvgSteps": 9665,
-                    "hazardRatio": 1.0,
-                    "hazardRatioRescaled": 1.0,
-                    "hrColor": "#ffffff",
-                    "hazardRatioFinal": null,
-                    "hazardRatioRescaledFinal": null,
-                    "hasData": true
                 }
             ],
             "colorStops": [
@@ -1125,15 +1124,73 @@
             }
         },
         "heartRate": {
-            "latestScore": -0.2570093457943923,
-            "averageScore": -0.22478598916201964,
+            "latestScore": -0.2457943925233641,
+            "averageScore": -0.18953899316735967,
             "daily": [
+                {
+                    "label": "Dec 24",
+                    "mpaTime": 4.0,
+                    "vpaTime": 0.0,
+                    "adjVpaTime": 2.0,
+                    "rolling7Day": 22.285714285714285,
+                    "hazardRatio": 1.0245794392523364,
+                    "hazardRatioRescaled": 0.8931328728159287,
+                    "restingHR": 45.0,
+                    "maxHR": 195.0,
+                    "hrReserve": 150.0,
+                    "zoneTimes": {
+                        "0-4": 0.0,
+                        "100-104": 0.0,
+                        "105-109": 0.0,
+                        "10-14": 0.0,
+                        "110-114": 0.0,
+                        "115-119": 0.0,
+                        "120-124": 0.0,
+                        "125-129": 0.0,
+                        "130-134": 0.0,
+                        "135-139": 0.0,
+                        "140-144": 0.0,
+                        "145-149": 0.0,
+                        "150-154": 0.0,
+                        "155-159": 0.0,
+                        "15-19": 0.0,
+                        "160-164": 0.0,
+                        "165-169": 0.0,
+                        "170-174": 0.0,
+                        "175-179": 0.0,
+                        "180-184": 0.0,
+                        "185-189": 0.0,
+                        "190-194": 0.0,
+                        "195-199": 0.0,
+                        "200plus": 0.0,
+                        "20-24": 0.0,
+                        "25-29": 0.0,
+                        "30-34": 0.0,
+                        "35-39": 0.0,
+                        "40-44": 0.0,
+                        "45-49": 0.0,
+                        "50-54": 0.0,
+                        "55-59": 0.0,
+                        "5-9": 0.0,
+                        "60-64": 0.0,
+                        "65-69": 0.0,
+                        "70-74": 0.0,
+                        "75-79": 0.0,
+                        "80-84": 0.0,
+                        "85-89": 0.0,
+                        "90-94": 0.0,
+                        "95-99": 0.0
+                    },
+                    "hazardRatioFinal": null,
+                    "hazardRatioRescaledFinal": null,
+                    "hasData": true
+                },
                 {
                     "label": "Dec 23",
                     "mpaTime": 0.0,
                     "vpaTime": 0.0,
                     "adjVpaTime": 0.0,
-                    "rolling7Day": 154.0,
+                    "rolling7Day": 22.0,
                     "hazardRatio": 1.0257009345794392,
                     "hazardRatioRescaled": 0.8882568061763512,
                     "restingHR": 47.0,
@@ -1191,7 +1248,7 @@
                     "mpaTime": 10.0,
                     "vpaTime": 0.0,
                     "adjVpaTime": 5.0,
-                    "rolling7Day": 154.0,
+                    "rolling7Day": 22.0,
                     "hazardRatio": 1.0257009345794392,
                     "hazardRatioRescaled": 0.8882568061763512,
                     "restingHR": 47.0,
@@ -1249,7 +1306,7 @@
                     "mpaTime": 16.0,
                     "vpaTime": 0.0,
                     "adjVpaTime": 8.0,
-                    "rolling7Day": 206.0,
+                    "rolling7Day": 29.428571428571427,
                     "hazardRatio": 1.0029411764705882,
                     "hazardRatioRescaled": 0.9872122762148339,
                     "restingHR": 47.0,
@@ -1307,7 +1364,7 @@
                     "mpaTime": 46.0,
                     "vpaTime": 4.0,
                     "adjVpaTime": 27.0,
-                    "rolling7Day": 208.0,
+                    "rolling7Day": 29.714285714285715,
                     "hazardRatio": 1.0023529411764707,
                     "hazardRatioRescaled": 0.9897698209718666,
                     "restingHR": 44.0,
@@ -1365,7 +1422,7 @@
                     "mpaTime": 0.0,
                     "vpaTime": 0.0,
                     "adjVpaTime": 0.0,
-                    "rolling7Day": 154.0,
+                    "rolling7Day": 22.0,
                     "hazardRatio": 1.0257009345794392,
                     "hazardRatioRescaled": 0.8882568061763512,
                     "restingHR": 47.0,
@@ -1423,70 +1480,12 @@
                     "mpaTime": 68.0,
                     "vpaTime": 2.0,
                     "adjVpaTime": 36.0,
-                    "rolling7Day": 154.0,
+                    "rolling7Day": 22.0,
                     "hazardRatio": 1.0257009345794392,
                     "hazardRatioRescaled": 0.8882568061763512,
                     "restingHR": 49.0,
                     "maxHR": 195.0,
                     "hrReserve": 146.0,
-                    "zoneTimes": {
-                        "0-4": 0.0,
-                        "100-104": 0.0,
-                        "105-109": 0.0,
-                        "10-14": 0.0,
-                        "110-114": 0.0,
-                        "115-119": 0.0,
-                        "120-124": 0.0,
-                        "125-129": 0.0,
-                        "130-134": 0.0,
-                        "135-139": 0.0,
-                        "140-144": 0.0,
-                        "145-149": 0.0,
-                        "150-154": 0.0,
-                        "155-159": 0.0,
-                        "15-19": 0.0,
-                        "160-164": 0.0,
-                        "165-169": 0.0,
-                        "170-174": 0.0,
-                        "175-179": 0.0,
-                        "180-184": 0.0,
-                        "185-189": 0.0,
-                        "190-194": 0.0,
-                        "195-199": 0.0,
-                        "200plus": 0.0,
-                        "20-24": 0.0,
-                        "25-29": 0.0,
-                        "30-34": 0.0,
-                        "35-39": 0.0,
-                        "40-44": 0.0,
-                        "45-49": 0.0,
-                        "50-54": 0.0,
-                        "55-59": 0.0,
-                        "5-9": 0.0,
-                        "60-64": 0.0,
-                        "65-69": 0.0,
-                        "70-74": 0.0,
-                        "75-79": 0.0,
-                        "80-84": 0.0,
-                        "85-89": 0.0,
-                        "90-94": 0.0,
-                        "95-99": 0.0
-                    },
-                    "hazardRatioFinal": null,
-                    "hazardRatioRescaledFinal": null,
-                    "hasData": true
-                },
-                {
-                    "label": "Dec 17",
-                    "mpaTime": 2.0,
-                    "vpaTime": 0.0,
-                    "adjVpaTime": 1.0,
-                    "rolling7Day": 112.0,
-                    "hazardRatio": 1.0492523364485982,
-                    "hazardRatioRescaled": 0.7858594067452254,
-                    "restingHR": 47.0,
-                    "maxHR": 195.0,
-                    "hrReserve": 148.0,
                     "zoneTimes": {
                         "0-4": 0.0,
                         "100-104": 0.0,
@@ -1563,19 +1562,30 @@
                     "color": "#d32f2f"
                 },
                 "neutral": {
-                    "value": 108.0,
+                    "value": 15.428571428571429,
                     "color": "#ffffff"
                 },
                 "best": {
-                    "value": 498.0,
+                    "value": 71.14285714285714,
                     "color": "#388e3c"
                 }
             }
         },
         "strength": {
             "latestScore": -0.07464244442894397,
-            "averageScore": -0.08971259776697105,
+            "averageScore": -0.09005971341987329,
             "daily": [
+                {
+                    "label": "Dec 24",
+                    "dailyDuration": 0.0,
+                    "weeklySum": 69.18728332519535,
+                    "hrScore": 0.9925357555571056,
+                    "hrRescaled": 1.1866061110723598,
+                    "hrColor": "#e2f0e3",
+                    "hrScoreFinal": null,
+                    "hrRescaledFinal": null,
+                    "hasData": true
+                },
                 {
                     "label": "Dec 23",
                     "dailyDuration": 0.0,
@@ -1641,17 +1651,6 @@
                     "hrScoreFinal": null,
                     "hrRescaledFinal": null,
                     "hasData": true
-                },
-                {
-                    "label": "Dec 17",
-                    "dailyDuration": 0.0,
-                    "weeklySum": 67.91163330078128,
-                    "hrScore": 0.9927787365141368,
-                    "hrRescaled": 1.180531587146579,
-                    "hrColor": "#e3f1e4",
-                    "hrScoreFinal": null,
-                    "hrRescaledFinal": null,
-                    "hasData": true
                 }
             ],
             "colorStops": [
@@ -1694,12 +1693,12 @@
         "scoreBars": {
             "sleep": {
                 "recent": {
-                    "value": 1.2434752280783017,
-                    "displayValue": 0.9716351359288778
+                    "value": 1.222767066586793,
+                    "displayValue": 0.9740476367426388
                 },
                 "healthspan": {
-                    "value": 0.9944523280078441,
-                    "displayValue": 1.0023344603742994
+                    "value": 0.9917545530088605,
+                    "displayValue": 1.0034696840938715
                 },
                 "showRecent": true,
                 "showHealthspan": true,
@@ -1708,11 +1707,11 @@
                 "components": {
                     "consistency": {
                         "recent": {
-                            "value": 1.1072371447610632,
+                            "value": 1.0843471512648253,
                             "displayValue": 0.9960042223723197
                         },
                         "healthspan": {
-                            "value": 0.916784721403501,
+                            "value": 0.915950948270847,
                             "displayValue": 1.0236926828572834
                         },
                         "showRecent": true,
@@ -1722,11 +1721,11 @@
                     },
                     "duration": {
                         "recent": {
-                            "value": 1.349454909900114,
+                            "value": 1.332183945197643,
                             "displayValue": 0.9732657356222544
                         },
                         "healthspan": {
-                            "value": 1.3023160062494703,
+                            "value": 1.2891058321390996,
                             "displayValue": 0.9784781067085035
                         },
                         "showRecent": true,
@@ -1739,11 +1738,11 @@
             "aerobic": {
                 "recent": {
                     "value": 2.0,
-                    "displayValue": 0.7059331616096254
+                    "displayValue": 0.7113042990438934
                 },
                 "healthspan": {
                     "value": 2.0,
-                    "displayValue": 0.5970548542542622
+                    "displayValue": 0.5980162299777785
                 },
                 "showRecent": true,
                 "showHealthspan": true,
@@ -1752,12 +1751,12 @@
                 "components": {
                     "activity": {
                         "recent": {
-                            "value": 0.997074012992353,
-                            "displayValue": 1.000672977011759
+                            "value": 0.9967257225180974,
+                            "displayValue": 1.0007530838208378
                         },
                         "healthspan": {
-                            "value": 0.9594626007492275,
-                            "displayValue": 1.0093236018276777
+                            "value": 0.9582873864395356,
+                            "displayValue": 1.0095939011189068
                         },
                         "showRecent": true,
                         "showHealthspan": true,
@@ -1768,12 +1767,12 @@
             },
             "anaerobic": {
                 "recent": {
-                    "value": 1.979040075526016,
-                    "displayValue": 0.6638720451101061
+                    "value": 1.9788431981297057,
+                    "displayValue": 0.663939637845317
                 },
                 "healthspan": {
-                    "value": 1.6311020407658696,
-                    "displayValue": 0.7833275229560986
+                    "value": 1.636051798716619,
+                    "displayValue": 0.7816281522574156
                 },
                 "showRecent": true,
                 "showHealthspan": true,
@@ -1782,12 +1781,12 @@
                 "components": {
                     "strength": {
                         "recent": {
-                            "value": 1.45676364821984,
-                            "displayValue": 0.9817294540712064
+                            "value": 1.450531251372482,
+                            "displayValue": 0.9819787499451007
                         },
                         "healthspan": {
-                            "value": 1.5232512626177017,
-                            "displayValue": 0.9790699494952918
+                            "value": 1.5208996143509306,
+                            "displayValue": 0.9791640154259628
                         },
                         "showRecent": true,
                         "showHealthspan": true,
@@ -1802,8 +1801,8 @@
                     "displayValue": 0.9808307222222223
                 },
                 "healthspan": {
-                    "value": 0.9602466111111111,
-                    "displayValue": 0.9602466111111111
+                    "value": 0.9597180000000001,
+                    "displayValue": 0.9597180000000001
                 },
                 "showRecent": true,
                 "showHealthspan": true,
@@ -1814,30 +1813,30 @@
     },
     "healthspan": {
         "sleep": {
-            "latestScore": -0.07746768897765932,
-            "averageScore": 0.14385004487919906,
+            "latestScore": -0.33993635231883035,
+            "averageScore": 0.13946560650625273,
             "daily": [
                 {
                     "label": "Week of Dec 15",
-                    "consistencyScore": 1.0309851708666418,
-                    "durationScore": 0.9617250812456293,
-                    "consistencyRescaled": 1.1631481992858035,
-                    "durationRescaled": 1.5663540252581347,
-                    "consistencyColor": "#ee8481",
-                    "durationColor": "#6fb672",
-                    "sleepTime": "00:54",
-                    "wakeTime": "09:07",
-                    "sleepDuration": 7.583333333333333,
-                    "timeInBed": 7.722222222222222,
+                    "consistencyScore": 1.0107388781499813,
+                    "durationScore": 0.954784801925213,
+                    "consistencyRescaled": 1.3723611494643526,
+                    "durationRescaled": 1.6606085047865866,
+                    "consistencyColor": "#f9d4d3",
+                    "durationColor": "#54a958",
+                    "sleepTime": "01:43",
+                    "wakeTime": "09:35",
+                    "sleepDuration": 7.654166666666666,
+                    "timeInBed": 7.841666666666667,
                     "awakeCount": 0,
                     "consistencyScoreFinal": 0.95,
                     "consistencyRescaledFinal": 2.0,
                     "consistencyColorFinal": "#43a047",
-                    "durationScoreFinal": 0.93,
-                    "durationRescaledFinal": 2.0,
+                    "durationScoreFinal": 0.9339639639639641,
+                    "durationRescaledFinal": 1.9433719433719423,
                     "durationColorFinal": "#43a047",
-                    "sleepHrScoreFinal": 0.8835,
-                    "sleepHrRescaledFinal": 2.0,
+                    "sleepHrScoreFinal": 0.8872657657657659,
+                    "sleepHrRescaledFinal": 1.9676758303367732,
                     "hasData": true
                 },
                 {
@@ -2325,16 +2324,16 @@
                 },
                 {
                     "label": "Week of Jul 14",
-                    "consistencyScore": 1.1223298005637854,
-                    "durationScore": 1.0183289845618613,
-                    "consistencyRescaled": 0.6878362718796397,
-                    "durationRescaled": 0.8964526449849343,
+                    "consistencyScore": 1.139710651868178,
+                    "durationScore": 1.017142313546423,
+                    "consistencyRescaled": 0.6465498723937643,
+                    "durationRescaled": 0.9177538595346814,
                     "consistencyColor": "#e53935",
-                    "durationColor": "#f5b6b4",
+                    "durationColor": "#f6bbb9",
                     "sleepTime": "20:24",
                     "wakeTime": "03:13",
-                    "sleepDuration": 6.608888888888889,
-                    "timeInBed": 7.061269841269841,
+                    "sleepDuration": 6.6000000000000005,
+                    "timeInBed": 7.052777777777777,
                     "awakeCount": 1,
                     "consistencyScoreFinal": 1.28,
                     "consistencyRescaledFinal": 0.0,
@@ -2391,7 +2390,7 @@
                 {
                     "date": "Week of Dec 15",
                     "vo2": 52.9,
-                    "hr": 0.6999999999999998,
+                    "hr": 0.7,
                     "hrRescaled": 1.6521739130434785,
                     "hrFinal": 0.7,
                     "hrRescaledFinal": 1.6521739130434785,
@@ -2610,7 +2609,7 @@
                 },
                 {
                     "date": "Week of Jul 14",
-                    "vo2": 54.27142857142858,
+                    "vo2": 54.26666666666667,
                     "hr": 0.54,
                     "hrRescaled": 2.0,
                     "hrFinal": 0.54,
@@ -2679,18 +2678,18 @@
             }
         },
         "steps": {
-            "latestScore": 0.0,
-            "averageScore": 0.6666717391304355,
+            "latestScore": 0.3568125000000011,
+            "averageScore": 0.6821853260869593,
             "daily": [
                 {
                     "label": "Week of Dec 15",
-                    "dailySteps": 11283,
-                    "rollingAvgSteps": 12107,
-                    "hazardRatio": 1.0,
-                    "hazardRatioRescaled": 1.0,
-                    "hrColor": "#ffffff",
-                    "hazardRatioFinal": 1.0,
-                    "hazardRatioRescaledFinal": 1.0,
+                    "dailySteps": 10908,
+                    "rollingAvgSteps": 10864,
+                    "hazardRatio": 1.03568125,
+                    "hazardRatioRescaled": 0.9762124999999999,
+                    "hrColor": "#ec716e",
+                    "hazardRatioFinal": 1.142725,
+                    "hazardRatioRescaledFinal": 0.9048499999999999,
                     "hasData": true
                 },
                 {
@@ -2926,8 +2925,8 @@
                 },
                 {
                     "label": "Week of Jul 14",
-                    "dailySteps": 14240,
-                    "rollingAvgSteps": 14579,
+                    "dailySteps": 14480,
+                    "rollingAvgSteps": 14291,
                     "hazardRatio": 1.0,
                     "hazardRatioRescaled": 1.0,
                     "hrColor": "#ffffff",
@@ -2974,17 +2973,17 @@
             }
         },
         "heartRate": {
-            "latestScore": -0.17201759208356426,
-            "averageScore": -0.10486371655449522,
+            "latestScore": -0.1932655305112685,
+            "averageScore": -0.10669340071542077,
             "daily": [
                 {
                     "label": "Week of Dec 15",
-                    "mpaTime": 40.0,
-                    "vpaTime": 12.0,
-                    "adjVpaTime": 32.0,
-                    "rolling7Day": 112.0,
-                    "hazardRatio": 1.0172017592083564,
-                    "hazardRatioRescaled": 0.9252097425723641,
+                    "mpaTime": 108.0,
+                    "vpaTime": 14.0,
+                    "adjVpaTime": 68.0,
+                    "rolling7Day": 4.357142857142857,
+                    "hazardRatio": 1.0193265530511268,
+                    "hazardRatioRescaled": 0.9159715084733608,
                     "restingHR": 49.0,
                     "maxHR": 195.0,
                     "hrReserve": 146.0,
@@ -3031,8 +3030,8 @@
                         "90-94": 0.0,
                         "95-99": 0.0
                     },
-                    "hazardRatioFinal": 1.0492523364485982,
-                    "hazardRatioRescaledFinal": 0.7858594067452254,
+                    "hazardRatioFinal": 1.0257009345794392,
+                    "hazardRatioRescaledFinal": 0.8882568061763512,
                     "hasData": true
                 },
                 {
@@ -3040,7 +3039,7 @@
                     "mpaTime": 178.0,
                     "vpaTime": 10.0,
                     "adjVpaTime": 99.0,
-                    "rolling7Day": 198.0,
+                    "rolling7Day": 3.8367346938775513,
                     "hazardRatio": 0.9986339799077525,
                     "hazardRatioRescaled": 1.0254081800531043,
                     "restingHR": 48.57142857142857,
@@ -3098,7 +3097,7 @@
                     "mpaTime": 196.0,
                     "vpaTime": 36.0,
                     "adjVpaTime": 134.0,
-                    "rolling7Day": 268.0,
+                    "rolling7Day": 4.734693877551021,
                     "hazardRatio": 0.9828464017185822,
                     "hazardRatioRescaled": 1.1905955364601983,
                     "restingHR": 49.857142857142854,
@@ -3156,7 +3155,7 @@
                     "mpaTime": 204.0,
                     "vpaTime": 26.0,
                     "adjVpaTime": 128.0,
-                    "rolling7Day": 256.0,
+                    "rolling7Day": 6.571428571428571,
                     "hazardRatio": 0.9977555102710045,
                     "hazardRatioRescaled": 1.055152328425923,
                     "restingHR": 51.8,
@@ -3214,7 +3213,7 @@
                     "mpaTime": 80.0,
                     "vpaTime": 10.0,
                     "adjVpaTime": 50.0,
-                    "rolling7Day": 100.0,
+                    "rolling7Day": 1.836734693877551,
                     "hazardRatio": 1.051815754339119,
                     "hazardRatioRescaled": 0.7747141115690483,
                     "restingHR": 49.142857142857146,
@@ -3272,7 +3271,7 @@
                     "mpaTime": 152.0,
                     "vpaTime": 32.0,
                     "adjVpaTime": 108.0,
-                    "rolling7Day": 216.0,
+                    "rolling7Day": 3.7551020408163263,
                     "hazardRatio": 1.0055281551873085,
                     "hazardRatioRescaled": 0.9759645426638758,
                     "restingHR": 48.285714285714285,
@@ -3330,7 +3329,7 @@
                     "mpaTime": 72.0,
                     "vpaTime": 10.0,
                     "adjVpaTime": 46.0,
-                    "rolling7Day": 92.0,
+                    "rolling7Day": 1.673469387755102,
                     "hazardRatio": 1.0293622869708632,
                     "hazardRatioRescaled": 0.8723378827353778,
                     "restingHR": 46.714285714285715,
@@ -3388,7 +3387,7 @@
                     "mpaTime": 164.0,
                     "vpaTime": 4.0,
                     "adjVpaTime": 86.0,
-                    "rolling7Day": 172.0,
+                    "rolling7Day": 3.4285714285714284,
                     "hazardRatio": 1.0547380507343125,
                     "hazardRatioRescaled": 0.7620084750682068,
                     "restingHR": 46.714285714285715,
@@ -3446,7 +3445,7 @@
                     "mpaTime": 30.0,
                     "vpaTime": 14.0,
                     "adjVpaTime": 29.0,
-                    "rolling7Day": 58.0,
+                    "rolling7Day": 0.8979591836734694,
                     "hazardRatio": 1.1063328882955052,
                     "hazardRatioRescaled": 0.5376830943673688,
                     "restingHR": 50.142857142857146,
@@ -3504,7 +3503,7 @@
                     "mpaTime": 38.0,
                     "vpaTime": 6.0,
                     "adjVpaTime": 25.0,
-                    "rolling7Day": 50.0,
+                    "rolling7Day": 0.8979591836734694,
                     "hazardRatio": 1.0535959056519804,
                     "hazardRatioRescaled": 0.7669743232522591,
                     "restingHR": 52.857142857142854,
@@ -3562,7 +3561,7 @@
                     "mpaTime": 164.0,
                     "vpaTime": 36.0,
                     "adjVpaTime": 118.0,
-                    "rolling7Day": 236.0,
+                    "rolling7Day": 4.081632653061225,
                     "hazardRatio": 0.9987682155990779,
                     "hazardRatioRescaled": 1.0503472906707731,
                     "restingHR": 48.285714285714285,
@@ -3620,7 +3619,7 @@
                     "mpaTime": 254.0,
                     "vpaTime": 16.0,
                     "adjVpaTime": 143.0,
-                    "rolling7Day": 286.0,
+                    "rolling7Day": 5.5102040816326525,
                     "hazardRatio": 0.9925974600366462,
                     "hazardRatioRescaled": 1.082818787316605,
                     "restingHR": 48.0,
@@ -3678,7 +3677,7 @@
                     "mpaTime": 244.0,
                     "vpaTime": 30.0,
                     "adjVpaTime": 152.0,
-                    "rolling7Day": 304.0,
+                    "rolling7Day": 5.591836734693878,
                     "hazardRatio": 0.9844253490870031,
                     "hazardRatioRescaled": 1.1730516768110757,
                     "restingHR": 47.42857142857143,
@@ -3736,7 +3735,7 @@
                     "mpaTime": 80.0,
                     "vpaTime": 34.0,
                     "adjVpaTime": 74.0,
-                    "rolling7Day": 148.0,
+                    "rolling7Day": 2.326530612244898,
                     "hazardRatio": 1.0394557449147885,
                     "hazardRatioRescaled": 0.8284532829791809,
                     "restingHR": 49.42857142857143,
@@ -3794,7 +3793,7 @@
                     "mpaTime": 52.0,
                     "vpaTime": 36.0,
                     "adjVpaTime": 62.0,
-                    "rolling7Day": 124.0,
+                    "rolling7Day": 1.7959183673469388,
                     "hazardRatio": 0.9943848272215919,
                     "hazardRatioRescaled": 1.1034761849639354,
                     "restingHR": 47.42857142857143,
@@ -3852,7 +3851,7 @@
                     "mpaTime": 430.0,
                     "vpaTime": 40.0,
                     "adjVpaTime": 255.0,
-                    "rolling7Day": 510.0,
+                    "rolling7Day": 9.591836734693876,
                     "hazardRatio": 0.9654731562562581,
                     "hazardRatioRescaled": 1.383631597152689,
                     "restingHR": 48.285714285714285,
@@ -3910,7 +3909,7 @@
                     "mpaTime": 276.0,
                     "vpaTime": 56.0,
                     "adjVpaTime": 194.0,
-                    "rolling7Day": 388.0,
+                    "rolling7Day": 6.775510204081633,
                     "hazardRatio": 0.9824597207303974,
                     "hazardRatioRescaled": 1.1948919918844734,
                     "restingHR": 47.142857142857146,
@@ -3968,7 +3967,7 @@
                     "mpaTime": 222.0,
                     "vpaTime": 28.0,
                     "adjVpaTime": 139.0,
-                    "rolling7Day": 278.0,
+                    "rolling7Day": 5.1020408163265305,
                     "hazardRatio": 0.9920002846195045,
                     "hazardRatioRescaled": 1.105102100579177,
                     "restingHR": 47.0,
@@ -4026,7 +4025,7 @@
                     "mpaTime": 276.0,
                     "vpaTime": 58.0,
                     "adjVpaTime": 196.0,
-                    "rolling7Day": 392.0,
+                    "rolling7Day": 6.816326530612245,
                     "hazardRatio": 0.9666478089897869,
                     "hazardRatioRescaled": 1.3705799001134804,
                     "restingHR": 46.714285714285715,
@@ -4084,7 +4083,7 @@
                     "mpaTime": 280.0,
                     "vpaTime": 32.0,
                     "adjVpaTime": 172.0,
-                    "rolling7Day": 344.0,
+                    "rolling7Day": 6.36734693877551,
                     "hazardRatio": 0.9867852404119544,
                     "hazardRatioRescaled": 1.1542191247208269,
                     "restingHR": 46.57142857142857,
@@ -4142,7 +4141,7 @@
                     "mpaTime": 174.0,
                     "vpaTime": 6.0,
                     "adjVpaTime": 93.0,
-                    "rolling7Day": 186.0,
+                    "rolling7Day": 3.673469387755102,
                     "hazardRatio": 1.0189248409644232,
                     "hazardRatioRescaled": 0.9177180827633774,
                     "restingHR": 49.42857142857143,
@@ -4200,7 +4199,7 @@
                     "mpaTime": 104.0,
                     "vpaTime": 44.0,
                     "adjVpaTime": 96.0,
-                    "rolling7Day": 192.0,
+                    "rolling7Day": 3.020408163265306,
                     "hazardRatio": 1.0275237571664182,
                     "hazardRatioRescaled": 0.8803314905807912,
                     "restingHR": 49.142857142857146,
@@ -4255,12 +4254,12 @@
                 },
                 {
                     "label": "Week of Jul 14",
-                    "mpaTime": 188.0,
-                    "vpaTime": 20.0,
-                    "adjVpaTime": 114.0,
-                    "rolling7Day": 228.0,
-                    "hazardRatio": 0.993929449792706,
-                    "hazardRatioRescaled": 1.079279534336315,
+                    "mpaTime": 88.0,
+                    "vpaTime": 8.0,
+                    "adjVpaTime": 52.0,
+                    "rolling7Day": 2.2857142857142856,
+                    "hazardRatio": 0.9960129295200618,
+                    "hazardRatioRescaled": 1.0581012556674998,
                     "restingHR": 46.0,
                     "maxHR": 195.0,
                     "hrReserve": 149.0,
@@ -4350,17 +4349,17 @@
             }
         },
         "rhr": {
-            "latestScore": -1.6480000000000006,
-            "averageScore": -1.6880931677018618,
+            "latestScore": -1.6479999999999995,
+            "averageScore": -1.6877908902691507,
             "daily": [
                 {
                     "label": "Week of Dec 15",
                     "rhr": 49,
-                    "hrScore": 0.8351999999999999,
+                    "hrScore": 0.8352,
                     "hrColor": "#43a047",
                     "hrRescaled": 1.849484536082474,
-                    "hrScoreFinal": 0.8206,
-                    "hrRescaledFinal": 1.9247422680412374,
+                    "hrScoreFinal": 0.8352,
+                    "hrRescaledFinal": 1.849484536082474,
                     "hrColorFinal": "#43a047",
                     "hasData": true
                 },
@@ -4598,9 +4597,9 @@
                 {
                     "label": "Week of Jul 14",
                     "rhr": 46,
-                    "hrScore": 0.8174714285714285,
+                    "hrScore": 0.8181666666666666,
                     "hrColor": "#43a047",
-                    "hrRescaled": 1.9408689248895432,
+                    "hrRescaled": 1.9372852233676976,
                     "hrScoreFinal": 0.8206,
                     "hrRescaledFinal": 1.9247422680412374,
                     "hrColorFinal": "#43a047",
@@ -4645,18 +4644,18 @@
             }
         },
         "strength": {
-            "latestScore": -0.1525184035528271,
-            "averageScore": -0.20795346252567848,
+            "latestScore": -0.12586132618737533,
+            "averageScore": -0.20677960566527265,
             "daily": [
                 {
                     "label": "Week of Dec 15",
-                    "dailyDuration": 9.467371961805556,
-                    "weeklySum": 110.07216186523442,
-                    "hrScore": 0.9847481596447173,
-                    "hrRescaled": 1.3812960088820694,
-                    "hrColor": "#c5e2c6",
-                    "hrScoreFinal": 0.9927787365141368,
-                    "hrRescaledFinal": 1.180531587146579,
+                    "dailyDuration": 13.523074849446616,
+                    "weeklySum": 96.07719624837243,
+                    "hrScore": 0.9874138673812625,
+                    "hrRescaled": 1.3146533154684408,
+                    "hrColor": "#cfe7d0",
+                    "hrScoreFinal": 0.9954109905908978,
+                    "hrRescaledFinal": 1.1147252352275556,
                     "hasData": true
                 },
                 {
@@ -4892,10 +4891,10 @@
                 },
                 {
                     "label": "Week of Jul 14",
-                    "dailyDuration": 25.909171549479165,
-                    "weeklySum": 163.47173200334825,
-                    "hrScore": 0.9745768129517433,
-                    "hrRescaled": 1.6355796762064203,
+                    "dailyDuration": 24.768075222439236,
+                    "weeklySum": 163.292376030816,
+                    "hrScore": 0.9746109759941303,
+                    "hrRescaled": 1.6347256001467432,
                     "hrColor": "#9fcea1",
                     "hrScoreFinal": 0.9711687236483134,
                     "hrRescaledFinal": 1.7207819087921639,
@@ -4940,29 +4939,29 @@
             }
         },
         "bodyComp": {
-            "latestScore": -2.247396540666969,
-            "averageScore": -2.2223310318184497,
+            "latestScore": -2.2468655295885522,
+            "averageScore": -2.2222978436260488,
             "daily": [
                 {
                     "label": "Week of Dec 15",
-                    "weight": 91.09999999999998,
-                    "bodyFat": 18.566666666666666,
-                    "ffmi": 20.989586162667877,
-                    "fmi": 4.785651501433531,
-                    "hrScore": 0.7752603459333031,
+                    "weight": 91.07833333333332,
+                    "bodyFat": 18.555555555555554,
+                    "ffmi": 20.98746211835421,
+                    "fmi": 4.781645320909412,
+                    "hrScore": 0.7753134470411448,
                     "hrColor": "#43a047",
-                    "ffm": 74.18559333333332,
-                    "fm": 16.914406666666665,
-                    "hrScoreFinal": 0.7753665481489864,
-                    "hrRescaled": 1.864383284871911,
-                    "hrRescaledFinal": 1.8639748148115907,
+                    "ffm": 74.17808611111109,
+                    "fm": 16.900247222222223,
+                    "hrScoreFinal": 0.7754727503646698,
+                    "hrRescaled": 1.864179049841751,
+                    "hrRescaledFinal": 1.86356634475127,
                     "hrColorFinal": "#43a047",
                     "fmiHrScore": 0.87,
                     "fmiHrScoreFinal": 0.87,
                     "fmiHrRescaled": 2.0,
                     "fmiHrRescaledFinal": 2.0,
-                    "ffmFinal": 74.17057888888887,
-                    "fmFinal": 16.886087777777778,
+                    "ffmFinal": 74.15556444444442,
+                    "fmFinal": 16.85776888888889,
                     "hasData": true
                 },
                 {
@@ -5350,12 +5349,12 @@
         "scoreBars": {
             "sleep": {
                 "recent": {
-                    "value": 1.2434752280783017,
-                    "displayValue": 0.9716351359288778
+                    "value": 1.222767066586793,
+                    "displayValue": 0.9740476367426388
                 },
                 "healthspan": {
-                    "value": 0.9944523280078441,
-                    "displayValue": 1.0023344603742994
+                    "value": 0.9917545530088605,
+                    "displayValue": 1.0034696840938715
                 },
                 "showRecent": true,
                 "showHealthspan": true,
@@ -5364,11 +5363,11 @@
                 "components": {
                     "consistency": {
                         "recent": {
-                            "value": 1.1072371447610632,
+                            "value": 1.0843471512648253,
                             "displayValue": 0.9960042223723197
                         },
                         "healthspan": {
-                            "value": 0.916784721403501,
+                            "value": 0.915950948270847,
                             "displayValue": 1.0236926828572834
                         },
                         "showRecent": true,
@@ -5378,11 +5377,11 @@
                     },
                     "duration": {
                         "recent": {
-                            "value": 1.349454909900114,
+                            "value": 1.332183945197643,
                             "displayValue": 0.9732657356222544
                         },
                         "healthspan": {
-                            "value": 1.3023160062494703,
+                            "value": 1.2891058321390996,
                             "displayValue": 0.9784781067085035
                         },
                         "showRecent": true,
@@ -5395,11 +5394,11 @@
             "aerobic": {
                 "recent": {
                     "value": 2.0,
-                    "displayValue": 0.7059331616096254
+                    "displayValue": 0.7113042990438934
                 },
                 "healthspan": {
                     "value": 2.0,
-                    "displayValue": 0.5970548542542622
+                    "displayValue": 0.5980162299777785
                 },
                 "showRecent": true,
                 "showHealthspan": true,
@@ -5408,12 +5407,12 @@
                 "components": {
                     "activity": {
                         "recent": {
-                            "value": 0.997074012992353,
-                            "displayValue": 1.000672977011759
+                            "value": 0.9967257225180974,
+                            "displayValue": 1.0007530838208378
                         },
                         "healthspan": {
-                            "value": 0.9594626007492275,
-                            "displayValue": 1.0093236018276777
+                            "value": 0.9582873864395356,
+                            "displayValue": 1.0095939011189068
                         },
                         "showRecent": true,
                         "showHealthspan": true,
@@ -5424,12 +5423,12 @@
             },
             "anaerobic": {
                 "recent": {
-                    "value": 1.979040075526016,
-                    "displayValue": 0.6638720451101061
+                    "value": 1.9788431981297057,
+                    "displayValue": 0.663939637845317
                 },
                 "healthspan": {
-                    "value": 1.6311020407658696,
-                    "displayValue": 0.7833275229560986
+                    "value": 1.636051798716619,
+                    "displayValue": 0.7816281522574156
                 },
                 "showRecent": true,
                 "showHealthspan": true,
@@ -5438,12 +5437,12 @@
                 "components": {
                     "strength": {
                         "recent": {
-                            "value": 1.45676364821984,
-                            "displayValue": 0.9817294540712064
+                            "value": 1.450531251372482,
+                            "displayValue": 0.9819787499451007
                         },
                         "healthspan": {
-                            "value": 1.5232512626177017,
-                            "displayValue": 0.9790699494952918
+                            "value": 1.5208996143509306,
+                            "displayValue": 0.9791640154259628
                         },
                         "showRecent": true,
                         "showHealthspan": true,
@@ -5458,8 +5457,8 @@
                     "displayValue": 0.9808307222222223
                 },
                 "healthspan": {
-                    "value": 0.9602466111111111,
-                    "displayValue": 0.9602466111111111
+                    "value": 0.9597180000000001,
+                    "displayValue": 0.9597180000000001
                 },
                 "showRecent": true,
                 "showHealthspan": true,
@@ -5468,26 +5467,26 @@
             },
             "vo2": {
                 "healthspan": {
-                    "value": 1.9489069024809629,
-                    "displayValue": 0.5635028248587571
+                    "value": 1.948616600790514,
+                    "displayValue": 0.5636363636363636
                 },
                 "showHealthspan": true
             },
             "rhr": {
                 "healthspan": {
-                    "value": 1.87874724892853,
-                    "displayValue": 0.8295230337078652
+                    "value": 1.8798042395459285,
+                    "displayValue": 0.82931797752809
                 },
                 "showHealthspan": true
             },
             "heartRateActivity": {
                 "recent": {
-                    "value": 1.0488767614455488,
-                    "displayValue": 0.9995094819695381
+                    "value": 1.0485516903362437,
+                    "displayValue": 0.9995842483246783
                 },
                 "healthspan": {
-                    "value": 1.0155725355787568,
-                    "displayValue": 1.0090335679337974
+                    "value": 1.0135261234779522,
+                    "displayValue": 1.0093008638995684
                 },
                 "showRecent": true,
                 "showHealthspan": true
@@ -5495,10 +5494,10 @@
         }
     },
     "masterScore": {
-        "recent": 1.7010114648137693,
-        "healthspan": 1.480352126361009,
-        "recentRaw": 0.45535611825247657,
-        "healthspanRaw": 0.46878130265725276
+        "recent": 1.6914598901214672,
+        "healthspan": 1.480506832845715,
+        "recentRaw": 0.46000677469533263,
+        "healthspanRaw": 0.4690481425280127
     }
 };
 
@@ -5699,7 +5698,6 @@ function switchTab(tabName) {
 
     // Re-initialize charts with the new data
     initializeChartsForTab(tabName);
-    requestAnimationFrame(alignAllMarkers);
 }
 
 // Function to destroy all existing charts
@@ -6041,76 +6039,7 @@ function attachMarkerTooltip(pointer) {
 
 if (typeof window !== 'undefined') {
     window.addEventListener('scroll', hideMarkerTooltip, true);
-    window.addEventListener('resize', () => {
-        hideMarkerTooltip();
-        requestAnimationFrame(alignAllMarkers);
-    });
-}
-
-function getScaleBarForMarker(pointer) {
-    if (!pointer) {
-        return null;
-    }
-
-    const markerGroup = pointer.parentElement;
-    if (!markerGroup) {
-        return null;
-    }
-
-    const scaleWrapper = markerGroup.parentElement;
-    if (!scaleWrapper) {
-        return null;
-    }
-
-    const scaleBar = scaleWrapper.querySelector('.score-scale-bar');
-    if (!scaleBar) {
-        return null;
-    }
-
-    return {
-        markerGroup,
-        scaleBar,
-    };
-}
-
-function alignScaleMarker(pointer, options = {}) {
-    if (!pointer || pointer.classList.contains('hidden')) {
-        return;
-    }
-
-    const metrics = getScaleBarForMarker(pointer);
-    if (!metrics) {
-        return;
-    }
-
-    const { markerGroup, scaleBar } = metrics;
-    const groupRect = markerGroup.getBoundingClientRect();
-    const barRect = scaleBar.getBoundingClientRect();
-    const pointerHeight = pointer.offsetHeight || pointer.clientHeight || 0;
-
-    if (!pointerHeight) {
-        return;
-    }
-
-    const alignMode = options.align || pointer.dataset.align || 'center';
-    const offset = Number(pointer.dataset.offset || 0);
-
-    const lineCenter = barRect.top - groupRect.top + barRect.height / 2;
-    let top;
-
-    if (alignMode === 'baseline') {
-        top = lineCenter - pointerHeight + offset;
-    } else {
-        top = lineCenter - pointerHeight / 2 + offset;
-    }
-
-    pointer.style.top = `${top}px`;
-}
-
-function alignAllMarkers() {
-    document.querySelectorAll('.scale-marker').forEach(marker => {
-        alignScaleMarker(marker);
-    });
+    window.addEventListener('resize', hideMarkerTooltip);
 }
 
 function updatePointer(pointerId, rawValue, overrides = {}, extra = {}) {
@@ -6201,7 +6130,6 @@ function updatePointer(pointerId, rawValue, overrides = {}, extra = {}) {
         pointer.removeAttribute('title');
         pointer.removeAttribute('aria-label');
         attachMarkerTooltip(pointer);
-        alignScaleMarker(pointer);
     } else if (pointer.classList.contains('pointer-avg')) {
         pointer.style.borderTopColor = color;
         pointer.style.borderBottomColor = 'transparent';
@@ -6631,7 +6559,6 @@ function initializeCharts() {
 
     // Initialize with daily-controls data by default
     initializeChartsForTab('daily-controls');
-    requestAnimationFrame(alignAllMarkers);
 }
 
 // Chart creation functions for Daily Controls
@@ -6754,16 +6681,16 @@ function createHeartRateCharts(data) {
     if (activityCtx && data.daily) {
         const reversedDaily = data.daily.slice().reverse();
 
-        // Use pre-calculated rolling 7-day totals from enricher data
-        const activityRollingTotal = reversedDaily.map(d => d.rolling7Day || 0);
+        // Use pre-calculated combined rolling average from enricher data
+        const activityRollingAvg = reversedDaily.map(d => d.rolling7Day || 0);
         const activityLinePointColors = reversedDaily.map(d =>
             getColorForRescaledValue(d.hazardRatioRescaled)
         );
         const labels = reversedDaily.map(d => d.label);
         const referenceLineDatasets = createReferenceLineDatasets(data.referenceLines, labels);
 
-        // Debug: Log the rolling total data
-        console.log('Daily Controls Rolling Total Data:', activityRollingTotal);
+        // Debug: Log the rolling average data
+        console.log('Daily Controls Rolling Average Data:', activityRollingAvg);
         console.log('Sample data point:', reversedDaily[0]);
 
         new Chart(activityCtx, {
@@ -6789,8 +6716,8 @@ function createHeartRateCharts(data) {
                         order: 2
                     },
                     {
-                        label: 'Activity 7-Day Rolling Total',
-                        data: activityRollingTotal,
+                        label: 'Activity 7-Day Rolling Avg',
+                        data: activityRollingAvg,
                         type: 'line',
                         borderColor: DAILY_COLOR_PALETTE.activityLine,
                     backgroundColor: PRIMARY_BLUE_FILL,
@@ -7706,8 +7633,8 @@ function createHealthSpanHeartRateCharts(data) {
     if (activityCtx && data.daily) {
         const reversedDaily = data.daily.slice().reverse();
 
-        // Use pre-calculated rolling 7-day totals from enricher data
-        const activityRollingTotal = reversedDaily.map(d => d.rolling7Day || 0);
+        // Use pre-calculated combined rolling average from enricher data
+        const activityRollingAvg = reversedDaily.map(d => d.rolling7Day || 0);
         const linePointColors = reversedDaily.map(d =>
             getColorForRescaledValue(
                 getRescaledValue(d, 'hazardRatioRescaledFinal', 'hazardRatioRescaled')
@@ -7716,8 +7643,8 @@ function createHealthSpanHeartRateCharts(data) {
         const labels = reversedDaily.map(d => d.label);
         const referenceLineDatasets = createReferenceLineDatasets(data.referenceLines, labels);
 
-        // Debug: Log the rolling total data
-        console.log('Healthspan Rolling Total Data:', activityRollingTotal);
+        // Debug: Log the rolling average data
+        console.log('Healthspan Rolling Average Data:', activityRollingAvg);
         console.log('Sample data point:', reversedDaily[0]);
 
         new Chart(activityCtx, {
@@ -7739,9 +7666,9 @@ function createHealthSpanHeartRateCharts(data) {
                         stack: 'activity'
                     },
                     {
-                        label: 'Activity 7-Day Rolling Total',
+                        label: 'Activity 7-Day Rolling Avg',
                         type: 'line',
-                        data: activityRollingTotal,
+                        data: activityRollingAvg,
                         borderColor: '#2196F3',
                         backgroundColor: 'rgba(33, 150, 243, 0.1)',
                         fill: false,
