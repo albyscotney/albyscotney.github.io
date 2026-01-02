@@ -214,6 +214,7 @@
             margin: 0 0 10px 0;
             font-size: 0.9em;
             color: #ccc;
+            text-align: center;
         }
 
         .component-slider .score-scale-container {
@@ -241,8 +242,8 @@
     }
     .scale-marker {
         position: absolute;
-        top: 32px;
-        transform: translate(-50%, -50%);
+        top: 0;
+        transform: translateX(-50%);
         display: inline-flex;
         align-items: center;
         justify-content: center;
@@ -370,8 +371,8 @@
                 </div>
                 <div class="metric-wrapper">
                     <div class="chart-wrapper">
-                        <h4>Sleep Windows</h4>
-                        <p class="chart-subtitle">Sleep periods showing time in bed. Color indicates sleep consistency.</p>
+                        <h4>Consistency</h4>
+                        <p class="chart-subtitle">Daily sleep windows.</p>
                         <div style="height: 300px; position: relative;">
                             <canvas id="sleep-windows-chart"></canvas>
                         </div>
@@ -380,8 +381,8 @@
 
                 <div class="metric-wrapper">
                     <div class="chart-wrapper">
-                        <h4>Sleep Duration</h4>
-                        <p class="chart-subtitle">Total hours slept each day.</p>
+                        <h4>Duration</h4>
+                        <p class="chart-subtitle">Daily sleep duration.</p>
                         <div style="height: 300px; position: relative;">
                             <canvas id="sleep-duration-chart"></canvas>
                         </div>
@@ -442,8 +443,8 @@
                 </div>
                 <div class="metric-wrapper">
                     <div class="chart-wrapper">
-                        <h4>Daily Steps</h4>
-                        <p class="chart-subtitle">Daily steps. Color indicates health risk based on steps.</p>
+                        <h4>Steps</h4>
+                        <p class="chart-subtitle">Daily steps with 7-day rolling average.</p>
                         <div style="height: 300px; position: relative;">
                             <canvas id="steps-chart"></canvas>
                         </div>
@@ -452,8 +453,8 @@
 
                 <div class="metric-wrapper">
                     <div class="chart-wrapper">
-                        <h4>Activity Time Distribution</h4>
-                        <p class="chart-subtitle">Time spent in moderate (MPA) and vigorous (VPA) physical activity.</p>
+                        <h4>Activity Time</h4>
+                        <p class="chart-subtitle">Daily moderate and vigorous minutes with 7-day rolling total.</p>
                         <div style="height: 300px; position: relative;">
                             <canvas id="heart-rate-activity-chart"></canvas>
                         </div>
@@ -488,7 +489,7 @@
             <div id="anaerobic-group-content" class="group-content collapsed">
                 <div class="component-sliders">
                     <div class="component-slider" style="max-width: 50%; margin: 0 auto;">
-                        <h4>Strength Time</h4>
+                        <h4>Strength Training</h4>
                         <div class="score-scale-container">
                             <div class="scale-wrapper">
                                 <div class="score-scale-bar gradient-scale"></div>
@@ -503,7 +504,7 @@
                 <div class="metric-wrapper">
                     <div class="chart-wrapper">
                         <h4>Strength Training</h4>
-                        <p class="chart-subtitle">Daily strength training duration with 7-day rolling sum.</p>
+                        <p class="chart-subtitle">Daily strength minutes with 7-day rolling total.</p>
                         <div style="height: 300px; position: relative;">
                             <canvas id="strength-chart"></canvas>
                         </div>
@@ -542,7 +543,7 @@
                 <!-- Individual component sliders when expanded -->
                 <div class="component-sliders">
                     <div class="component-slider">
-                        <h4>Sleep Window</h4>
+                        <h4>Consistency</h4>
                         <div class="score-scale-container">
                             <div class="scale-wrapper">
                                 <div class="score-scale-bar gradient-scale"></div>
@@ -554,7 +555,7 @@
                         </div>
                     </div>
                     <div class="component-slider">
-                        <h4>Sleep Duration</h4>
+                        <h4>Duration</h4>
                         <div class="score-scale-container">
                             <div class="scale-wrapper">
                                 <div class="score-scale-bar gradient-scale"></div>
@@ -570,8 +571,8 @@
                 <!-- Sleep Window Chart -->
                 <div class="metric-wrapper">
                     <div class="chart-wrapper">
-                        <h4>Sleep Windows (Weekly)</h4>
-                        <p class="chart-subtitle">Weekly sleep periods showing time in bed. Color indicates sleep consistency.</p>
+                        <h4>Consistency</h4>
+                        <p class="chart-subtitle">Weekly sleep windows.</p>
                         <div style="height: 300px; position: relative;">
                             <canvas id="healthspan-sleep-windows-chart"></canvas>
                         </div>
@@ -581,8 +582,8 @@
                 <!-- Sleep Duration Chart -->
                 <div class="metric-wrapper">
                     <div class="chart-wrapper">
-                        <h4>Sleep Duration (Weekly)</h4>
-                        <p class="chart-subtitle">Average hours slept per week.</p>
+                        <h4>Duration</h4>
+                        <p class="chart-subtitle">Weekly sleep duration.</p>
                         <div style="height: 300px; position: relative;">
                             <canvas id="healthspan-sleep-duration-chart"></canvas>
                         </div>
@@ -618,7 +619,7 @@
                 <!-- Individual component sliders when expanded -->
                 <div class="component-sliders component-sliders-grid">
                     <div class="component-slider">
-                        <h4>VO2 Max</h4>
+                        <h4>Oxygen Uptake</h4>
                         <div class="score-scale-container">
                             <div class="scale-wrapper">
                                 <div class="score-scale-bar gradient-scale"></div>
@@ -665,11 +666,11 @@
                     </div>
                 </div>
 
-                <!-- VO2 Max Chart -->
+                <!-- Oxygen Uptake Chart -->
                 <div class="metric-wrapper">
                     <div class="chart-wrapper">
-                        <h4>VO2 Max Trend (Weekly)</h4>
-                        <p class="chart-subtitle">Weekly VO2 max over time. Higher is better.</p>
+                        <h4>Oxygen Uptake</h4>
+                        <p class="chart-subtitle">Weekly oxygen uptake trend.</p>
                         <div style="height: 300px; position: relative;">
                             <canvas id="healthspan-vo2-chart"></canvas>
                         </div>
@@ -679,8 +680,8 @@
                 <!-- Steps Chart -->
                 <div class="metric-wrapper">
                     <div class="chart-wrapper">
-                        <h4>Weekly Steps</h4>
-                        <p class="chart-subtitle">Average daily steps per week.</p>
+                        <h4>Steps</h4>
+                        <p class="chart-subtitle">Weekly average daily steps.</p>
                         <div style="height: 300px; position: relative;">
                             <canvas id="healthspan-steps-chart"></canvas>
                         </div>
@@ -690,8 +691,8 @@
                 <!-- Heart Rate Activity Chart -->
                 <div class="metric-wrapper">
                     <div class="chart-wrapper">
-                        <h4>Weekly Activity Time</h4>
-                        <p class="chart-subtitle">Weekly time spent in moderate and vigorous physical activity.</p>
+                        <h4>Activity Time</h4>
+                        <p class="chart-subtitle">Weekly moderate and vigorous minutes with 7-day rolling total.</p>
                         <div style="height: 300px; position: relative;">
                             <canvas id="healthspan-heart-rate-activity-chart"></canvas>
                         </div>
@@ -701,8 +702,8 @@
                 <!-- Resting Heart Rate Chart -->
                 <div class="metric-wrapper">
                     <div class="chart-wrapper">
-                        <h4>Weekly Resting Heart Rate</h4>
-                        <p class="chart-subtitle">Average resting heart rate per week.</p>
+                        <h4>Resting Heart Rate</h4>
+                        <p class="chart-subtitle">Weekly average resting heart rate.</p>
                         <div style="height: 300px; position: relative;">
                             <canvas id="healthspan-rhr-chart"></canvas>
                         </div>
@@ -765,8 +766,8 @@
                 <!-- Strength Training Chart -->
                 <div class="metric-wrapper">
                     <div class="chart-wrapper">
-                        <h4>Weekly Strength Training</h4>
-                        <p class="chart-subtitle">Weekly strength training duration.</p>
+                        <h4>Strength Training</h4>
+                        <p class="chart-subtitle">Average daily strength minutes per week.</p>
                         <div style="height: 300px; position: relative;">
                             <canvas id="healthspan-strength-chart"></canvas>
                         </div>
@@ -776,15 +777,15 @@
                 <!-- Body Composition Charts -->
                 <div class="metric-wrapper">
                     <div class="chart-wrapper">
-                        <h4>Fat-Free Mass Index (FFMI)</h4>
-                        <p class="chart-subtitle">Weekly FFMI trends.</p>
+                        <h4>Fat-Free Mass Index</h4>
+                        <p class="chart-subtitle">Weekly fat-free mass trend.</p>
                         <div style="height: 150px; position: relative;">
                             <canvas id="healthspan-ffmi-chart"></canvas>
                         </div>
                     </div>
                     <div class="chart-wrapper">
-                        <h4>Fat Mass Index (FMI)</h4>
-                        <p class="chart-subtitle">Weekly FMI trends.</p>
+                        <h4>Fat Mass Index</h4>
+                        <p class="chart-subtitle">Weekly fat mass trend.</p>
                         <div style="height: 150px; position: relative;">
                             <canvas id="healthspan-fmi-chart"></canvas>
                         </div>
@@ -1132,7 +1133,7 @@
                     "mpaTime": 0.0,
                     "vpaTime": 0.0,
                     "adjVpaTime": 0.0,
-                    "rolling7Day": 6.285714285714286,
+                    "rolling7Day": 44.0,
                     "hazardRatio": 1.1361333333333334,
                     "hazardRatioRescaled": 0.40811594202898505,
                     "restingHR": 45.0,
@@ -1190,7 +1191,7 @@
                     "mpaTime": 2.0,
                     "vpaTime": 0.0,
                     "adjVpaTime": 1.0,
-                    "rolling7Day": 8.0,
+                    "rolling7Day": 56.0,
                     "hazardRatio": 1.1105333333333334,
                     "hazardRatioRescaled": 0.5194202898550722,
                     "restingHR": 42.0,
@@ -1248,7 +1249,7 @@
                     "mpaTime": 12.0,
                     "vpaTime": 0.0,
                     "adjVpaTime": 6.0,
-                    "rolling7Day": 8.285714285714286,
+                    "rolling7Day": 58.0,
                     "hazardRatio": 1.1062666666666667,
                     "hazardRatioRescaled": 0.5379710144927534,
                     "restingHR": 46.0,
@@ -1306,7 +1307,7 @@
                     "mpaTime": 12.0,
                     "vpaTime": 0.0,
                     "adjVpaTime": 6.0,
-                    "rolling7Day": 6.571428571428571,
+                    "rolling7Day": 46.0,
                     "hazardRatio": 1.1318666666666668,
                     "hazardRatioRescaled": 0.4266666666666661,
                     "restingHR": 46.0,
@@ -1364,7 +1365,7 @@
                     "mpaTime": 0.0,
                     "vpaTime": 0.0,
                     "adjVpaTime": 0.0,
-                    "rolling7Day": 6.285714285714286,
+                    "rolling7Day": 44.0,
                     "hazardRatio": 1.1361333333333334,
                     "hazardRatioRescaled": 0.40811594202898505,
                     "restingHR": 46.0,
@@ -1422,7 +1423,7 @@
                     "mpaTime": 10.0,
                     "vpaTime": 2.0,
                     "adjVpaTime": 7.0,
-                    "rolling7Day": 8.571428571428571,
+                    "rolling7Day": 60.0,
                     "hazardRatio": 1.102,
                     "hazardRatioRescaled": 0.5565217391304342,
                     "restingHR": 45.0,
@@ -1480,7 +1481,7 @@
                     "mpaTime": 4.0,
                     "vpaTime": 0.0,
                     "adjVpaTime": 2.0,
-                    "rolling7Day": 14.285714285714286,
+                    "rolling7Day": 100.0,
                     "hazardRatio": 1.055981308411215,
                     "hazardRatioRescaled": 0.7566030069077605,
                     "restingHR": 46.0,
@@ -1562,11 +1563,11 @@
                     "color": "#d32f2f"
                 },
                 "neutral": {
-                    "value": 15.428571428571429,
+                    "value": 108.0,
                     "color": "#ffffff"
                 },
                 "best": {
-                    "value": 71.14285714285714,
+                    "value": 498.0,
                     "color": "#388e3c"
                 }
             }
@@ -2981,7 +2982,7 @@
                     "mpaTime": 30.0,
                     "vpaTime": 0.0,
                     "adjVpaTime": 15.0,
-                    "rolling7Day": 0.8571428571428571,
+                    "rolling7Day": 100.0,
                     "hazardRatio": 1.0380373831775702,
                     "hazardRatioRescaled": 0.8346200731409994,
                     "restingHR": 46.4,
@@ -3039,7 +3040,7 @@
                     "mpaTime": 170.0,
                     "vpaTime": 18.0,
                     "adjVpaTime": 103.0,
-                    "rolling7Day": 3.8367346938775513,
+                    "rolling7Day": 206.0,
                     "hazardRatio": 1.0154716092044294,
                     "hazardRatioRescaled": 0.9327321338937852,
                     "restingHR": 47.714285714285715,
@@ -3097,7 +3098,7 @@
                     "mpaTime": 178.0,
                     "vpaTime": 10.0,
                     "adjVpaTime": 99.0,
-                    "rolling7Day": 3.8367346938775513,
+                    "rolling7Day": 198.0,
                     "hazardRatio": 0.9986339799077525,
                     "hazardRatioRescaled": 1.0254081800531043,
                     "restingHR": 48.57142857142857,
@@ -3155,7 +3156,7 @@
                     "mpaTime": 196.0,
                     "vpaTime": 36.0,
                     "adjVpaTime": 134.0,
-                    "rolling7Day": 4.734693877551021,
+                    "rolling7Day": 268.0,
                     "hazardRatio": 0.9828464017185822,
                     "hazardRatioRescaled": 1.1905955364601983,
                     "restingHR": 49.857142857142854,
@@ -3213,7 +3214,7 @@
                     "mpaTime": 204.0,
                     "vpaTime": 26.0,
                     "adjVpaTime": 128.0,
-                    "rolling7Day": 6.571428571428571,
+                    "rolling7Day": 256.0,
                     "hazardRatio": 0.9977555102710045,
                     "hazardRatioRescaled": 1.055152328425923,
                     "restingHR": 51.8,
@@ -3271,7 +3272,7 @@
                     "mpaTime": 80.0,
                     "vpaTime": 10.0,
                     "adjVpaTime": 50.0,
-                    "rolling7Day": 1.836734693877551,
+                    "rolling7Day": 100.0,
                     "hazardRatio": 1.051815754339119,
                     "hazardRatioRescaled": 0.7747141115690483,
                     "restingHR": 49.142857142857146,
@@ -3329,7 +3330,7 @@
                     "mpaTime": 152.0,
                     "vpaTime": 32.0,
                     "adjVpaTime": 108.0,
-                    "rolling7Day": 3.7551020408163263,
+                    "rolling7Day": 216.0,
                     "hazardRatio": 1.0055281551873085,
                     "hazardRatioRescaled": 0.9759645426638758,
                     "restingHR": 48.285714285714285,
@@ -3387,7 +3388,7 @@
                     "mpaTime": 72.0,
                     "vpaTime": 10.0,
                     "adjVpaTime": 46.0,
-                    "rolling7Day": 1.673469387755102,
+                    "rolling7Day": 92.0,
                     "hazardRatio": 1.0293622869708632,
                     "hazardRatioRescaled": 0.8723378827353778,
                     "restingHR": 46.714285714285715,
@@ -3445,7 +3446,7 @@
                     "mpaTime": 164.0,
                     "vpaTime": 4.0,
                     "adjVpaTime": 86.0,
-                    "rolling7Day": 3.4285714285714284,
+                    "rolling7Day": 172.0,
                     "hazardRatio": 1.0547380507343125,
                     "hazardRatioRescaled": 0.7620084750682068,
                     "restingHR": 46.714285714285715,
@@ -3503,7 +3504,7 @@
                     "mpaTime": 30.0,
                     "vpaTime": 14.0,
                     "adjVpaTime": 29.0,
-                    "rolling7Day": 0.8979591836734694,
+                    "rolling7Day": 58.0,
                     "hazardRatio": 1.1063328882955052,
                     "hazardRatioRescaled": 0.5376830943673688,
                     "restingHR": 50.142857142857146,
@@ -3561,7 +3562,7 @@
                     "mpaTime": 38.0,
                     "vpaTime": 6.0,
                     "adjVpaTime": 25.0,
-                    "rolling7Day": 0.8979591836734694,
+                    "rolling7Day": 50.0,
                     "hazardRatio": 1.0535959056519804,
                     "hazardRatioRescaled": 0.7669743232522591,
                     "restingHR": 52.857142857142854,
@@ -3619,7 +3620,7 @@
                     "mpaTime": 164.0,
                     "vpaTime": 36.0,
                     "adjVpaTime": 118.0,
-                    "rolling7Day": 4.081632653061225,
+                    "rolling7Day": 236.0,
                     "hazardRatio": 0.9987682155990779,
                     "hazardRatioRescaled": 1.0503472906707731,
                     "restingHR": 48.285714285714285,
@@ -3677,7 +3678,7 @@
                     "mpaTime": 254.0,
                     "vpaTime": 16.0,
                     "adjVpaTime": 143.0,
-                    "rolling7Day": 5.5102040816326525,
+                    "rolling7Day": 286.0,
                     "hazardRatio": 0.9925974600366462,
                     "hazardRatioRescaled": 1.082818787316605,
                     "restingHR": 48.0,
@@ -3735,7 +3736,7 @@
                     "mpaTime": 244.0,
                     "vpaTime": 30.0,
                     "adjVpaTime": 152.0,
-                    "rolling7Day": 5.591836734693878,
+                    "rolling7Day": 304.0,
                     "hazardRatio": 0.9844253490870031,
                     "hazardRatioRescaled": 1.1730516768110757,
                     "restingHR": 47.42857142857143,
@@ -3793,7 +3794,7 @@
                     "mpaTime": 80.0,
                     "vpaTime": 34.0,
                     "adjVpaTime": 74.0,
-                    "rolling7Day": 2.326530612244898,
+                    "rolling7Day": 148.0,
                     "hazardRatio": 1.0394557449147885,
                     "hazardRatioRescaled": 0.8284532829791809,
                     "restingHR": 49.42857142857143,
@@ -3851,7 +3852,7 @@
                     "mpaTime": 52.0,
                     "vpaTime": 36.0,
                     "adjVpaTime": 62.0,
-                    "rolling7Day": 1.7959183673469388,
+                    "rolling7Day": 124.0,
                     "hazardRatio": 0.9943848272215919,
                     "hazardRatioRescaled": 1.1034761849639354,
                     "restingHR": 47.42857142857143,
@@ -3909,7 +3910,7 @@
                     "mpaTime": 430.0,
                     "vpaTime": 40.0,
                     "adjVpaTime": 255.0,
-                    "rolling7Day": 9.591836734693876,
+                    "rolling7Day": 510.0,
                     "hazardRatio": 0.9654731562562581,
                     "hazardRatioRescaled": 1.383631597152689,
                     "restingHR": 48.285714285714285,
@@ -3967,7 +3968,7 @@
                     "mpaTime": 276.0,
                     "vpaTime": 56.0,
                     "adjVpaTime": 194.0,
-                    "rolling7Day": 6.775510204081633,
+                    "rolling7Day": 388.0,
                     "hazardRatio": 0.9824597207303974,
                     "hazardRatioRescaled": 1.1948919918844734,
                     "restingHR": 47.142857142857146,
@@ -4025,7 +4026,7 @@
                     "mpaTime": 222.0,
                     "vpaTime": 28.0,
                     "adjVpaTime": 139.0,
-                    "rolling7Day": 5.1020408163265305,
+                    "rolling7Day": 278.0,
                     "hazardRatio": 0.9920002846195045,
                     "hazardRatioRescaled": 1.105102100579177,
                     "restingHR": 47.0,
@@ -4083,7 +4084,7 @@
                     "mpaTime": 276.0,
                     "vpaTime": 58.0,
                     "adjVpaTime": 196.0,
-                    "rolling7Day": 6.816326530612245,
+                    "rolling7Day": 392.0,
                     "hazardRatio": 0.9666478089897869,
                     "hazardRatioRescaled": 1.3705799001134804,
                     "restingHR": 46.714285714285715,
@@ -4141,7 +4142,7 @@
                     "mpaTime": 280.0,
                     "vpaTime": 32.0,
                     "adjVpaTime": 172.0,
-                    "rolling7Day": 6.36734693877551,
+                    "rolling7Day": 344.0,
                     "hazardRatio": 0.9867852404119544,
                     "hazardRatioRescaled": 1.1542191247208269,
                     "restingHR": 46.57142857142857,
@@ -4199,7 +4200,7 @@
                     "mpaTime": 174.0,
                     "vpaTime": 6.0,
                     "adjVpaTime": 93.0,
-                    "rolling7Day": 3.673469387755102,
+                    "rolling7Day": 186.0,
                     "hazardRatio": 1.0189248409644232,
                     "hazardRatioRescaled": 0.9177180827633774,
                     "restingHR": 49.42857142857143,
@@ -4257,7 +4258,7 @@
                     "mpaTime": 76.0,
                     "vpaTime": 24.0,
                     "adjVpaTime": 62.0,
-                    "rolling7Day": 2.857142857142857,
+                    "rolling7Day": 192.0,
                     "hazardRatio": 1.0322902693787797,
                     "hazardRatioRescaled": 0.8596075244400886,
                     "restingHR": 48.6,
@@ -5720,6 +5721,7 @@ function switchTab(tabName) {
 
     // Re-initialize charts with the new data
     initializeChartsForTab(tabName);
+    requestAnimationFrame(alignAllMarkers);
 }
 
 // Function to destroy all existing charts
@@ -6061,7 +6063,76 @@ function attachMarkerTooltip(pointer) {
 
 if (typeof window !== 'undefined') {
     window.addEventListener('scroll', hideMarkerTooltip, true);
-    window.addEventListener('resize', hideMarkerTooltip);
+    window.addEventListener('resize', () => {
+        hideMarkerTooltip();
+        requestAnimationFrame(alignAllMarkers);
+    });
+}
+
+function getScaleBarForMarker(pointer) {
+    if (!pointer) {
+        return null;
+    }
+
+    const markerGroup = pointer.parentElement;
+    if (!markerGroup) {
+        return null;
+    }
+
+    const scaleWrapper = markerGroup.parentElement;
+    if (!scaleWrapper) {
+        return null;
+    }
+
+    const scaleBar = scaleWrapper.querySelector('.score-scale-bar');
+    if (!scaleBar) {
+        return null;
+    }
+
+    return {
+        markerGroup,
+        scaleBar,
+    };
+}
+
+function alignScaleMarker(pointer, options = {}) {
+    if (!pointer || pointer.classList.contains('hidden')) {
+        return;
+    }
+
+    const metrics = getScaleBarForMarker(pointer);
+    if (!metrics) {
+        return;
+    }
+
+    const { markerGroup, scaleBar } = metrics;
+    const groupRect = markerGroup.getBoundingClientRect();
+    const barRect = scaleBar.getBoundingClientRect();
+    const pointerHeight = pointer.offsetHeight || pointer.clientHeight || 0;
+
+    if (!pointerHeight) {
+        return;
+    }
+
+    const alignMode = options.align || pointer.dataset.align || 'center';
+    const offset = Number(pointer.dataset.offset || 0);
+
+    const lineCenter = barRect.top - groupRect.top + barRect.height / 2;
+    let top;
+
+    if (alignMode === 'baseline') {
+        top = lineCenter - pointerHeight + offset;
+    } else {
+        top = lineCenter - pointerHeight / 2 + offset;
+    }
+
+    pointer.style.top = `${top}px`;
+}
+
+function alignAllMarkers() {
+    document.querySelectorAll('.scale-marker').forEach(marker => {
+        alignScaleMarker(marker);
+    });
 }
 
 function updatePointer(pointerId, rawValue, overrides = {}, extra = {}) {
@@ -6152,6 +6223,7 @@ function updatePointer(pointerId, rawValue, overrides = {}, extra = {}) {
         pointer.removeAttribute('title');
         pointer.removeAttribute('aria-label');
         attachMarkerTooltip(pointer);
+        alignScaleMarker(pointer);
     } else if (pointer.classList.contains('pointer-avg')) {
         pointer.style.borderTopColor = color;
         pointer.style.borderBottomColor = 'transparent';
@@ -6581,6 +6653,7 @@ function initializeCharts() {
 
     // Initialize with daily-controls data by default
     initializeChartsForTab('daily-controls');
+    requestAnimationFrame(alignAllMarkers);
 }
 
 // Chart creation functions for Daily Controls
@@ -6616,7 +6689,7 @@ function createStepsCharts(data) {
                         borderWidth: 1,
                         borderRadius: 4,
                         borderSkipped: false,
-                        order: 1
+                        order: 2
                     }, {
                         label: '7-Day Rolling Average',
                         data: reversedDaily.map(d => d.rollingAvgSteps),
@@ -6635,7 +6708,7 @@ function createStepsCharts(data) {
                             getColorForRescaledValue(d.hazardRatioRescaled, STEP_SCALE)
                         ),
                         pointBorderWidth: 2,
-                        order: 99,
+                        order: 1,
                         z: 10
                     }
                 ]
@@ -6648,16 +6721,23 @@ function createStepsCharts(data) {
                     legend: { display: false },
                     datalabels: { display: false },
                     tooltip: {
+                        filter: function(tooltipItem) {
+                            return tooltipItem.dataset.label === '7-Day Rolling Average';
+                        },
                         callbacks: {
                             title: function(context) {
                                 return context[0].label;
                             },
                             label: function(context) {
-                                const value = context.parsed.y;
-                                return [
-                                    `Steps: ${value.toLocaleString()}`,
-                                    `Rolling Avg: ${data.daily[context.dataIndex].rollingAvgSteps.toLocaleString()}`
+                                const entry = reversedDaily[context.dataIndex];
+                                const lines = [
+                                    `Steps: ${entry.dailySteps.toLocaleString()}`,
+                                    `Rolling Avg: ${entry.rollingAvgSteps.toLocaleString()}`
                                 ];
+                                if (entry.hazardRatio !== null && entry.hazardRatio !== undefined) {
+                                    lines.push(`HR: ${formatScore(entry.hazardRatio)}`);
+                                }
+                                return lines;
                             }
                         }
                     }
@@ -6703,16 +6783,59 @@ function createHeartRateCharts(data) {
     if (activityCtx && data.daily) {
         const reversedDaily = data.daily.slice().reverse();
 
-        // Use pre-calculated combined rolling average from enricher data
-        const activityRollingAvg = reversedDaily.map(d => d.rolling7Day || 0);
+        // Use pre-calculated rolling 7-day totals from enricher data
+        const activityRollingTotal = reversedDaily.map(d => d.rolling7Day || 0);
         const activityLinePointColors = reversedDaily.map(d =>
             getColorForRescaledValue(d.hazardRatioRescaled)
         );
         const labels = reversedDaily.map(d => d.label);
-        const referenceLineDatasets = createReferenceLineDatasets(data.referenceLines, labels);
+        const referenceLineDatasets = createReferenceLineDatasets(
+            data.referenceLines,
+            labels,
+            'activityLineAxis'
+        );
 
-        // Debug: Log the rolling average data
-        console.log('Daily Controls Rolling Average Data:', activityRollingAvg);
+        const totalDailyValues = reversedDaily.map(
+            d => (d.mpaTime || 0) + (d.vpaTime || 0)
+        );
+        const maxStackedDaily =
+            totalDailyValues.length > 0 ? Math.max(...totalDailyValues) : 0;
+        const maxRollingTotal =
+            activityRollingTotal.length > 0 ? Math.max(...activityRollingTotal) : 0;
+
+        const barAxisOptions = {
+            type: 'linear',
+            position: 'left',
+            beginAtZero: true,
+            stacked: true,
+            grid: {
+                display: true
+            },
+            ticks: {
+                callback: value => value.toLocaleString()
+            }
+        };
+        if (Number.isFinite(maxStackedDaily) && maxStackedDaily > 0) {
+            barAxisOptions.suggestedMax = maxStackedDaily * 1.2;
+        }
+
+        const lineAxisOptions = {
+            type: 'linear',
+            position: 'right',
+            beginAtZero: true,
+            grid: {
+                drawOnChartArea: false
+            },
+            ticks: {
+                callback: value => value.toLocaleString()
+            }
+        };
+        if (Number.isFinite(maxRollingTotal) && maxRollingTotal > 0) {
+            lineAxisOptions.suggestedMax = maxRollingTotal * 1.1;
+        }
+
+        // Debug: Log the rolling total data
+        console.log('Daily Controls Rolling Total Data:', activityRollingTotal);
         console.log('Sample data point:', reversedDaily[0]);
 
         new Chart(activityCtx, {
@@ -6724,6 +6847,7 @@ function createHeartRateCharts(data) {
                     {
                         label: 'MPA Time (min)',
                         data: reversedDaily.map(d => d.mpaTime),
+                        yAxisID: 'activityBarAxis',
                         backgroundColor: DAILY_COLOR_PALETTE.mpaBar,
                         borderColor: DAILY_COLOR_PALETTE.mpaBar,
                         stack: 'activity',
@@ -6732,17 +6856,19 @@ function createHeartRateCharts(data) {
                     {
                         label: 'VPA Time (min)',
                         data: reversedDaily.map(d => d.vpaTime),
+                        yAxisID: 'activityBarAxis',
                         backgroundColor: '#8e24aa',
                         borderColor: '#8e24aa',
                         stack: 'activity',
                         order: 2
                     },
                     {
-                        label: 'Activity 7-Day Rolling Avg',
-                        data: activityRollingAvg,
+                        label: 'Activity 7-Day Rolling Total',
+                        data: activityRollingTotal,
                         type: 'line',
+                        yAxisID: 'activityLineAxis',
                         borderColor: DAILY_COLOR_PALETTE.activityLine,
-                    backgroundColor: PRIMARY_BLUE_FILL,
+                        backgroundColor: PRIMARY_BLUE_FILL,
                         borderWidth: 2,
                         fill: false,
                         tension: 0.4,
@@ -6763,6 +6889,10 @@ function createHeartRateCharts(data) {
                     legend: { display: true },
                     datalabels: { display: false }
                 },
+                interaction: {
+                    mode: 'index',
+                    intersect: false
+                },
                 scales: {
                     x: {
                         display: true,
@@ -6775,18 +6905,8 @@ function createHeartRateCharts(data) {
                             display: false
                         }
                     },
-                    y: {
-                        display: true,
-                        title: {
-                            display: true,
-                            text: 'Minutes'
-                        },
-                        beginAtZero: true,
-                        stacked: true,
-                        grid: {
-                            display: true
-                        }
-                    }
+                    activityBarAxis: barAxisOptions,
+                    activityLineAxis: lineAxisOptions
                 }
             }
         });
@@ -6866,11 +6986,16 @@ function createStrengthCharts(data) {
                             },
                             label: function(context) {
                                 const value = context.parsed.y;
-                                const weeklySum = data.daily[context.dataIndex].weeklySum;
-                                return [
+                                const entry = reversedDaily[context.dataIndex];
+                                const weeklySum = entry.weeklySum;
+                                const lines = [
                                     `Duration: ${Math.round(value * 10) / 10} min`,
                                     `Weekly Total: ${Math.round(weeklySum * 10) / 10} min`
                                 ];
+                                if (entry.hrScore !== null && entry.hrScore !== undefined) {
+                                    lines.push(`HR: ${formatScore(entry.hrScore)}`);
+                                }
+                                return lines;
                             }
                         }
                     }
@@ -6910,7 +7035,7 @@ function createStrengthCharts(data) {
 }
 
 // Helper function to create reference line datasets for charts
-function createReferenceLineDatasets(referenceLines, labels) {
+function createReferenceLineDatasets(referenceLines, labels, yAxisId = 'y') {
     console.log('createReferenceLineDatasets called with:', referenceLines);
     if (!referenceLines) {
         console.log('No referenceLines provided');
@@ -6943,7 +7068,7 @@ function createReferenceLineDatasets(referenceLines, labels) {
             fill: false,
             tension: 0,
             order: 0, // Render behind main data
-            yAxisID: 'y'
+            yAxisID: yAxisId
         });
     }
 
@@ -6962,7 +7087,7 @@ function createReferenceLineDatasets(referenceLines, labels) {
             fill: false,
             tension: 0,
             order: 0,
-            yAxisID: 'y'
+            yAxisID: yAxisId
         });
     }
 
@@ -6981,7 +7106,7 @@ function createReferenceLineDatasets(referenceLines, labels) {
             fill: false,
             tension: 0,
             order: 0,
-            yAxisID: 'y'
+            yAxisID: yAxisId
         });
     }
 
@@ -7089,12 +7214,7 @@ function createSleepCharts(data) {
 
                                 const consistencyValue = toNumberOrNull(entry.consistencyScore);
                                 if (consistencyValue !== null) {
-                                    lines.push(`Sleep Consistency Index: ${consistencyValue.toFixed(2)}`);
-                                }
-
-                                const durationValue = entry.sleepDuration;
-                                if (typeof durationValue === 'number' && !Number.isNaN(durationValue)) {
-                                    lines.push(`Duration: ${durationValue.toFixed(2)}h`);
+                                    lines.push(`Sleep Consistency HR: ${consistencyValue.toFixed(2)}`);
                                 }
 
                                 if (!lines.length) {
@@ -7190,11 +7310,17 @@ function createSleepCharts(data) {
                                 return context.length ? context[0].label : '';
                             },
                             label: function(context) {
+                                const entry = reversedDaily[context.dataIndex];
+                                const lines = [];
                                 const durationValue = context.parsed.y;
                                 if (typeof durationValue === 'number' && !Number.isNaN(durationValue)) {
-                                    return `Duration: ${durationValue.toFixed(2)}h`;
+                                    lines.push(`Duration: ${durationValue.toFixed(2)}h`);
                                 }
-                                return 'No data';
+                                const durationScore = toNumberOrNull(entry.durationScore);
+                                if (durationScore !== null) {
+                                    lines.push(`Sleep Duration HR: ${durationScore.toFixed(2)}`);
+                                }
+                                return lines.length ? lines : ['No data'];
                             }
                         }
                     }
@@ -7655,8 +7781,8 @@ function createHealthSpanHeartRateCharts(data) {
     if (activityCtx && data.daily) {
         const reversedDaily = data.daily.slice().reverse();
 
-        // Use pre-calculated combined rolling average from enricher data
-        const activityRollingAvg = reversedDaily.map(d => d.rolling7Day || 0);
+        // Use pre-calculated rolling 7-day totals from enricher data
+        const activityRollingTotal = reversedDaily.map(d => d.rolling7Day || 0);
         const linePointColors = reversedDaily.map(d =>
             getColorForRescaledValue(
                 getRescaledValue(d, 'hazardRatioRescaledFinal', 'hazardRatioRescaled')
@@ -7665,8 +7791,8 @@ function createHealthSpanHeartRateCharts(data) {
         const labels = reversedDaily.map(d => d.label);
         const referenceLineDatasets = createReferenceLineDatasets(data.referenceLines, labels);
 
-        // Debug: Log the rolling average data
-        console.log('Healthspan Rolling Average Data:', activityRollingAvg);
+        // Debug: Log the rolling total data
+        console.log('Healthspan Rolling Total Data:', activityRollingTotal);
         console.log('Sample data point:', reversedDaily[0]);
 
         new Chart(activityCtx, {
@@ -7688,9 +7814,9 @@ function createHealthSpanHeartRateCharts(data) {
                         stack: 'activity'
                     },
                     {
-                        label: 'Activity 7-Day Rolling Avg',
+                        label: 'Activity 7-Day Rolling Total',
                         type: 'line',
-                        data: activityRollingAvg,
+                        data: activityRollingTotal,
                         borderColor: '#2196F3',
                         backgroundColor: 'rgba(33, 150, 243, 0.1)',
                         fill: false,
